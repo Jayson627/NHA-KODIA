@@ -214,13 +214,13 @@ $conn->close();
         <?php if (!empty($children)): ?>
             <?php foreach ($children as $child): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($child['name']); ?></td>
-                    <td><?php echo htmlspecialchars($child['age']); ?></td>
-                    <td><?php echo htmlspecialchars($child['gender']); ?></td>
-                    <td><?php echo htmlspecialchars($child['status']); ?></td>
-                    <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
-                    <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
-                    <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
+                    <td><?php echo htmlspecialchars($row['name']); ?></td>
+                    <td><?php echo htmlspecialchars($row['age']); ?></td>
+                    <td><?php echo htmlspecialchars($row['gender']); ?></td>
+                    <td><?php echo htmlspecialchars($row['status']); ?></td>
+                    <td><?php echo htmlspecialchars($row['birthdate']); ?></td>
+                    <td><?php echo htmlspecialchars($row['educational_attainment']); ?></td>
+                    <td><?php echo htmlspecialchars($row['contact_number']); ?></td>
                     <td>
                        <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
 <a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>

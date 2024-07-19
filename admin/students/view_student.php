@@ -184,12 +184,21 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Count total number of records
+// Count total number of records     $numrow = count($result);while ($row = $household_result->fetch_assoc()) {
+
 $total_records = $conn->query("SELECT COUNT(*) AS total FROM children")->fetch_assoc()['total'];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $children[] = $row;
+        echo '<td>' . $row['name'] . '</td>';
+        echo '<td>' . $row['age'] . '</td>';
+        echo '<td>' . $row['gender'] . '</td>';
+        echo '<td>' . $row['status'] . '</td>';
+        echo '<td>' . $row['birthdate'] . '</td>';
+        echo '<td>' . $row['educational_attainment'] . '</td>';
+        echo '<td>' . $row['contact_number'] . '</td>';
+     
     }
+
 }
 
 $conn->close();

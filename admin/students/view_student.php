@@ -176,8 +176,8 @@ if (isset($_GET['delete'])) {
 }
 
 // Retrieve children for current page
-$children = [];
-$result = $conn->query("SELECT * FROM children LIMIT $start, $limit");
+$children = [0];
+$result = $conn->query "SELECT * FROM children";
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $children[] = $row;
@@ -186,6 +186,11 @@ if ($result->num_rows > 0) {
 
 // Count total number of records
 $total_records = $conn->query("SELECT COUNT(*) AS total FROM children")->fetch_assoc()['total'];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $children[] = $row;
+    }
+}
 
 $conn->close();
 ?>

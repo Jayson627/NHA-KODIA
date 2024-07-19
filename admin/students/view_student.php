@@ -212,7 +212,7 @@ $conn->close();
         </thead>
         <tbody>
         <?php if (!empty($children)): ?>
-            <?php foreach ($children as $child): ?>
+            <?php foreach ($children as $row): ?>
                 <tr>
                     <td><?php echo htmlspecialchars($row['name']); ?></td>
                     <td><?php echo htmlspecialchars($row['age']); ?></td>

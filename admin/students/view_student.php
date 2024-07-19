@@ -186,7 +186,7 @@ if ($result->num_rows > 0) {
 
 // Count total number of records     $numrow = count($result);while ($row = $household_result->fetch_assoc()) {
 
-$total_records = $conn->query("SELECT COUNT(*) AS total FROM children")->fetch_assoc()['total'];
+$total_records = $conn->query("SELECT COUNT(*) AS total FROM children");
 if ($result->num_rows > 0) {
     echo '<table>';
     while ($row = $result->fetch_assoc()) {

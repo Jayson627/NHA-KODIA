@@ -20,7 +20,8 @@ class DBConnection {
             if ($this->conn->connect_error) {
                 die('Connection failed: ' . $this->conn->connect_error);
             }            
-        }    
+        }   
+        else "connected",
     }
     
     public function __destruct() {

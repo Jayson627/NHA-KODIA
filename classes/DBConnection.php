@@ -5,10 +5,10 @@ if (!defined('DB_SERVER')) {
 
 class DBConnection {
 
-    private $host = "127.0.0.1:3306";
-    private $username = "u510162695_sis_db";
-    private $password = "1Sis_dbpassword";
-    private $database = "u510162695_sis_db";
+    private $host = '127.0.0.1';
+    private $username = 'u510162695_sis_db';
+    private $password = '1Sis_dbpassword';
+    private $database = 'u510162695_sis_db';
     
     public $conn;
     
@@ -24,7 +24,9 @@ class DBConnection {
     }
     
     public function __destruct() {
-        $this->conn->close();
+        if (isset($this->conn)) {
+            $this->conn->close();
+        }
     }
 }
 ?>

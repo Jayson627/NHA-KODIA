@@ -5,10 +5,10 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "your_database_name"; // replace with your database name
+$servername = "127.0.0.1:3306";
+$username = "u510162695_sis_db";
+$password = "1Sis_dbpassword";
+$dbname = "u510162695_sis_db"; // replace with your database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

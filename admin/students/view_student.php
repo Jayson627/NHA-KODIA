@@ -184,28 +184,8 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Count total number of records     $numrow = count($result);while ($row = $household_result->fetch_assoc()) {
-
-$total_records = $conn->query("SELECT COUNT(*) AS total FROM children");
-if ($result->num_rows > 0) {
-    echo '<table>';
-    while ($row = $result->fetch_assoc()) {
-        echo '<tr>';
-        echo '<td>' . $row['name'] . '</td>';
-        echo '<td>' . $row['age'] . '</td>';
-        echo '<td>' . $row['gender'] . '</td>';
-        echo '<td>' . $row['status'] . '</td>';
-        echo '<td>' . $row['birthdate'] . '</td>';
-        echo '<td>' . $row['educational_attainment'] . '</td>';
-        echo '<td>' . $row['contact_number'] . '</td>';
-        echo '</tr>';
-
-     
-    }
-    echo '</table>';
-
-
-}
+// Count total number of records
+$total_records = $conn->query("SELECT COUNT(*) AS total FROM children")->fetch_assoc()['total'];
 
 $conn->close();
 ?>
@@ -227,19 +207,19 @@ $conn->close();
         </thead>
         <tbody>
         <?php if (!empty($children)): ?>
-            <?php foreach ($children as $row): ?>
+            <?php foreach ($children as $child): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($row['name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['age']); ?></td>
-                    <td><?php echo htmlspecialchars($row['gender']); ?></td>
-                    <td><?php echo htmlspecialchars($row['status']); ?></td>
-                    <td><?php echo htmlspecialchars($row['birthdate']); ?></td>
-                    <td><?php echo htmlspecialchars($row['educational_attainment']); ?></td>
-                    <td><?php echo htmlspecialchars($row['contact_number']); ?></td>
+                    <td><?php echo htmlspecialchars($child['name']); ?></td>
+                    <td><?php echo htmlspecialchars($child['age']); ?></td>
+                    <td><?php echo htmlspecialchars($child['gender']); ?></td>
+                    <td><?php echo htmlspecialchars($child['status']); ?></td>
+                    <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
+                    <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
+                    <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
                     <td>
                        <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
 <a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-<a href="children.php?delete=<?php echo urlencode($row['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this child?');">Delete</a>
+<a href="children.php?delete=<?php echo urlencode($child['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this child?');">Delete</a>
 
                     </td>
                 </tr>
@@ -258,7 +238,7 @@ $conn->close();
             <a href="children.php?page=<?php echo $page - 1; ?>" class="btn btn-secondary mr-2">&laquo; Previous</a>
         <?php endif; ?>
 
-       
+        <?php if ($total_records > $start + $limit): ?>
             <a href="children.php?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next &raquo;</a>
         <?php endif; ?>
     </div>

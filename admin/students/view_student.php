@@ -176,8 +176,8 @@ if (isset($_GET['delete'])) {
 }
 
 // Retrieve children for current page
-$children = [0];
-$result = $conn->query "SELECT * FROM children";
+$children = [];
+$result = $conn->query("SELECT * FROM children LIMIT $start, $limit");
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $children[] = $row;

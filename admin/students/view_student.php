@@ -185,9 +185,7 @@ if ($result->num_rows > 0) {
 }
 
 // Count total number of records
-$total_records_query = $conn -> query("SELECT COUNT(*) AS total FROM children");
-$total_records = $conn->query("SELECT COUNT(*) AS total FROM children")->fetch_assoc()['total'];
-echo "Total records: " . $total records";
+$total_records_query = $conn -> query("SELECT COUNT(*) AS total FROM childre")
 
 
 $conn->close();

@@ -5,10 +5,10 @@ if (!defined('DB_SERVER')) {
 
 class DBConnection {
 
-    private $host = DB_SERVER;
-    private $username = DB_USERNAME;
-    private $password = DB_PASSWORD;
-    private $database = DB_NAME;
+    private $host = 127.0.0.1:3306;
+    private $username = u510162695_sis_db;
+    private $password = 1Sis_dbpassword;
+    private $database = u510162695_sis_db;
     
     public $conn;
     

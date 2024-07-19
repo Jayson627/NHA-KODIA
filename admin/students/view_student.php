@@ -188,7 +188,9 @@ if ($result->num_rows > 0) {
 
 $total_records = $conn->query("SELECT COUNT(*) AS total FROM children")->fetch_assoc()['total'];
 if ($result->num_rows > 0) {
+    echo '<table>';
     while ($row = $result->fetch_assoc()) {
+        echo '<tr>';
         echo '<td>' . $row['name'] . '</td>';
         echo '<td>' . $row['age'] . '</td>';
         echo '<td>' . $row['gender'] . '</td>';
@@ -196,8 +198,12 @@ if ($result->num_rows > 0) {
         echo '<td>' . $row['birthdate'] . '</td>';
         echo '<td>' . $row['educational_attainment'] . '</td>';
         echo '<td>' . $row['contact_number'] . '</td>';
+        echo '</tr>';
+
      
     }
+    echo '</table>';
+
 
 }
 

@@ -21,7 +21,7 @@ if (isset($_GET['id'])) {
                 <button class="btn btn-sm btn-info bg-info btn-flat" type="button" id="update_status">Update Status</button>
                 <button class="btn btn-sm btn-success bg-success btn-flat" type="button" id="print"><i class="fa fa-print"></i> Print</button>
                 <a href="./?page=students" class="btn btn-default border btn-sm btn-flat"><i class="fa fa-angle-left"></i> Back to List</a>
-                <a href="children.php" class="btn btn-sm btn-primary btn-flatv"><i class="fa fa-plus"></i> Add Children</a>
+                <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flatv"><i class="fa fa-plus"></i> Add Children</a>
                 
             </div>
         </div>
@@ -120,10 +120,10 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // Database credentials
-$servername = "127.0.0.1:3306";
-$username = "u510162695_sis_db";
-$password = "1Sis_dbpassword";
-$dbname = "u510162695_sis_db";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "sis_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -177,7 +177,7 @@ if (isset($_GET['delete'])) {
 
 // Retrieve children for current page
 $children = [];
-$result = $conn->query("SELECT * FROM children LIMIT $start, $limit");
+$result = $conn->query("SELECT * FROM children WHERE child_id = '{$_GET['id']}' LIMIT $start, $limit");
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $children[] = $row;
@@ -217,10 +217,9 @@ $conn->close();
                     <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
                     <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
                     <td>
-                       <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
-<a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-<a href="children.php?delete=<?php echo urlencode($child['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this child?');">Delete</a>
-
+                        <a href="children.php<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
+                        <a href="children.php<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="children.php?delete=<?php echo urlencode($child['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this child?');">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

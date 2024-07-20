@@ -58,8 +58,8 @@ if ($conn->connect_error) {
                             <th>Block</th>
                             <th>Lot</th>
                             <th>Gender</th>
-                            <th>Baranggay</th>
-                            <th>Reymarks</th>
+                            <th>Barangay</th>
+                            <th>Remarks</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>

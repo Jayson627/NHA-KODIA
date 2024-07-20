@@ -102,7 +102,7 @@ if (isset($_GET['id'])) {
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="control-label text-muted">Baranggay</label>
+                                <label class="control-label text-muted">Barangay</label>
                                 <div class="pl-4"><?= isset($present_address) ? $present_address : 'N/A' ?></div>
                             </div>
                         </div>

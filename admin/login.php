@@ -182,8 +182,8 @@
           type: 'POST',
           url: 'login_processor.php', // Change this to the actual URL of your login processing script
           data: $(this).serialize(),
-          success: function(response) {
-            if(response == 'error') {
+          failed: function(response) {
+            if(response == 'failed') {
             //   Swal.fire({
             //     title: 'Login Successful',
             //     text: 'Welcome back!',

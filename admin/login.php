@@ -174,35 +174,36 @@
         $('#about').hide();
         $('#login').fadeIn();
       });
+      </script>
 
       // Submit login form with SweetAlert message
-      $('#login-frm').on('submit', function(e) {
-        e.preventDefault();
-        $.ajax({
-          type: 'POST',
-          url: 'login_processor.php', // Change this to the actual URL of your login processing script
-          data: $(this).serialize(),
-          success: function(response) {
-            if(response == 'success') {
-              Swal.fire({
-                title: 'Login Successful',
-                text: 'Welcome back!',
-                icon: 'success'
-              }).then(() => {
-                window.location.href = 'dashboard.php'; // Redirect to the dashboard or another page
-              });
-            } else {
-              Swal.fire({
-                title: 'Login Failed',
-                text: 'Invalid username or password. Please try again.',
-                icon: 'error'
-              });
-            }
-          }
-        });
-      });
-    });
-  </script>
+  //     $('#login-frm').on('submit', function(e) {
+  //       e.preventDefault();
+  //       $.ajax({
+  //         type: 'POST',
+  //         url: 'login_processor.php', // Change this to the actual URL of your login processing script
+  //         data: $(this).serialize(),
+  //         success: function(response) {
+  //           if(response == 'success') {
+  //             Swal.fire({
+  //               title: 'Login Successful',
+  //               text: 'Welcome back!',
+  //               icon: 'success'
+  //             }).then(() => {
+  //               window.location.href = 'dashboard.php'; // Redirect to the dashboard or another page
+  //             });
+  //           } else {
+  //             Swal.fire({
+  //               title: 'Login Failed',
+  //               text: 'Invalid username or password. Please try again.',
+  //               icon: 'error'
+  //             });
+  //           }
+  //         }
+  //       });
+  //     });
+  //   });
+ 
 </head>
 <body class="hold-transition">
   <!-- Navbar -->

@@ -158,6 +158,7 @@
   <!-- JavaScript for Login and About Toggle -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     $(document).ready(function() {
       // Show description when "About" link is clicked
@@ -173,6 +174,33 @@
         $('#about').hide();
         $('#login').fadeIn();
       });
+
+      // Submit login form with SweetAlert message
+      $('#login-frm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+          type: 'POST',
+          url: 'login_processor.php', // Change this to the actual URL of your login processing script
+          data: $(this).serialize(),
+          success: function(response) {
+            if(response == 'error') {
+            //   Swal.fire({
+            //     title: 'Login Successful',
+            //     text: 'Welcome back!',
+            //     icon: 'success'
+            //   }).then(() => {
+            //     window.location.href = 'dashboard.php'; // Redirect to the dashboard or another page
+            //   });
+            // } else {
+              Swal.fire({
+                title: 'Login Failed',
+                text: 'Invalid username or password. Please try again.',
+                icon: 'error'
+              });
+            }
+          }
+        });
+      });
     });
   </script>
 </head>
@@ -182,7 +210,7 @@
     <a class="navbar-brand" href="#">
       <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" style="border-radius: 50%; height: 50px; width: 50px; object-fit: cover; display: inline-block; vertical-align: middle;">
       <h4 style="display: inline-block; vertical-align: middle; margin-left: 10px;">
-        <?php echo $_settings->info('name') ?> Kodia Information System
+        <?php echo $_settings->info('name') ?> 
       </h4>
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -205,7 +233,7 @@
   <div id="login">
     <div class="card">
       <div class="card-header">
-        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
+        <h4><?php echo $_settings->info('name') ?> </h4>
       </div>
       <div class="card-body">
         <form id="login-frm" action="" method="post">
@@ -236,8 +264,12 @@
   <div id="about">
     <div class="container mt-5">
       <h2>About Us</h2>
-      <p>kodia</p>
-      <p></p>
+      <p>Located in Barranggay Kodia,Madridejos,Cebu</p>
+      <p>750 Units</p>
+      <p>Total of Blocks</p>
+      <p>Total of Lots</p>
+
+
     </div>
   </div>
 </body>

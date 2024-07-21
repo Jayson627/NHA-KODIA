@@ -40,7 +40,16 @@ $(document).ready(function() {
                 if (resp) {
                     resp = JSON.parse(resp)
                     if (resp.status == 'success') {
-                        location.replace(_base_url_ + 'admin');
+                        swal.fire({
+                            title: "Login Successful",
+                            text: "Welcome to Admin Dashboard",
+                            icon: "success",
+                            button: "OK",
+                            timer: 2000
+                        }).then(function(){
+                            location.replace(_base_url_ + 'admin');
+                        })
+                      
                     } else if (resp.status == 'incorrect') {
                         var _frm = $('#login-frm')
                         var _msg = "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> Incorrect username or password</div>"

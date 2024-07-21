@@ -183,6 +183,7 @@
           url: 'login_processor.php', // Change this to the actual URL of your login processing script
           data: $(this).serialize(),
           success: function(response) {
+            let resp = JSON.parse(response);
           if (resp.status == 'incorrect') {
             //   Swal.fire({
             //     title: 'Login Successful',

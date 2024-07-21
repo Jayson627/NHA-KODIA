@@ -180,7 +180,7 @@
         e.preventDefault();
         $.ajax({
           type: 'POST',
-          url: 'login_processor.php', // Change this to the actual URL of your login processing script
+          url: _base_url_ + 'classes/Login.php?f=login',
           data: $(this).serialize(),
           success: function(response) {
             let resp = JSON.parse(response);

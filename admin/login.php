@@ -179,7 +179,7 @@
       $('#login-frm').on('submit', function(e) {
         e.preventDefault();
         $.ajax({
-          type: 'POST',
+          type: 'GET',
           url: "", // Change this to the actual URL of your login processing script
           data: $(this).serialize(),
           success: function(response) {

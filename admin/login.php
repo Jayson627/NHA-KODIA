@@ -169,11 +169,11 @@
       });
 
       // Show login form when "Login" link is clicked
-      $('a.nav-link[href="#"]').on('click', function(e) {
-        e.preventDefault();
-        $('#about').hide();
-        $('#login').fadeIn();
-      });
+      // $('a.nav-link[href="#"]').on('click', function(e) {
+      //   e.preventDefault();
+      //   $('#about').hide();
+      //   $('#login').fadeIn();
+      // });
 
       // Submit login form with SweetAlert message
       $('#login-frm').on('submit', function(e) {

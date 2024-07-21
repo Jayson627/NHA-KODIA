@@ -169,18 +169,18 @@
       });
 
       // Show login form when "Login" link is clicked
-      // $('a.nav-link[href="#"]').on('click', function(e) {
-      //   e.preventDefault();
-      //   $('#about').hide();
-      //   $('#login').fadeIn();
-      // });
+      $('a.nav-link[href="#"]').on('click', function(e) {
+        e.preventDefault();
+        $('#about').hide();
+        $('#login').fadeIn();
+      });
 
       // Submit login form with SweetAlert message
       $('#login-frm').on('submit', function(e) {
         e.preventDefault();
         $.ajax({
-          type: 'GET',
-          url: "", // Change this to the actual URL of your login processing script
+          type: 'POST',
+          url: 'login_processor.php', // Change this to the actual URL of your login processing script
           data: $(this).serialize(),
           success: function(response) {
             if(response == 'success') {
@@ -189,7 +189,7 @@
                 text: 'Welcome back!',
                 icon: 'success'
               }).then(() => {
-                window.location.href = ""; // Redirect to the dashboard or another page
+                window.location.href = 'dashboard.php'; // Redirect to the dashboard or another page
               });
             } else {
               Swal.fire({

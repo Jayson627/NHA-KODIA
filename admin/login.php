@@ -189,12 +189,12 @@
                 text: 'Welcome back!',
                 icon: 'success'
               }).then(() => {
-                window.location.href = 'dashboard.php'; // Redirect to the dashboard or another page
+                window.location.href = ""; // Redirect to the dashboard or another page
               });
             } else {
               Swal.fire({
                 title: 'Login Failed',
-                text: 'Invalid username or passwordhahaha. Please try again.',
+                text: 'Invalid username or password. Please try again.',
                 icon: 'error'
               });
             }

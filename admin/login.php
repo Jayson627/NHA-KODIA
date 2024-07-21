@@ -183,15 +183,15 @@
           url: 'login_processor.php', // Change this to the actual URL of your login processing script
           data: $(this).serialize(),
           success: function(response) {
-            if(response == 'success') {
-              Swal.fire({
-                title: 'Login Successful',
-                text: 'Welcome back!',
-                icon: 'success'
-              }).then(() => {
-                window.location.href = 'dashboard.php'; // Redirect to the dashboard or another page
-              });
-            } else {
+          if (resp.status == 'incorrect') {
+            //   Swal.fire({
+            //     title: 'Login Successful',
+            //     text: 'Welcome back!',
+            //     icon: 'success'
+            //   }).then(() => {
+            //     window.location.href = 'dashboard.php'; // Redirect to the dashboard or another page
+            //   });
+            // } else {
               Swal.fire({
                 title: 'Login Failed',
                 text: 'Invalid username or password. Please try again.',

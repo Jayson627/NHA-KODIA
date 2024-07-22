@@ -22,7 +22,7 @@ if(isset($_GET['id'])){
                     <fieldset class="border-bottom">
                         <div class="row">
                             <div class="form-group col-md-4">
-                                <label for="roll" class="control-label">House No.</label>
+                                <label for="roll" class="control-label">Contact No.</label>
                                 <input type="text" name="roll" id="roll" autofocus value="<?= isset($roll) ? $roll : "" ?>" class="form-control form-control-sm rounded-0" required>
                                 <div id="roll-error" class="text-danger" style="display: none;">Invalid House No. Only numbers are allowed.</div>
                             </div>
@@ -55,11 +55,6 @@ if(isset($_GET['id'])){
                             <div class="form-group col-md-4">
                                 <label for="dob" class="control-label">Date of Birth</label>
                                 <input type="date" name="dob" id="dob" value="<?= isset($dob) ? $dob : "" ?>" class="form-control form-control-sm rounded-0" required>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="contact" class="control-label">Contact #</label>
-                                <input type="text" name="contact" id="contact" value="<?= isset($contact) ? $contact : "" ?>" class="form-control form-control-sm rounded-0" required>
-                                <div id="contact-error" class="text-danger" style="display: none;">Invalid Contact No. Must be exactly 11 digits.</div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="block" class="control-label">Block #</label>

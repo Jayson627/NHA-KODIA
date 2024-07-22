@@ -53,7 +53,7 @@ if ($conn->connect_error) {
                         <tr class="bg-gradient-dark text-light">
                             <th>#</th>
                             <th>Date Created</th>
-                            <th>House No.</th>
+                            <th>Contact No.</th>
                             <th>Name</th>
                             <th>Block</th>
                             <th>Lot</th>

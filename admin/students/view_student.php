@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label text-muted">House No.</label>
+                            <label class="control-label text-muted">Contact No.</label>
                             <div class="pl-4"><?= isset($roll) ? $roll : 'N/A' ?></div>
                         </div>
                     </div>
@@ -80,12 +80,6 @@ if (isset($_GET['id'])) {
                             <div class="form-group">
                                 <label class="control-label text-muted">Date of Birth</label>
                                 <div class="pl-4"><?= isset($dob) ? date("M d, Y", strtotime($dob)) : 'N/A' ?></div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label text-muted">Contact #</label>
-                                <div class="pl-4"><?= isset($contact) ? $contact : 'N/A' ?></div>
                             </div>
                         </div>
                         <div class="col-md-4">

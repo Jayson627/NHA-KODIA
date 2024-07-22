@@ -35,7 +35,7 @@ class Login extends DBConnection {
 			$this->settings->set_userdata('login_type',1);
 		return json_encode(array('status'=>'success'));
 		}else{
-		return json_encode(array('status'=>'incorrect','error'=>$this->conn->error));
+		return json_encode(array('status'=>'Incorrect username or password','error'=>$this->conn->error));
 		}
 	}
 	public function logout(){

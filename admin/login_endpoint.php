@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $response = [
             'status' => 'error',
-            'message' => 'Incorrect username or password'
+            'message' => 'Incorrect username or password username or password'
         ];
     }
 }

@@ -184,7 +184,7 @@
           data: $(this).serialize(),
           success: function(response) {
             let resp = JSON.parse(response);
-          if (resp.status == 'incorrect') {
+          if (resp.status == 'Incorrect username or password') {
             //   Swal.fire({
             //     title: 'Login Successful',
             //     text: 'Welcome back!',

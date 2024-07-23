@@ -1,5 +1,9 @@
-<?php
-include_once('connection.php'); 
+<?php 
+// Database connection
+$servername = "127.0.0.1:3306";
+$username = "u510162695_sis_db";
+$password = "1Sis_dbpassword";
+$dbname = "u510162695_sis_db";
 
 if (isset($_GET['id'])) {
     $qry = $conn->query("SELECT * FROM `children` WHERE id = '{$_GET['id']}'");

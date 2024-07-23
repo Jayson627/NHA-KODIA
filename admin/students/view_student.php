@@ -211,9 +211,9 @@ $conn->close();
                     <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
                     <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
                     <td>
-                        <a href="view_child.php<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
-                        <a href="edit_child.php<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="children.php?delete=<?php echo urlencode($child['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this child?');">Delete</a>
+                    <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
+<a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
+<a href="children.php?delete=<?php echo urlencode($child['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this child?');">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

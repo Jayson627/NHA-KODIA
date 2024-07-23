@@ -128,7 +128,7 @@ $conn->close();
                 <option value="" disabled selected>Select Status</option>
                 <option value="Single">Single</option>
                 <option value="Married">Married</option>
-                <option value="Widow">Widow</option>
+                <option value="Widow">Widowed</option>
             </select>
         </div>
         <div class="form-group mx-sm-3 mb-2">
@@ -140,11 +140,11 @@ $conn->close();
             <select class="form-control" id="educational_attainment" name="educational_attainment" required>
                 <option value="" disabled selected>Select Educational Attainment</option>
                 <option value="Elementary">Elementary</option>
-                <option value="Elementary Undergraduate">Elementary Undergraduate</option>
+                <option value="Elementary Undergraduate">None</option>
                 <option value="High School">High School</option>
-                <option value="High School Undergraduate">High School Undergraduate</option>
+                <option value="High School Undergraduate">Vocational</option>
                 <option value="College">College</option>
-                <option value="College Undergraduate">College Undergraduate</option>
+                <option value="College Undergraduate">Post Graduate</option>
             </select>
         </div>
         <div class="form-group mx-sm-3 mb-2">

@@ -1,23 +1,10 @@
 <?php
-// Database connection
-$servername = "127.0.0.1:3306";
-$username = "u510162695_sis_db";
-$password = "1Sis_dbpassword";
-$dbname = "u510162695_sis_db";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include_once('connection.php'); 
 
 if (isset($_GET['id'])) {
-    $child_id = $_GET['id'];
-    $qry = $conn->query("SELECT * FROM children WHERE id = '$child_id'");
+    $qry = $conn->query("SELECT * FROM `children` WHERE id = '{$_GET['id']}'");
     if ($qry->num_rows > 0) {
-        $child = $qry->fetch_assoc();
+        $child = $qry->fetch_array();
     } else {
         echo "Child not found.";
         exit();
@@ -26,59 +13,68 @@ if (isset($_GET['id'])) {
     echo "No child ID provided.";
     exit();
 }
-$conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Child</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Add Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <style>
         body {
             background-color: #f8f9fa;
-            padding: 20px;
         }
         .container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            max-width: 600px;
-            margin: auto;
+            margin-top: 50px;
         }
-        h2 {
-            margin-bottom: 20px;
-            color: #343a40;
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        .table {
-            margin-top: 20px;
-        }
-        .table th, .table td {
-            padding: 10px;
-        }
-        .table th {
+        .card-header {
             background-color: #007bff;
-            color: #ffffff;
+            color: #fff;
+            border-radius: 10px 10px 0 0;
         }
-        .table td {
-            background-color: #e9ecef;
+        .card-body {
+            padding: 2rem;
+        }
+        .btn {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Child Details</h2>
-        <table class="table table-bordered">
-            <tr><th>Name:</th><td><?= htmlspecialchars($child['name']) ?></td></tr>
-            <tr><th>Age:</th><td><?= htmlspecialchars($child['age']) ?></td></tr>
-            <tr><th>Gender:</th><td><?= htmlspecialchars($child['gender']) ?></td></tr>
-            <tr><th>Status:</th><td><?= htmlspecialchars($child['status']) ?></td></tr>
-            <tr><th>Birthdate:</th><td><?= htmlspecialchars($child['birthdate']) ?></td></tr>
-            <tr><th>Educational Attainment:</th><td><?= htmlspecialchars($child['educational_attainment']) ?></td></tr>
-            <tr><th>Contact Number:</th><td><?= htmlspecialchars($child['contact_number']) ?></td></tr>
-        </table>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-center">Child Information</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Name:</strong> <?= htmlspecialchars($child['name']); ?></p>
+                    <p><strong>Age:</strong> <?= htmlspecialchars($child['age']); ?></p>
+                    <p><strong>Gender:</strong> <?= htmlspecialchars($child['gender']); ?></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Status:</strong> <?= htmlspecialchars($child['status']); ?></p>
+                    <p><strong>Birthdate:</strong> <?= htmlspecialchars($child['birthdate']); ?></p>
+                    <p><strong>Educational Attainment:</strong> <?= htmlspecialchars($child['educational_attainment']); ?></p>
+                    <p><strong>Contact Number:</strong> <?= htmlspecialchars($child['contact_number']); ?></p>
+                </div>
+            </div>
+            
+        </div>
     </div>
+</div>
+
+<!-- Add Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

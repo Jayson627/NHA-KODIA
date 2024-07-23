@@ -13,7 +13,7 @@ if(isset($_GET['id'])){
 <div class="content py-3">
     <div class="card card-outline card-primary shadow rounded-0">
         <div class="card-header">
-            <h3 class="card-title"><b><?= isset($id) ? "Update Student Details - ". $roll : "New Household" ?></b></h3>
+            <h3 class="card-title"><b><?= isset($id) ? "Update Household Details - ". $roll : "New Household" ?></b></h3>
         </div>
         <div class="card-body">
             <div class="container-fluid">
@@ -68,7 +68,7 @@ if(isset($_GET['id'])){
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label for="present_address" class="control-label">Baranggay</label>
+                                    <label for="present_address" class="control-label">Barangay</label>
                                     <textarea rows="3" name="present_address" id="present_address" class="form-control form-control-sm rounded-0" required><?= isset($present_address) ? $present_address : "" ?></textarea>
                                     <div id="present_address-error" class="text-danger" style="display: none;">Invalid Barranggay. Only letters are allowed.</div>
                                 </div> 

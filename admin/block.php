@@ -126,7 +126,7 @@ $conn->close();
 </head>
 <body>
 <div class="container">
-    <a href="index.php" class="btn btn-secondary mb-3">Back</a>
+   
     <h2 class="text-center mb-4">Block Management</h2>
 
     <!-- Display error message if any -->

@@ -1,3 +1,4 @@
+
 <?php
 if(isset($_GET['id'])){
     $qry = $conn->query("SELECT * FROM `student_list` where id = '{$_GET['id']}'");
@@ -10,10 +11,33 @@ if(isset($_GET['id'])){
     }
 }
 ?>
+<?php
+if(isset($_POST['roll'])){
+    $id = isset($_POST['id']) ? $_POST['id'] : '';
+    $roll = $_POST['roll'];
+
+    // Check if the contact number already exists
+    $check = $conn->query("SELECT * FROM `student_list` WHERE roll = '$roll' AND id != '$id'");
+    if($check->num_rows > 0){
+        echo json_encode(['status' => 'error', 'msg' => 'Contact number is already in use.']);
+        exit;
+    }
+
+    // Proceed with saving the student details
+    // Your existing code to save the student details
+    // ...
+
+    echo json_encode(['status' => 'success', 'sid' => $newlyCreatedId]);
+    exit;
+}
+?>
+
+
+
 <div class="content py-3">
     <div class="card card-outline card-primary shadow rounded-0">
         <div class="card-header">
-            <h3 class="card-title"><b><?= isset($id) ? "Update Household Details - ". $roll : "New Household" ?></b></h3>
+            <h3 class="card-title"><b><?= isset($id) ? "Update Student Details - ". $roll : "New Household" ?></b></h3>
         </div>
         <div class="card-body">
             <div class="container-fluid">
@@ -68,14 +92,14 @@ if(isset($_GET['id'])){
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label for="present_address" class="control-label">Barangay</label>
+                                    <label for="present_address" class="control-label">Barranggay</label>
                                     <textarea rows="3" name="present_address" id="present_address" class="form-control form-control-sm rounded-0" required><?= isset($present_address) ? $present_address : "" ?></textarea>
                                     <div id="present_address-error" class="text-danger" style="display: none;">Invalid Barranggay. Only letters are allowed.</div>
                                 </div> 
                             </div>
                             <div class="row">
                                 <div class="form-group col-md-12">
-                                    <label for="permanent_address" class="control-label">Remarks</label>
+                                    <label for="permanent_address" class="control-label">Reymarks</label>
                                     <textarea rows="3" name="permanent_address" id="permanent_address" class="form-control form-control-sm rounded-0" required><?= isset($permanent_address) ? $permanent_address : "" ?></textarea>
                                     <div id="permanent_address-error" class="text-danger" style="display: none;">Invalid Reymarks. Only letters are allowed.</div>
                                 </div>
@@ -93,11 +117,19 @@ if(isset($_GET['id'])){
 </div>
 <script>
     $(function(){
-        // Validation function for House No.
-        $('#roll').on('keyup', function() {
+        // Validation function for Contact No.
+        $('#roll').on('input', function() {
             var roll = $(this).val();
             var rollError = $('#roll-error');
-            if (/[^0-9]/.test(roll)) {
+            // Remove non-digit characters
+            roll = roll.replace(/\D/g, '');
+            // Limit input to 11 digits
+            if (roll.length > 11) {
+                roll = roll.substring(0, 11);
+            }
+            $(this).val(roll);
+            if (roll.length !== 11) {
+                rollError.text('Invalid Contact No. Must be exactly 11 digits.');
                 rollError.show();
             } else {
                 rollError.hide();
@@ -116,25 +148,7 @@ if(isset($_GET['id'])){
             }
         });
 
-        // Validation function for Contact No., Block No., Lot No.
-        $('#contact').on('input', function() {
-            var value = $(this).val();
-            var contactError = $('#contact-error');
-            // Remove non-digit characters
-            value = value.replace(/\D/g, '');
-            // Limit input to 11 digits
-            if (value.length > 11) {
-                value = value.substring(0, 11);
-            }
-            $(this).val(value);
-            if (value.length !== 11) {
-                contactError.text('Invalid Contact No. Must be exactly 11 digits.');
-                contactError.show();
-            } else {
-                contactError.hide();
-            }
-        });
-
+        // Validation function for Block No., Lot No.
         $('#block, #lot').on('keyup', function() {
             var value = $(this).val();
             var id = $(this).attr('id');
@@ -160,43 +174,43 @@ if(isset($_GET['id'])){
 
         $('#student_form').submit(function(e){
             e.preventDefault();
-            var _this = $(this)
-            $('.pop-msg').remove()
-            var el = $('<div>')
-                el.addClass("pop-msg alert")
-                el.hide()
+            var _this = $(this);
+            $('.pop-msg').remove();
+            var el = $('<div>');
+                el.addClass("pop-msg alert");
+                el.hide();
             start_loader();
             $.ajax({
                 url:_base_url_+"classes/Master.php?f=save_student",
-				data: new FormData($(this)[0]),
+                data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,
                 processData: false,
                 method: 'POST',
                 type: 'POST',
                 dataType: 'json',
-				error: err => {
-					console.log(err)
-					alert_toast("An error occurred",'error');
-					end_loader();
-				},
+                error: err => {
+                    console.log(err);
+                    alert_toast("An error occurred",'error');
+                    end_loader();
+                },
                 success: function(resp) {
                     if(resp.status == 'success') {
                         location.href="./?page=students/view_student&id="+resp.sid;
-                    } else if(!!resp.msg) {
-                        el.addClass("alert-danger")
-                        el.text(resp.msg)
-                        _this.prepend(el)
+                    } else if(resp.status == 'error') {
+                        el.addClass("alert-danger");
+                        el.text(resp.msg);
+                        _this.prepend(el);
                     } else {
-                        el.addClass("alert-danger")
-                        el.text("An error occurred due to an unknown reason.")
-                        _this.prepend(el)
+                        el.addClass("alert-danger");
+                        el.text("Contact No. is double entry.");
+                        _this.prepend(el);
                     }
-                    el.show('slow')
-                    $('html,body,.modal').animate({scrollTop:0},'fast')
+                    el.show('slow');
+                    $('html,body,.modal').animate({scrollTop:0},'fast');
                     end_loader();
                 }
             })
-        })
-    })
+        });
+    });
 </script>

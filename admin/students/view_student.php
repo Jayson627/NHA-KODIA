@@ -231,7 +231,7 @@ $conn->close();
         <?php endif; ?>
 
         <?php if ($total_records > $start + $limit): ?>
-            <a href="children.php?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next &raquo;</a>
+         
         <?php endif; ?>
     </div>
 </div>

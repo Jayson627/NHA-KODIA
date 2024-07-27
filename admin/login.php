@@ -136,23 +136,38 @@
       margin: auto;
       max-height: 400px;
     }
-    /* Styles for About Us section */
-    #about {
-      display: none;
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 20px;
-    }
-    #about h2 {
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-    #about p {
-      text-align: center;
-      font-size: 16px;
-      line-height: 1.6;
-    }
+     /* Styles for About Us section */
+#about {
+  display: none;
+  height: 100%;
+  width: 100%;
+  color: #333;
+  background-color: lightblue;
+  padding: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+#about h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #007bff;
+}
+#about p {
+  text-align: center;
+  font-size: 16px;
+  line-height: 2.2;
+  color: #555;
+  margin-bottom: 20px;
+}
+#about .container {
+  max-width: 800px;
+  margin: auto;
+  background: whitesmoke;
+  padding: 20px;
+  border-radius: 10px;
+}
   </style>
 
   <!-- JavaScript for Login and About Toggle -->
@@ -262,15 +277,15 @@
   </div>
 
   <!-- Description Section -->
-  <div id="about">
-    <div class="container mt-5">
-      <h2>About Us</h2>
-      <p>Located in Barranggay Kodia,Madridejos,Cebu</p>
-      <p>750 Units</p>
-      <p>Total of Blocks</p>
-      <p>Total of Lots</p>
-
-
+<div id="about">
+  <div class="container">
+    <h2>About Kodia NHA</h2>
+    <p>The National Housing Authority (NHA) of Kodia is located in Barangay Kodia, Madridejos, Cebu. The housing consists of 750 units, 27 blocks, and 58 lots. Based on history, the Kodia NHA was constructed the year after Typhoon Yolanda and was turned over to the barangay in May 2021. All barangays in Madridejos, except for Barangay Tugas and Kangwayan, were provided with housing units. Each barangay was allocated 50 units for those residents who needed to evacuate during typhoons. The process of allocation involved barangay officials distributing forms to the recipients to fill out the necessary information.</p>
+    <p>Every barangay received 50 units, while Barangay Kodia received 100 units because the housing was built in their areas. Based on our survey, the barangays with the most residents living in the housing are Barangay Mancilang and Barangay Poblacion, as they are closest to the sea and most prone to typhoons. According to our survey, there are over 80 units that are not occupied but have owners. There is a possibility that the housing units may be reclaimed if they are not occupied for over a year.</p>
+  </div>
+</div>
+  </body>
+  </html>
     </div>
   </div>
 </body>

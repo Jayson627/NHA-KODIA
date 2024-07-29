@@ -78,7 +78,7 @@ $total_records = $conn->query("SELECT COUNT(*) AS total FROM blocks")->fetch_ass
 
 $conn->close();
 ?>
-
+<a href="index.php" class="btn btn-secondary">Back</a>
 <!DOCTYPE html>
 <html lang="en">
 <head>

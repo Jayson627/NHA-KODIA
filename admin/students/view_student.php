@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label text-muted">House No.</label>
+                            <label class="control-label text-muted">Contact No.</label>
                             <div class="pl-4"><?= isset($roll) ? $roll : 'N/A' ?></div>
                         </div>
                     </div>
@@ -84,12 +84,6 @@ if (isset($_GET['id'])) {
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="control-label text-muted">Contact #</label>
-                                <div class="pl-4"><?= isset($contact) ? $contact : 'N/A' ?></div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
                                 <label class="control-label text-muted">Block #</label>
                                 <div class="pl-4"><?= isset($block) ? $block : 'N/A' ?></div>
                             </div>
@@ -102,7 +96,7 @@ if (isset($_GET['id'])) {
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="control-label text-muted">Baranggay</label>
+                                <label class="control-label text-muted">Barangay</label>
                                 <div class="pl-4"><?= isset($present_address) ? $present_address : 'N/A' ?></div>
                             </div>
                         </div>
@@ -217,9 +211,9 @@ $conn->close();
                     <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
                     <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
                     <td>
-                        <a href="children.php<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
-                        <a href="children.php<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="children.php?delete=<?php echo urlencode($child['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this child?');">Delete</a>
+                    <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
+<a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
+<a href="children.php?delete=<?php echo urlencode($child['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this child?');">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -238,7 +232,7 @@ $conn->close();
         <?php endif; ?>
 
         <?php if ($total_records > $start + $limit): ?>
-            <a href="children.php?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next &raquo;</a>
+         
         <?php endif; ?>
     </div>
 </div>

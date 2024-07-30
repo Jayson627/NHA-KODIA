@@ -10,7 +10,7 @@ if (isset($_GET['id'])) {
         }
     }
 }
-include_once('connection.php'); 
+
 ?>
 <div class="content py-4">
     <div class="card card-outline card-navy shadow rounded-0">
@@ -108,6 +108,12 @@ include_once('connection.php');
             <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
+// Database credentials
+$servername = "127.0.0.1:3306";
+$username = "u510162695_sis_db";
+$password = "1Sis_dbpassword";
+$dbname = "u510162695_sis_db";
 
 // Initialize error message variable
 $error_message = "";

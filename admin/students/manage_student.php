@@ -37,7 +37,7 @@ if(isset($_POST['roll'])){
 <div class="content py-3">
     <div class="card card-outline card-primary shadow rounded-0">
         <div class="card-header">
-            <h3 class="card-title"><b><?= isset($id) ? "Update Student Details - ". $roll : "New Household" ?></b></h3>
+            <h3 class="card-title"><b><?= isset($id) ? "Update Household Details - ". $roll : "New Household" ?></b></h3>
         </div>
         <div class="card-body">
             <div class="container-fluid">

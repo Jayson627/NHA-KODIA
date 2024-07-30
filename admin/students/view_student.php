@@ -19,22 +19,12 @@ if (isset($_GET['id'])) {
                 <a class="btn btn-sm btn-primary btn-flat" href="./?page=students/manage_student&id=<?= isset($id) ? $id : '' ?>"><i class="fa fa-edit"></i> Edit</a>
                 <button class="btn btn-sm btn-danger btn-flat" id="delete_student"><i class="fa fa-trash"></i> Delete</button>
                 <button class="btn btn-sm btn-info bg-info btn-flat" type="button" id="update_status">Update Status</button>
-                <button class="btn btn-sm btn-success bg-success btn-flat" type="button" id="print"><i class="fa fa-print"></i> Print</button>
                 <a href="./?page=students" class="btn btn-default border btn-sm btn-flat"><i class="fa fa-angle-left"></i> Back to List</a>
                 <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flatv"><i class="fa fa-plus"></i> Add Children</a>
-                
+                <button class="btn btn-sm btn-secondary btn-flat" onclick="printDetails()"><i class="fa fa-print"></i> Print</button>
             </div>
         </div>
-        <div class="card-body">
-            <div class="container-fluid" id="outprint">
-                <style>
-                    #sys_logo {
-                        width: 5em;
-                        height: 5em;
-                        object-fit: scale-down;
-                        object-position: center center;
-                    }
-                </style>
+        <div id="printableArea">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -220,40 +210,25 @@ $conn->close();
         <?php else: ?>
             <tr>
                 <td colspan="8">No children found.</td>
-            </tr>
-        <?php endif; ?>
-        </tbody>
-    </table>
-
-    <!-- Pagination buttons -->
-    <div class="text-center">
-        <?php if ($page > 1): ?>
-            <a href="children.php?page=<?php echo $page - 1; ?>" class="btn btn-secondary mr-2">&laquo; Previous</a>
-        <?php endif; ?>
-
-        <?php if ($total_records > $start + $limit): ?>
-         
-        <?php endif; ?>
-    </div>
-</div>
-</body>
-</html>
-
+                </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-<noscript id="print-header">
-    <div class="row">
-        <div class="col-2 d-flex justify-content-center align-items-center">
-            <img src="<?= validate_image($_settings->info('logo')) ?>" class="img-circle" id="sys_logo" alt="System Logo">
-        </div>
-        <div class="col-8">
-            <h4 class="text-center"><b><?= $_settings->info('name') ?></b></h4>
-            <h3 class="text-center"><b>Student Records</b></h3>
-        </div>
-        <div class="col-2"></div>
-    </div>
-</noscript>
+<script>
+    function printDetails() {
+        var printContents = document.getElementById('printableArea').innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+
+
 <script>
     $(function() {
         $('#update_status').click(function(){

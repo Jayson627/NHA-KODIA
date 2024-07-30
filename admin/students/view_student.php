@@ -1,6 +1,6 @@
 <?php
 if (isset($_GET['id'])) {
-    $qry = $conn->query("SELECT *, CONCAT(lastname,', ', firstname,' ', middlename) as fullname FROM `student_list` WHERE id = '{$_GET['id']}'");
+    $qry = $conn->query("SELECT *, CONCAT(lastname,', ', firstname,' ', middlename) as fullname FROM student_list WHERE id = '{$_GET['id']}'");
     if ($qry->num_rows > 0) {
         $res = $qry->fetch_array();
         foreach ($res as $k => $v) {
@@ -10,7 +10,21 @@ if (isset($_GET['id'])) {
         }
     }
 }
-?>
+
+// Database credentials
+$servername = "127.0.0.1:3306";
+$username = "u510162695_sis_db";
+$password = "1Sis_dbpassword";
+$dbname = "u510162695_sis_db";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connections
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+
 <div class="content py-4">
     <div class="card card-outline card-navy shadow rounded-0">
         <div class="card-header">
@@ -19,21 +33,13 @@ if (isset($_GET['id'])) {
                 <a class="btn btn-sm btn-primary btn-flat" href="./?page=students/manage_student&id=<?= isset($id) ? $id : '' ?>"><i class="fa fa-edit"></i> Edit</a>
                 <button class="btn btn-sm btn-danger btn-flat" id="delete_student"><i class="fa fa-trash"></i> Delete</button>
                 <button class="btn btn-sm btn-info bg-info btn-flat" type="button" id="update_status">Update Status</button>
-                <button class="btn btn-sm btn-success bg-success btn-flat" type="button" id="print"><i class="fa fa-print"></i> Print</button>
                 <a href="./?page=students" class="btn btn-default border btn-sm btn-flat"><i class="fa fa-angle-left"></i> Back to List</a>
                 <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flatv"><i class="fa fa-plus"></i> Add Children</a>
                 
+                <!-- New Print Button -->
+                <button class="btn btn-sm btn-secondary btn-flat" onclick="printPage()"><i class="fa fa-print"></i> Print</button>
             </div>
-        </div>
-        <div class="card-body">
-            <div class="container-fluid" id="outprint">
-                <style>
-                    #sys_logo {
-                        width: 5em;
-                        height: 5em;
-                        object-fit: scale-down;
-                        object-position: center center;
-                    }
+       
                 </style>
                 <div class="row">
                     <div class="col-md-6">
@@ -61,71 +67,60 @@ if (isset($_GET['id'])) {
                     </div>
                 </div>
                 <fieldset class="border-bottom">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="control-label text-muted">Name</label>
-                                <div class="pl-4"><?= isset($fullname) ? $fullname : 'N/A' ?></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label text-muted">Gender</label>
-                                <div class="pl-4"><?= isset($gender) ? $gender : 'N/A' ?></div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label text-muted">Date of Birth</label>
-                                <div class="pl-4"><?= isset($dob) ? date("M d, Y", strtotime($dob)) : 'N/A' ?></div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label text-muted">Block #</label>
-                                <div class="pl-4"><?= isset($block) ? $block : 'N/A' ?></div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label text-muted">Lot #</label>
-                                <div class="pl-4"><?= isset($lot) ? $lot : 'N/A' ?></div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label text-muted">Barangay</label>
-                                <div class="pl-4"><?= isset($present_address) ? $present_address : 'N/A' ?></div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label text-muted">Remarks</label>
-                                <div class="pl-4"><?= isset($permanent_address) ? $permanent_address : 'N/A' ?></div>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label text-muted">Name</label>
+                <div class="pl-4"><?= isset($fullname) ? $fullname : 'N/A' ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label text-muted">Gender</label>
+                <div class="pl-4"><?= isset($gender) ? $gender : 'N/A' ?></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label text-muted">Date of Birth</label>
+                <div class="pl-4"><?= isset($dob) ? date("M d, Y", strtotime($dob)) : 'N/A' ?></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label text-muted">Block #</label>
+                <div class="pl-4"><?= isset($block) ? $block : 'N/A' ?></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label text-muted">Lot #</label>
+                <div class="pl-4"><?= isset($lot) ? $lot : 'N/A' ?></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="control-label text-muted">Barangay</label>
+                <div class="pl-4"><?= isset($present_address) ? $present_address : 'N/A' ?></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label text-muted">Remarks</label>
+                <div class="pl-4"><?= isset($permanent_address) ? $permanent_address : 'N/A' ?></div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+
             </div>
             <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-
-// Database credentials
-$servername = "127.0.0.1:3306";
-$username = "u510162695_sis_db";
-$password = "1Sis_dbpassword";
-$dbname = "u510162695_sis_db";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 // Initialize error message variable
 $error_message = "";
@@ -155,7 +150,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
         }
         $stmt->close();
     }
-
 
 // Handle delete action
 if (isset($_GET['delete'])) {
@@ -212,8 +206,9 @@ $conn->close();
                     <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
                     <td>
                     <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
-<a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-<a href="children.php?delete=<?php echo urlencode($child['id']); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this child?');">Delete</a>
+                    <a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="children.php?delete=<?php echo $child['id']; ?>" class="btn btn-sm btn-danger">Delete</a>
+                        
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -225,35 +220,96 @@ $conn->close();
         </tbody>
     </table>
 
-    <!-- Pagination buttons -->
-    <div class="text-center">
-        <?php if ($page > 1): ?>
-            <a href="children.php?page=<?php echo $page - 1; ?>" class="btn btn-secondary mr-2">&laquo; Previous</a>
-        <?php endif; ?>
-
-        <?php if ($total_records > $start + $limit): ?>
-         
-        <?php endif; ?>
-    </div>
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <?php
+            $total_pages = ceil($total_records / $limit);
+            for ($i = 1; $i <= $total_pages; $i++): ?>
+                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                    <a class="page-link" href="?id=<?= $_GET['id']; ?>&page=<?= $i; ?>"><?= $i; ?></a>
+                </li>
+            <?php endfor; ?>
+        </ul>
+    </nav>
 </div>
-</body>
-</html>
+<script>
+    function printPage() {
+        var originalContent = document.body.innerHTML;
+        var printContent = `
+            <html>
+            <head>
+                <title>Print</title>
+                <style>
+                    @media print {
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>Household Details</h1>
+                <div>
+                    <p><strong>Name:</strong> <?= isset($fullname) ? $fullname : 'N/A' ?></p>
+                    <p><strong>Contact No.:</strong> <?= isset($roll) ? $roll : 'N/A' ?></p>
+                    <p><strong>Status:</strong> 
+                        <?php 
+                            switch ($status) {
+                                case 0:
+                                    echo 'Inactive';
+                                    break;
+                                case 1:
+                                    echo 'Active';
+                                    break;
+                            }
+                        ?>
+                    </p>
+                    <!-- Add more fields as needed -->
+                </div>
+                <h2>Children Information</h2>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Status</th>
+                            <th>Birthdate</th>
+                            <th>Educational Attainment</th>
+                            <th>Contact Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($children)): ?>
+                            <?php foreach ($children as $child): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($child['name']); ?></td>
+                                    <td><?php echo htmlspecialchars($child['age']); ?></td>
+                                    <td><?php echo htmlspecialchars($child['gender']); ?></td>
+                                    <td><?php echo htmlspecialchars($child['status']); ?></td>
+                                    <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
+                                    <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
+                                    <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7">No children found.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </body>
+            </html>
+        `;
+        
+        var newWindow = window.open('', '', 'height=600,width=800');
+        newWindow.document.write(printContent);
+        newWindow.document.close();
+        newWindow.focus();
+        newWindow.print();
+    }
+</script>
 
-        </div>
-    </div>
-</div>
-<noscript id="print-header">
-    <div class="row">
-        <div class="col-2 d-flex justify-content-center align-items-center">
-            <img src="<?= validate_image($_settings->info('logo')) ?>" class="img-circle" id="sys_logo" alt="System Logo">
-        </div>
-        <div class="col-8">
-            <h4 class="text-center"><b><?= $_settings->info('name') ?></b></h4>
-            <h3 class="text-center"><b>Student Records</b></h3>
-        </div>
-        <div class="col-2"></div>
-    </div>
-</noscript>
 <script>
     $(function() {
         $('#update_status').click(function(){
@@ -280,39 +336,9 @@ $conn->close();
                 { orderable: false, targets: 5 }
             ],
         });
-        $('#print').click(function(){
-            start_loader();
-            $('#academic-history').dataTable().fnDestroy();
-            var _h = $('head').clone();
-            var _p = $('#outprint').clone();
-            var _ph = $($('noscript#print-header').html()).clone();
-            var _el = $('<div>');
-            _p.find('tr.bg-gradient-dark').removeClass('bg-gradient-dark');
-            _p.find('tr>td:last-child,tr>th:last-child,colgroup>col:last-child').remove();
-            _p.find('.badge').css({'border':'unset'});
-            _el.append(_h);
-            _el.append(_ph);
-            _el.find('title').text('Student Records - Print View');
-            _el.append(_p);
-
-            var nw = window.open('', '_blank', 'width=1000,height=900,top=50,left=250');
-                nw.document.write(_el.html());
-                nw.document.close();
-
-                setTimeout(() => {
-                    nw.print();
-                    setTimeout(() => {
-                        nw.close();
-                        end_loader();
-                        $('.table').dataTable({
-                            columnDefs: [
-                                { orderable: false, targets: 5 }
-                            ],
-                        });
-                    }, 200);
-                }, 300);
-        });
+      
     });
+   
 
     function delete_academic($id){
         start_loader();
@@ -336,6 +362,7 @@ $conn->close();
             }
         });
     }
+    
 
     function delete_student($id){
         start_loader();
@@ -359,4 +386,4 @@ $conn->close();
             }
         });
     }
-</script>
+</script>  amo na unta ini kay kabudlay

@@ -10,7 +10,7 @@ if (isset($_GET['id'])) {
         }
     }
 }
-
+ 
 ?>
 <div class="content py-4">
     <div class="card card-outline card-navy shadow rounded-0">
@@ -24,9 +24,7 @@ if (isset($_GET['id'])) {
                 <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flatv"><i class="fa fa-plus"></i> Add Children</a>
                 
                 <!-- New Print Button -->
-                <!-- New Print Button -->
-<button class="btn btn-sm btn-success btn-flat" onclick="printPage()"><i class="fa fa-print"></i> Print</button>
-
+                <button class="btn btn-sm btn-secondary btn-flat" onclick="printPage()"><i class="fa fa-print"></i> Print</button>
             </div>
        
                 </style>
@@ -110,7 +108,6 @@ if (isset($_GET['id'])) {
             <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-
 // Database credentials
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";
@@ -223,19 +220,7 @@ $conn->close();
         </tbody>
     </table>
 
-    <!-- Pagination -->
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            <?php
-            $total_pages = ceil($total_records / $limit);
-            for ($i = 1; $i <= $total_pages; $i++): ?>
-                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                    <a class="page-link" href="?id=<?= $_GET['id']; ?>&page=<?= $i; ?>"><?= $i; ?></a>
-                </li>
-            <?php endfor; ?>
-        </ul>
-    </nav>
-</div>
+   
 <script>
     function printPage() {
         var originalContent = document.body.innerHTML;
@@ -334,13 +319,18 @@ $conn->close();
             uni_modal("Report Details", "students/view_report.php?id=" + $(this).attr('data-id'), "mid-large");
         });
         $('.table td, .table th').addClass('py-1 px-2 align-middle');
-        $('.table').dataTable({
+        $('.table').DataTable({
+            lengthChange: false, // Disable the "Show entries" dropdown
+            paging: false, // Disable pagination
             columnDefs: [
                 { orderable: false, targets: 5 }
             ],
         });
-      
     });
+
+
+
+
    
 
     function delete_academic($id){
@@ -389,4 +379,4 @@ $conn->close();
             }
         });
     }
-</script>  amo na unta ini kay kabudlay
+</script> 

@@ -24,7 +24,8 @@ if (isset($_GET['id'])) {
                 <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flatv"><i class="fa fa-plus"></i> Add Children</a>
                 
                 <!-- New Print Button -->
-                <button class="btn btn-sm btn-secondary btn-flat" onclick="printPage()"><i class="fa fa-print"></i> Print</button>
+                <button class="btn btn-sm btn-success btn-flat" onclick="printPage()"><i class="fa fa-print"></i> Print</button>
+
             </div>
        
                 </style>

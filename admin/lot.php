@@ -139,10 +139,10 @@ $conn->close();
     <!-- Form to add a new block -->
     <form method="POST" action="lot.php" class="form-inline mb-3 justify-content-center">
         <div class="form-group">
-            <label for="lot_no" class="sr-only">lot No</label>
+            <label for="lot_no" class="sr-only">Lot No</label>
             <input type="number" class="form-control" id="lot_no" name="lot_no" placeholder="Enter lot no" min="1" required>
         </div>
-        <button type="submit" name="add_lot" class="btn btn-success">Add lot</button>
+        <button type="submit" name="add_lot" class="btn btn-success">Add Lot</button>
     </form>
 
     <table class="table table-bordered table-hover">
@@ -166,7 +166,7 @@ $conn->close();
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="2" class="text-center">No lots found.</td>
+                <td colspan="2" class="text-center">No Lots found.</td>
             </tr>
         <?php endif; ?>
         </tbody>

@@ -386,4 +386,4 @@ $conn->close();
             }
         });
     }
-</script> sa local
+</script> 

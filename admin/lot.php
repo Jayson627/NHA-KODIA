@@ -127,7 +127,7 @@ $conn->close();
 <body>
 <div class="container">
     
-    <h2 class="text-center mb-4">lot Management</h2>
+    <h2 class="text-center mb-4">Lot Management</h2>
 
     <!-- Display error message if any -->
     <?php if (!empty($error_message)): ?>

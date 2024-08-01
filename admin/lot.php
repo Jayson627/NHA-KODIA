@@ -83,7 +83,7 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>lot Management</title>
+    <title>Lot Management</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         body {

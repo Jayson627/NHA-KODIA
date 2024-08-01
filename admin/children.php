@@ -114,6 +114,18 @@ $conn->close();
             color: #0056b3;
         }
     </style>
+    <script>
+        function validateName(input) {
+            input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+        }
+
+        function validateContactNumber(input) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+            if (input.value.length > 11) {
+                input.value = input.value.slice(0, 11);
+            }
+        }
+    </script>
 </head>
 <body>
 <div class="container mt-5">
@@ -129,7 +141,7 @@ $conn->close();
     <!-- Form to add a new child -->
     <form method="POST" action="children.php" class="form-inline mb-3">
         <input type="hidden" class="form-control mb-2 mr-sm-2" id="cid" name="cid" placeholder="id" value="<?php echo $cid; ?>" required>
-        <input type="text" class="form-control mb-2 mr-sm-2" id="name" name="name" placeholder="Name" required>
+        <input type="text" class="form-control mb-2 mr-sm-2" id="name" name="name" placeholder="Name" oninput="validateName(this)" required>
         <input type="number" class="form-control mb-2 mr-sm-2" id="age" name="age" placeholder="Age" min="1" required>
         <select class="form-control mb-2 mr-sm-2" id="gender" name="gender" required>
             <option value="" disabled selected>Gender</option>
@@ -146,17 +158,15 @@ $conn->close();
         <select class="form-control mb-2 mr-sm-2" id="educational_attainment" name="educational_attainment" required>
             <option value="" disabled selected>Education</option>
             <option value="Elementary">Elementary</option>
-            <option value="Elementary Undergraduate">Elementary Undergraduate</option>
             <option value="High School">High School</option>
-            <option value="High School Undergraduate">High School Undergraduate</option>
             <option value="College">College</option>
-            <option value="College Undergraduate">College Undergraduate</option>
             <option value="Vocational">Vocational</option>
             <option value="Post Graduate">Post Graduate</option>
             <option value="None">None</option>
         </select>
-        <input type="text" class="form-control mb-2 mr-sm-2" id="contact_number" name="contact_number" placeholder="Contact Number" required>
+        <input type="text" class="form-control mb-2 mr-sm-2" id="contact_number" name="contact_number" placeholder="Contact Number" oninput="validateContactNumber(this)" required>
         <button type="submit" name="add_child" class="btn btn-primary mb-2"><i class="fa fa-plus"></i> Add</button>
     </form>
+</div>
 </body>
 </html>

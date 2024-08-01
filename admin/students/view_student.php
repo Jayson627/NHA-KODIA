@@ -10,7 +10,7 @@ if (isset($_GET['id'])) {
         }
     }
 }
- 
+include_once('connection.php'); 
 ?>
 <div class="content py-4">
     <div class="card card-outline card-navy shadow rounded-0">
@@ -24,15 +24,14 @@ if (isset($_GET['id'])) {
                 <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flatv"><i class="fa fa-plus"></i> Add Children</a>
                 
                 <!-- New Print Button -->
-                <button class="btn btn-sm btn-success btn-flat" onclick="printPage()"><i class="fa fa-print"></i> Print</button>
-
+                <button class="btn btn-sm btn-secondary btn-flat" onclick="printPage()"><i class="fa fa-print"></i> Print</button>
             </div>
        
                 </style>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label text-muted">Contact No.</label>
+                            <label class="control-label text-muted">Household No.</label>
                             <div class="pl-4"><?= isset($roll) ? $roll : 'N/A' ?></div>
                         </div>
                     </div>
@@ -78,6 +77,12 @@ if (isset($_GET['id'])) {
         </div>
         <div class="col-md-4">
             <div class="form-group">
+                <label class="control-label text-muted">Contact #</label>
+                <div class="pl-4"><?= isset($contact) ? $contact : 'N/A' ?></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
                 <label class="control-label text-muted">Block #</label>
                 <div class="pl-4"><?= isset($block) ? $block : 'N/A' ?></div>
             </div>
@@ -109,6 +114,7 @@ if (isset($_GET['id'])) {
             <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
 // Database credentials
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";
@@ -380,4 +386,4 @@ $conn->close();
             }
         });
     }
-</script> 
+</script> sa local

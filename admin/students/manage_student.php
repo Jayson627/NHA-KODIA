@@ -16,10 +16,10 @@ if(isset($_POST['roll'])){
     $id = isset($_POST['id']) ? $_POST['id'] : '';
     $roll = $_POST['roll'];
 
-    // Check if the contact number already exists
+    // Check if the household number already exists
     $check = $conn->query("SELECT * FROM `student_list` WHERE roll = '$roll' AND id != '$id'");
     if($check->num_rows > 0){
-        echo json_encode(['status' => 'error', 'msg' => 'Contact number is already in use.']);
+        echo json_encode(['status' => 'error', 'msg' => 'Household number is already in use.']);
         exit;
     }
 
@@ -31,7 +31,6 @@ if(isset($_POST['roll'])){
     exit;
 }
 ?>
-
 
 
 <div class="content py-3">
@@ -46,9 +45,9 @@ if(isset($_POST['roll'])){
                     <fieldset class="border-bottom">
                         <div class="row">
                             <div class="form-group col-md-4">
-                                <label for="roll" class="control-label">Contact No.</label>
+                                <label for="roll" class="control-label">Household No.</label>
                                 <input type="text" name="roll" id="roll" autofocus value="<?= isset($roll) ? $roll : "" ?>" class="form-control form-control-sm rounded-0" required>
-                                <div id="roll-error" class="text-danger" style="display: none;">Invalid House No. Only numbers are allowed.</div>
+                                <div id="roll-error" class="text-danger" style="display: none;">Household number is already in use.</div>
                             </div>
                         </div>
                         <div class="row">
@@ -79,6 +78,11 @@ if(isset($_POST['roll'])){
                             <div class="form-group col-md-4">
                                 <label for="dob" class="control-label">Date of Birth</label>
                                 <input type="date" name="dob" id="dob" value="<?= isset($dob) ? $dob : "" ?>" class="form-control form-control-sm rounded-0" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="contact" class="control-label">Contact #</label>
+                                <input type="text" name="contact" id="contact" value="<?= isset($contact) ? $contact : "" ?>" class="form-control form-control-sm rounded-0" required>
+                                <div id="contact-error" class="text-danger" style="display: none;">Invalid Contact No. Must be 11 digits and only numbers are allowed.</div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="block" class="control-label">Block #</label>
@@ -117,19 +121,19 @@ if(isset($_POST['roll'])){
 </div>
 <script>
     $(function(){
-        // Validation function for Contact No.
+        // Validation function for household No.
         $('#roll').on('input', function() {
             var roll = $(this).val();
             var rollError = $('#roll-error');
             // Remove non-digit characters
             roll = roll.replace(/\D/g, '');
-            // Limit input to 11 digits
-            if (roll.length > 11) {
-                roll = roll.substring(0, 11);
+    
+            if (roll.length > 3) {
+                roll = roll.substring( 3);
             }
             $(this).val(roll);
-            if (roll.length !== 11) {
-                rollError.text('Invalid Contact No. Must be exactly 11 digits.');
+            if (roll.length !== 3) {
+                rollError.text('.');
                 rollError.show();
             } else {
                 rollError.hide();
@@ -172,16 +176,32 @@ if(isset($_POST['roll'])){
             }
         });
 
+        // Validation function for Contact Number
+        $('#contact').on('input', function() {
+            var contact = $(this).val();
+            var contactError = $('#contact-error');
+            // Remove non-digit characters
+            contact = contact.replace(/\D/g, '');
+
+            if (contact.length > 11) {
+                contact = contact.substring(0, 11);
+            }
+            $(this).val(contact);
+            if (contact.length !== 11) {
+                contactError.text('Invalid Contact No. Must be 11 digits and only numbers are allowed.');
+                contactError.show();
+            } else {
+                contactError.hide();
+            }
+        });
+
         $('#student_form').submit(function(e){
             e.preventDefault();
             var _this = $(this);
-            $('.pop-msg').remove();
-            var el = $('<div>');
-                el.addClass("pop-msg alert");
-                el.hide();
+            $('.err-msg').remove();
             start_loader();
             $.ajax({
-                url:_base_url_+"classes/Master.php?f=save_student",
+                url: _base_url_+"classes/Master.php?f=save_student",
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,
@@ -190,27 +210,24 @@ if(isset($_POST['roll'])){
                 type: 'POST',
                 dataType: 'json',
                 error: err => {
-                    console.log(err);
-                    alert_toast("An error occurred",'error');
+                    console.log(err)
+                    alert_toast("An error occurred", 'error');
                     end_loader();
                 },
-                success: function(resp) {
-                    if(resp.status == 'success') {
-                        location.href="./?page=students/view_student&id="+resp.sid;
-                    } else if(resp.status == 'error') {
-                        el.addClass("alert-danger");
-                        el.text(resp.msg);
-                        _this.prepend(el);
+                success: function(resp){
+                    if(typeof resp == 'object' && resp.status == 'success'){
+                        location.href = "./?page=students/view_student&id=" + resp.sid;
+                    } else if(resp.status == 'error' && !!resp.msg){
+                        $('#roll-error').text(resp.msg).show();
+                        $("html, body, .modal").scrollTop(0);
+                        end_loader();
                     } else {
-                        el.addClass("alert-danger");
-                        el.text("Contact No. is double entry.");
-                        _this.prepend(el);
+                        alert_toast("Household Numbers is in Use", 'error');
+                        end_loader();
+                        console.log(resp);
                     }
-                    el.show('slow');
-                    $('html,body,.modal').animate({scrollTop:0},'fast');
-                    end_loader();
                 }
-            })
+            });
         });
     });
 </script>

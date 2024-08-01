@@ -148,7 +148,7 @@ $conn->close();
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
         <tr>
-            <th>lot No</th>
+            <th>Lot No</th>
             <th>Actions</th>
         </tr>
         </thead>

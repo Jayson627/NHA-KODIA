@@ -5,12 +5,13 @@
 <?php endif;?>
 
 <style>
-    .img-avatar{
-        width:45px;
-        height:45px;
-        object-fit:cover;
-        object-position:center center;
-        border-radius:100%;
+    .img-avatar {
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
+        object-position: center center;
+        /* Remove border-radius to make the avatar square */
+        border-radius: 0;
     }
 </style>
 <div class="card card-outline card-primary">

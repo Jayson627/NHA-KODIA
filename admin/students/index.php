@@ -44,6 +44,7 @@ if ($conn->connect_error) {
                         <col width="15%">
                         <col width="15%">
                         <col width="25%">
+                        <col width="25%">
                         <col width="10%">
                         <col width="5%">
                         <col width="15%">
@@ -58,6 +59,7 @@ if ($conn->connect_error) {
                             <th>Block</th>
                             <th>Lot</th>
                             <th>Gender</th>
+                            <th>Contact No.</th>
                             <th>Barangay</th>
                             <th>Remarks</th>
                             <th>Status</th>
@@ -78,6 +80,7 @@ if ($conn->connect_error) {
                             <td><p class="m-0 truncate-1"><?php echo $row['block'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['lot'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['gender'] ?></p></td>
+                            <td><p class="m-0 truncate-1"><?php echo $row['contact'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['present_address'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['permanent_address'] ?></p></td>
                             <td class="text-center">

@@ -136,7 +136,7 @@
       margin: auto;
       max-height: 400px;
     }
-     /* Styles for About Us section */
+    /* Styles for About Us section */
 #about {
   display: none;
   height: 100%;
@@ -168,12 +168,12 @@
   padding: 20px;
   border-radius: 10px;
 }
+
   </style>
 
   <!-- JavaScript for Login and About Toggle -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     $(document).ready(function() {
       // Show description when "About" link is clicked
@@ -189,44 +189,16 @@
         $('#about').hide();
         $('#login').fadeIn();
       });
-
-      // Submit login form with SweetAlert message
-      $('#login-frm').on('submit', function(e) {
-        e.preventDefault();
-        $.ajax({
-          type: 'POST',
-          url: _base_url_ + 'classes/Login.php?f=login',
-          data: $(this).serialize(),
-          success: function(response) {
-            let resp = JSON.parse(response);
-          if (resp.status == 'Incorrect username or password') {
-            //   Swal.fire({
-            //     title: 'Login Successful',
-            //     text: 'Welcome back!',
-            //     icon: 'success'
-            //   }).then(() => {
-            //     window.location.href = 'dashboard.php'; // Redirect to the dashboard or another page
-            //   });
-            // } else {
-              Swal.fire({
-                title: 'Login Failed',
-                text: 'Invalid username or password. Please try again.',
-                icon: 'error'
-              });
-            }
-          }
-        });
-      });
     });
   </script>
 </head>
 <body class="hold-transition">
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
     <a class="navbar-brand" href="#">
       <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" style="border-radius: 50%; height: 50px; width: 50px; object-fit: cover; display: inline-block; vertical-align: middle;">
       <h4 style="display: inline-block; vertical-align: middle; margin-left: 10px;">
-        <?php echo $_settings->info('name') ?> 
+        <?php echo $_settings->info('name') ?> Kodia Information System
       </h4>
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -249,7 +221,7 @@
   <div id="login">
     <div class="card">
       <div class="card-header">
-        <h4><?php echo $_settings->info('name') ?> </h4>
+        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
       </div>
       <div class="card-body">
         <form id="login-frm" action="" method="post">
@@ -275,18 +247,13 @@
       </div>
     </div>
   </div>
-
-  <!-- Description Section -->
+<!-- Description Section -->
 <div id="about">
   <div class="container">
     <h2>About Kodia NHA</h2>
-    <p>The National Housing Authority (NHA) of Kodia is located in Barangay Kodia, Madridejos, Cebu. The housing consists of 750 units, 27 blocks, and 58 lots. Based on history, the Kodia NHA was constructed the year after Typhoon Yolanda, a whond, was turned over to the barangay in May 2021. All barangays in Madridejos, except for Barangays Tugas and Kangwayan, were provided housing units. Each barangay was allocated 50 units for those residents near the coastal area who needed to evacuate during typhoons and calamities. Those residents are priorities to give units to. The allocation process involved barangay officials distributing forms to the recipients to fill out the necessary information.</p>
-    <p>Every barangay received 50 units, while Barangay Kodia received 100 units because the housing was built in their areas. Based on our survey, the barangays with the most residents living in the housing are Barangay Mancilang and Barangay Poblacion, as they are closest to the sea and most prone to typhoons. According to our survey, there are over 80 units that are not occupied but have owners. The housing units may be reclaimed if they have not been occupied for over a year.</p>
+    <p>The National Housing Authority (NHA) of Kodia is located in Barangay Kodia, Madridejos, Cebu. The housing consists of 750 units, 27 blocks, and 58 lots. Based on history, the Kodia NHA was constructed the year after Typhoon Yolanda and was turned over to the barangay in May 2021. All barangays in Madridejos, except for Barangay Tugas and Kangwayan, were provided with housing units. Each barangay was allocated 50 units for those residents who needed to evacuate during typhoons. The process of allocation involved barangay officials distributing forms to the recipients to fill out the necessary information.</p>
+    <p>Every barangay received 50 units, while Barangay Kodia received 100 units because the housing was built in their areas. Based on our survey, the barangays with the most residents living in the housing are Barangay Mancilang and Barangay Poblacion, as they are closest to the sea and most prone to typhoons. According to our survey, there are over 80 units that are not occupied but have owners. There is a possibility that the housing units may be reclaimed if they are not occupied for over a year.</p>
   </div>
 </div>
   </body>
-  </html>
-    </div>
-  </div>
-</body>
-</html>
+  </html> 

@@ -10,6 +10,20 @@
   .btn-rounded{
         border-radius: 50px;
   }
+  .navbar .fa-bell, 
+  .navbar .ml-3,
+  .navbar .fa-facebook-messenger { /* Add styling for the Messenger icon */
+        color: blue;
+  }
+  .dropdown-menu {
+  width: 50px; /* Adjust the width as needed */
+}
+
+.dropdown-item {
+  white-space: nowrap; /* Prevents text from wrapping to the next line */
+  overflow: hidden; /* Ensures that overflowing content is hidden */
+  text-overflow: ellipsis; /* Adds "..." at the end of overflowing text */
+}
 </style>
 <!-- Navbar -->
       <nav class="main-header navbar navbar-expand navbar-light border-top-0  border-left-0 border-right-0 text-sm shadow-sm bg-gradient-light">

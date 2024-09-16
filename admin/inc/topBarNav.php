@@ -26,19 +26,18 @@
 }
 </style>
 <!-- Navbar -->
-      <nav class="main-header navbar navbar-expand navbar-light border-top-0  border-left-0 border-right-0 text-sm shadow-sm bg-gradient-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-          <li class="nav-item">
+<nav class="main-header navbar navbar-expand navbar-blue border-top-0 border-left-0 border-right-0 text-sm shadow-sm bg-gradient-blue">
+  <!-- Left navbar links -->
+  <ul class="navbar-nav">
+  <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
           </li>
           <li class="nav-item d-none d-sm-inline-block">
-            <a href="<?php echo base_url ?>" class="nav-link"><b><?php echo (!isMobileDevice()) ? $_settings->info('name'):$_settings->info('short_name'); ?> - Admin</b></a>
-          </li>
-        </ul>
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
-         <!-- Right navbar links -->
+      <a href="<?php echo base_url ?>" class="nav-link"><b><?php echo (!isMobileDevice()) ? $_settings->info('name') : $_settings->info('short_name'); ?> </b></a>
+    </li>
+  </ul>
+  
+  <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">
     <!-- Messenger Icon -->
     <li class="nav-item">

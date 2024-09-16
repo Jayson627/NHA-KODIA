@@ -1,7 +1,4 @@
 <?php
-session_start();
-
-
 // Database credentials
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";

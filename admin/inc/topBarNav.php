@@ -38,6 +38,34 @@
         </ul>
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
+          <!-- Right navbar links -->
+  <ul class="navbar-nav ml-auto">
+    <!-- Messenger Icon -->
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fab fa-facebook-messenger"></i>
+      </a>
+    </li>
+
+    <!-- Notification Bell -->
+    <li class="nav-item dropdown">
+      <a class="nav-link" data-toggle="dropdown" href="#" id="notificationDropdown">
+        <i class="fas fa-bell"></i>
+        <span class="badge badge-warning navbar-badge"><?php echo $notificationCount; ?></span>
+      </a>
+      <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <span class="dropdown-item dropdown-header"><?php echo $notificationCount; ?> Notifications</span>
+        <div class="dropdown-divider"></div>
+        <?php while ($notification = $notificationsResult->fetch_assoc()): ?>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i> <?php echo htmlspecialchars($notification['content']); ?>
+            <span class="float-right text-muted text-sm"><?php echo date('M d, Y h:i A', strtotime($notification['date'])); ?></span>
+          </a>
+          <div class="dropdown-divider"></div>
+        <?php endwhile; ?>
+        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+      </div>
+    </li>
           <!-- Navbar Search -->
           <!-- <li class="nav-item">
             <a class="nav-link" data-widget="navbar-search" href="#" role="button">

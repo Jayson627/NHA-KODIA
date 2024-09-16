@@ -6,8 +6,8 @@
     top: 0;
     left: 0;
     height: 100%;
-    background-color: dark; /* Dark background color */
-    color: dark; /* Text color */
+    background-color: whitesmoke; /* Dark background color */
+    color: whitesmoke; /* Text color */
     padding-top: 20px; /* Adjust top padding */
     z-index: 1030; /* Ensure sidebar appears above other content */
   }
@@ -15,9 +15,9 @@
   /* Brand Logo */
   .brand-link {
     padding: 10px 15px; /* Padding for the brand logo */
-    display: pink;
+    display: white;
     text-align: center;
-    border-bottom: 1px solid black; /* Bottom border color */
+    border-bottom: 1px solid white; /* Bottom border color */
   }
 
   .brand-image {
@@ -31,24 +31,23 @@
   .brand-text {
     font-size: 1.2rem; /* Adjust brand text size */
     font-weight: bold;
-    color:white;
   }
 
   /* Sidebar Menu */
   .nav-sidebar .nav-link {
-    color: black; /* Menu item text color */
+    color: green; /* Menu item text color */
     padding: 10px 15px; /* Adjust item padding */
   }
 
   .nav-sidebar .nav-link:hover,
   .nav-sidebar .nav-link.active {
-    background-color: ; /* Background color on hover/active */
+    background-color: pink; /* Background color on hover/active */
   }
 
   .nav-sidebar .nav-header {
     font-size: 0.9rem; /* Header text size */
     padding: 10px 15px; /* Header padding */
-    color: blue; /* Header text color */
+    color: whitesmoke; /* Header text color */
     text-transform: uppercase;
     font-weight: bold;
     margin-top: 15px; /* Space above headers */
@@ -62,11 +61,11 @@
 </style>
 
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-blue elevation-4 sidebar-no-expand bg-light">
+<aside class="main-sidebar sidebar-white elevation-4 sidebar-no-expand bg-white">
   <!-- Brand Logo -->
   <a href="<?php echo base_url ?>admin" class="brand-link bg-blue text-sm border-0 shadow-sm">
-    <img src="<?php echo validate_image($_settings->info('logo')) ?>" alt="Store Logo" class="brand-image img-circle elevation-3 bg-pink">
-    <span class="brand-text font-weight-red"><?php echo $_settings->info('short_name') ?></span>
+    <img src="<?php echo validate_image($_settings->info('logo'))?>" alt="Store Logo" class="brand-image img-circle elevation-3 bg-blue">
+    <span class="brand-text font-weight-light"><?php echo $_settings->info('short_name') ?></span>
   </a>
 
   <!-- Sidebar -->
@@ -89,56 +88,61 @@
               <li class="nav-item dropdown">
                 <a href="./" class="nav-link nav-home">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
-                  <p>Dashboard</p>
+                  <p>
+                    Dashboard
+                  </p>
                 </a>
+              </li>
               </li>
               <li class="nav-item">
                 <a href="<?php echo base_url ?>admin/?page=students" class="nav-link nav-students">
                   <i class="nav-icon fas fa-user-friends"></i>
-                  <p>Household List</p>
+                  <p>
+                  Household list
+                  </p>
                 </a>
               </li>
+                <li class="nav-header"></li>
+              <li class="nav-item dropdown">
+                <a href="<?php echo base_url ?>admin/?page=students/manage_student" class="nav-link nav-students_manage_student">
+                  <i class="nav-icon fas fa-plus"></i>
+                  <p>
+                    New Household 
+                  </p>
+                </a>
+              </li>
+              <li class="nav-header"></li>
               <li class="nav-item dropdown">
                 <a href="<?php echo base_url ?>admin/?page=block" class="nav-link nav-admin_block">
                   <i class="nav-icon fas fa-building"></i>
-                  <p>Block List</p>
+                  <p>
+                    Block List
+                  </p>
                 </a>
               </li>
               <li class="nav-item dropdown">
-                <a href="<?php echo base_url ?>admin/?page=lot" class="nav-link nav-admin_lot">
+                <a href="<?php echo base_url ?>admin/?page=lot" class="nav-link nav-admin/_lot">
                   <i class="nav-icon fas fa-scroll"></i>
-                  <p>Lot List</p>
+                  <p>
+                    Lot List
+                  </p>
                 </a>
               </li>
-              <?php if ($_settings->userdata('type') == 1): ?>
-              <li class="nav-item dropdown">
-                <a href="<?php echo base_url ?>admin/?page=announcement" class="nav-link nav-admin_announcement">
-                  <i class="nav-icon fas fa-bullhorn"></i>
-                  <p>Announcement</p>
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a href="<?php echo base_url ?>admin/?page=incidents_report" class="nav-link nav-admin_incidents_report">
-                  <i class="nav-icon fas fa-exclamation-circle"></i>
-                  <p>Incidents Report</p>
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a href="<?php echo base_url ?>admin/?page=officer" class="nav-link nav-admin_officer">
-                  <i class="nav-icon fas fa-user-shield"></i>
-                  <p>Officer in Purok</p>
-                </a>
-              </li>
+              <?php if($_settings->userdata('type') == 1): ?>
               <li class="nav-item dropdown">
                 <a href="<?php echo base_url ?>admin/?page=user/list" class="nav-link nav-user_list">
                   <i class="nav-icon fas fa-users-cog"></i>
-                  <p>User List</p>
+                  <p>
+                    User List
+                  </p>
                 </a>
               </li>
               <li class="nav-item dropdown">
                 <a href="<?php echo base_url ?>admin/?page=system_info" class="nav-link nav-system_info">
                   <i class="nav-icon fas fa-cogs"></i>
-                  <p>Settings</p>
+                  <p>
+                    Settings
+                  </p>
                 </a>
               </li>
               <?php endif; ?>
@@ -165,26 +169,26 @@
 
 <script>
   var page;
-  $(document).ready(function () {
+  $(document).ready(function(){
     page = '<?php echo isset($_GET['page']) ? $_GET['page'] : 'home' ?>';
-    page = page.replace(/\//gi, '_');
+    page = page.replace(/\//gi,'_');
 
-    if ($('.nav-link.nav-' + page).length > 0) {
-      $('.nav-link.nav-' + page).addClass('active');
-      if ($('.nav-link.nav-' + page).hasClass('tree-item')) {
-        $('.nav-link.nav-' + page).closest('.nav-treeview').siblings('a').addClass('active');
-        $('.nav-link.nav-' + page).closest('.nav-treeview').parent().addClass('menu-open');
+    if($('.nav-link.nav-'+page).length > 0){
+      $('.nav-link.nav-'+page).addClass('active')
+      if($('.nav-link.nav-'+page).hasClass('tree-item')){
+        $('.nav-link.nav-'+page).closest('.nav-treeview').siblings('a').addClass('active')
+        $('.nav-link.nav-'+page).closest('.nav-treeview').parent().addClass('menu-open')
       }
-      if ($('.nav-link.nav-' + page).hasClass('nav-is-tree')) {
-        $('.nav-link.nav-' + page).parent().addClass('menu-open');
+      if($('.nav-link.nav-'+page).hasClass('nav-is-tree')){
+        $('.nav-link.nav-'+page).parent().addClass('menu-open')
       }
     }
 
-    $('#receive-nav').click(function () {
-      $('#uni_modal').on('shown.bs.modal', function () {
+    $('#receive-nav').click(function(){
+      $('#uni_modal').on('shown.bs.modal',function(){
         $('#find-student [name="tracking_code"]').focus();
-      });
-      uni_modal("Enter Tracking Number", "student/find_student.php");
+      })
+      uni_modal("Enter Tracking Number","student/find_student.php");
     });
   });
 </script>

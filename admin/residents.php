@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Residents Login</title>
+  <title>Resident Login</title>
   <!-- Bootstrap 4 -->
   <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
   <!-- Font Awesome -->
@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <!-- Custom CSS -->
   <style>
-          body {
+        body {
             font-family: Arial, sans-serif;
             background-image: url('nha.jpg');
             background-size: cover;
@@ -23,6 +23,38 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+        }
+        header {
+            background-color: #007bff;
+            width: 100%;
+            padding: 5px;
+            text-align: left;
+            color: #ffffff;
+            font-size: 24px;
+            position: fixed;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .logo {
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%; /* Make the logo circular */
+            margin-right: 10px;
+        }
+        header a {
+            color: #ffffff;
+            margin: 0 10px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        header a:hover {
+            text-decoration: underline;
         }
         .login-container {
             background-color: #ffffff;
@@ -40,8 +72,7 @@
             margin-bottom: 5px;
             color: #333333;
         }
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
+        .login-container input[type="text"] {
             width: 90%;
             padding: 10px;
             margin-bottom: 15px;
@@ -61,21 +92,41 @@
         .login-container button:hover {
             background-color: #0056b3;
         }
+        .logout-btn {
+            margin-top: 15px;
+            background-color: #dc3545;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 CDN -->
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <img src="lo.png" alt="Logo"> <!-- Replace 'logo.png' with the path to your logo -->
+        NHA Resident Login Portal
+    </div>
+    <a href="about.php">Home</a> <!-- Logout link aligned to the right -->
+</header>
     </style>
 </head>
 <body>
 
 <div class="login-container">
 <h2>Resident Login</h2>
-    <form id="resident-form" action="process_resident.php" method="post">
+    <form id="president-form" action="process_resident.php" method="post">
       <div class="form-group">
-        <label for="house-number">House Number</label>
-        <input type="text" class="form-control" id="house-number" name="house_number" placeholder="Enter house number" required pattern="\d{1,3}" title="Please enter a valid house number (1 to 3 digits).">
+        <label for="block-number">Block Number</label>
+        <input type="text" class="form-control" id="block-number" name="block_number" placeholder="Enter block number" required>
+      </div>
+      <div class="form-group">
+        <label for="lot-number">Lot Number</label>
+        <input type="text" class="form-control" id="lot-number" name="lot_number" placeholder="Enter lot number" required>
       </div>
       <button type="submit" class="btn btn-primary btn-block">Submit</button>
-      <div id="form-message" class="alert alert-info mt-3" role="alert" style="display: none;">
-        Your submission has been received!
-      </div>
     </form>
   </div>
  
@@ -87,60 +138,53 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
   <script>
     $(document).ready(function() {
-      $('#resident-form').on('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
+  $('#president-form').on('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-        var houseNumber = $('#house-number').val();
+    var blockNumber = $('#block-number').val();
+    var lotNumber = $('#lot-number').val();
 
-        // Check if house number exists
-        $.ajax({
-          url: 'check_house_number.php',
-          method: 'POST',
-          data: { house_number: houseNumber },
-          dataType: 'json',
-          success: function(response) {
-            if (response.exists) {
-              Swal.fire({
-                icon: 'warning',
-                title: 'House Number not in the list',
-                text: 'The house number is not  in the records.',
-                confirmButtonText: 'OK'
-              });
-            } else {
-              Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Your submission has been received!',
-                confirmButtonText: 'OK'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  // Proceed with the actual form submission
-                  $('#resident-form')[0].submit();
-                }
-              });
+    // Check if the block number and lot number are valid
+    $.ajax({
+      url: 'check_block_lot.php',
+      method: 'POST',
+      data: { block_number: blockNumber, lot_number: lotNumber },
+      dataType: 'json',
+      success: function(response) {
+        if (response.valid) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'You have successfully logged in!',
+            confirmButtonText: 'OK'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Proceed with the actual form submission
+              $('#president-form')[0].submit();
             }
-          },
-          error: function(err) {
-            console.log(err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: 'An error occurred while checking the house number.',
-              confirmButtonText: 'OK'
-            });
-          }
-        });
-      });
-
-      // Restrict input to numbers only and limit to 3 digits
-      $('#house-number').on('input', function() {
-        var value = $(this).val().replace(/[^0-9]/g, ''); // Remove non-numeric characters
-        if (value.length > 3) {
-          value = value.slice(0, 3); // Limit to 3 digits
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid Login',
+            text: 'Incorrect block or lot number.',
+            confirmButtonText: 'OK'
+          });
         }
-        $(this).val(value);
-      });
+      },
+      error: function(err) {
+        console.log(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'An error occurred during login.',
+          confirmButtonText: 'OK'
+        });
+      }
     });
+  });
+});
+
   </script>
 </body>
 </html>

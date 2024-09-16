@@ -19,11 +19,7 @@
   width: 50px; /* Adjust the width as needed */
 }
 
-.dropdown-item {
-  white-space: nowrap; /* Prevents text from wrapping to the next line */
-  overflow: hidden; /* Ensures that overflowing content is hidden */
-  text-overflow: ellipsis; /* Adds "..." at the end of overflowing text */
-}
+
 </style>
 <!-- Navbar -->
       <nav class="main-header navbar navbar-expand navbar-light border-top-0  border-left-0 border-right-0 text-sm shadow-sm bg-gradient-light">
@@ -36,8 +32,8 @@
             <a href="<?php echo base_url ?>" class="nav-link"><b><?php echo (!isMobileDevice()) ? $_settings->info('name'):$_settings->info('short_name'); ?> - Admin</b></a>
           </li>
         </ul>
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
+       
+       
           <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">
     <!-- Messenger Icon -->

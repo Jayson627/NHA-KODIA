@@ -13,6 +13,9 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Initialize error message variable
+$error_message = "";
+
 // Handle login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];

@@ -13,6 +13,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Initialize error message variable
+$error_message = "";
+
+
 // Fetch announcements from the database
 $sql = "SELECT id, title, content, date FROM announcements ORDER BY date DESC";
 $result = $conn->query($sql);

@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -8,12 +7,31 @@ if (!isset($_SESSION['president_name'])) {
 }
 
 
+?>
+
+
+<?php
+// Database credentials
+$servername = "127.0.0.1:3306";
+$username = "u510162695_sis_db";
+$password = "1Sis_dbpassword";
+$dbname = "u510162695_sis_db";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connections
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Initialize error message variable
+$error_message = "";
+
 // Fetch announcements from the database
 $sql = "SELECT id, title, content, date FROM announcements ORDER BY date DESC";
 $result = $conn->query($sql);
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -123,6 +141,27 @@ $result = $conn->query($sql);
             text-decoration: none;
             cursor: pointer;
         }
+        .logout-btn {
+    display: flex;
+    align-items: center;
+    color: white;
+    background-color: light;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn i {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+.logout-btn:hover {
+    background-color: #0056b3;
+}
+
     </style>
 </head>
 <body>
@@ -130,7 +169,10 @@ $result = $conn->query($sql);
   
      <h1>President Portal</h1>
         <div class="icons">
-        <a href="logout.php">Logout</a> <!-- Logout link -->
+        <a href="logout.php" class="logout-btn">
+    <i class="fas fa-sign-out-alt"></i> Logout
+</a>
+
             <div class="notification-icon" data-count="<?php echo $result->num_rows; ?>">
                 <!-- SVG Notification Bell Icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -212,21 +254,3 @@ $result = $conn->query($sql);
     </script>
 </body>
 </html>
-<?php
-// Database credentials
-$servername = "127.0.0.1:3306";
-$username = "u510162695_sis_db";
-$password = "1Sis_dbpassword";
-$dbname = "u510162695_sis_db";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connections
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Initialize error message variable
-$error_message = "";
-

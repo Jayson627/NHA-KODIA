@@ -10,7 +10,7 @@ if (isset($_GET['id'])) {
         }
     }
 }
-include_once('connection.php'); 
+
 ?>
 <div class="content py-4">
     <div class="card card-outline card-navy shadow rounded-0">

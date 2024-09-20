@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 
 // Initialize error message variable
 $error_message = "";
-
+?>
 <style>
     .img-thumb-path {
         width: 100px;

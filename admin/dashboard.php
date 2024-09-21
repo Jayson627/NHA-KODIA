@@ -167,7 +167,7 @@ $result = $conn->query($sql);
 <body>
     <div class="header">
   
-    <h1>President Portal - <?php echo htmlspecialchars($_SESSION['president_name']); ?></h1>
+    <h1> <?php echo htmlspecialchars($_SESSION['president_name']); ?></h1>
 
         <div class="icons">
         <a href="logout.php" class="logout-btn">

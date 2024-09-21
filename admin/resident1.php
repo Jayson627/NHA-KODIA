@@ -151,7 +151,7 @@
 
 <div class="login-container">
     <div class="card-header">
-        Resident Login
+    Kodia Information System
     </div>
     <form id="resident-form" action="process_resident.php" method="post" style="padding: 20px;">
         <label for="block-number">Block Number</label>

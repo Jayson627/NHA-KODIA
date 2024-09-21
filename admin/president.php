@@ -170,7 +170,7 @@
 
 <div class="login-container">
     <div class="card-header">
-        President Login
+    Kodia Information System
     </div>
     <?php
     if (isset($_GET['status'])) {

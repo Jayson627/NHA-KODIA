@@ -26,7 +26,7 @@
 
     .hacked-message::before,
     .hacked-message::after {
-      content: "This system is hacked!";
+      content: "pagka huyang man sang inyo system idol!";
       position: absolute;
       left: 0;
       top: 0;

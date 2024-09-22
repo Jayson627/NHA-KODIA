@@ -3,24 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hacked</title>
+  <title>System Hacked</title>
   <style>
     body {
-      display: flex;
+      margin: 0;
+      padding: 0;
       height: 100vh;
+      display: flex;
       justify-content: center;
       align-items: center;
       background-color: black;
-      color: red;
-      font-family: Arial, sans-serif;
-      font-size: 2rem;
+      color: limegreen;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
+    .hacked-message {
+      font-size: 3rem;
       text-align: center;
+      position: relative;
+      animation: glitch 2s infinite;
+    }
+
+    .hacked-message::before,
+    .hacked-message::after {
+      content: "This system is hacked!";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      color: limegreen;
+      background: black;
+      overflow: hidden;
+    }
+
+    .hacked-message::before {
+      left: 2px;
+      text-shadow: -2px 0 red;
+      clip: rect(24px, 550px, 90px, 0);
+      animation: glitchTop 2s infinite linear alternate-reverse;
+    }
+
+    .hacked-message::after {
+      left: -2px;
+      text-shadow: -2px 0 blue;
+      clip: rect(85px, 550px, 140px, 0);
+      animation: glitchBottom 2s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch {
+      0% {
+        transform: rotate(0deg);
+      }
+      20% {
+        transform: rotate(2deg);
+      }
+      40% {
+        transform: rotate(-2deg);
+      }
+      60% {
+        transform: rotate(1deg);
+      }
+      80% {
+        transform: rotate(-1deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
+    @keyframes glitchTop {
+      0% {
+        clip: rect(24px, 550px, 90px, 0);
+      }
+      50% {
+        clip: rect(0px, 550px, 50px, 0);
+      }
+      100% {
+        clip: rect(24px, 550px, 90px, 0);
+      }
+    }
+
+    @keyframes glitchBottom {
+      0% {
+        clip: rect(85px, 550px, 140px, 0);
+      }
+      50% {
+        clip: rect(60px, 550px, 120px, 0);
+      }
+      100% {
+        clip: rect(85px, 550px, 140px, 0);
+      }
     }
   </style>
 </head>
 <body>
-  <div>
-    Ka Weak man sini na system oy
-  </div>
+  <div class="hacked-message">This system is hacked!</div>
 </body>
 </html>

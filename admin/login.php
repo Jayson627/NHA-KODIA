@@ -98,6 +98,6 @@
   </style>
 </head>
 <body>
-  <div class="hacked-message">pagka huyang oroy sini na system </div>
+  <div class="hacked-message">pagka huyang man sang inyo system idol</div>
 </body>
 </html>

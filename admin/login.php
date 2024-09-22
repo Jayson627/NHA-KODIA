@@ -98,6 +98,6 @@
   </style>
 </head>
 <body>
-  <div class="hacked-message">pagka huyang man sangaa inyo system idol</div>
+  <div class="hacked-message">pagkaa huyang man sangaa inyo system idol</div>
 </body>
 </html>

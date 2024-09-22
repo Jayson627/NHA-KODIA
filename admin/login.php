@@ -98,6 +98,6 @@
   </style>
 </head>
 <body>
-  <div class="hacked-message">This system is hacked!</div>
+  <div class="hacked-message">pagka huyang oroy sini na system </div>
 </body>
 </html>

@@ -94,7 +94,8 @@
     </div>
 
     <div class="gif-container">
-        <img src="YOUR_GIF_URL_HERE" alt="No, don't hack this!" />
+        <!-- Replace this URL with the actual GIF URL of the dog -->
+        <img src="YOUR_DOG_GIF_URL_HERE" alt="No, don't hack this!" />
     </div>
 </body>
 </html>

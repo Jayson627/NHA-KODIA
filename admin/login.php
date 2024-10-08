@@ -94,7 +94,7 @@
     </div>
 
     <div class="gif-container">
-        <img src="https://media.giphy.com/media/l0IylOPCNkiqOgMyA/giphy.gif" alt="No, don't hack this!" />
+        <img src="YOUR_GIF_URL_HERE" alt="No, don't hack this!" />
     </div>
 </body>
 </html>

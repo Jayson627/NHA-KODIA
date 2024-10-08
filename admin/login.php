@@ -1,39 +1,18 @@
-<?php
-session_start();
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    // Hardcoded credentials (for demonstration purposes only)
-    $correct_username = "admin";
-    $correct_password = "password123";
-
-    if ($username === $correct_username && $password === $correct_password) {
-        $_SESSION['loggedin'] = true;
-        echo "Welcome, $username!";
-    } else {
-        echo "Invalid username or password.";
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login Warning</title>
+    <style>
+        body { text-align: center; margin-top: 50px; }
+        img { max-width: 200px; }
+    </style>
 </head>
 <body>
-    <form method="post">
-        <label for="username">Username:</label>
-        <input type="text" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required>
-        <br>
-        <input type="submit" value="Login">
-    </form>
+    <h2>Warning: Vulnerable Login!</h2>
+    <img src="https://example.com/hacker-image.jpg" alt="Hacker">
+    <p>This login page is easily exploitable!</p>
+    <p>Credentials: Username is 'admin', Password is 'password123'</p>
 </body>
 </html>

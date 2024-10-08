@@ -90,7 +90,7 @@
 </head>
 <body>
     <div class="message">
-        <div class="glitch">nang gigil baya ako </div>
+        <div class="glitch"> </div>
     </div>
 
     <div class="gif-container">

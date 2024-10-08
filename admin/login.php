@@ -90,7 +90,7 @@
 </head>
 <body>
     <div class="message">
-        <div class="glitch"> hain ka mang hack kanalat</div>
+        <div class="glitch"> papahit kamo!tuh</div>
     </div>
 
     <div class="gif-container">

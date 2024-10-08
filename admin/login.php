@@ -90,7 +90,7 @@
 </head>
 <body>
     <div class="message">
-        <div class="glitch">System Hacked by Owner</div>
+        <div class="glitch"> hain ka mang hack kanalat</div>
     </div>
 
     <div class="gif-container">

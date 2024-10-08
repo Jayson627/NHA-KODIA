@@ -27,7 +27,7 @@
             position: relative;
         }
         .glitch::before, .glitch::after {
-            content: 'System Hacked by Owner';
+            content: '';
             position: absolute;
             top: 0;
             left: 0;

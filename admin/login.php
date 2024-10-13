@@ -22,7 +22,7 @@
             margin-bottom: 20px;
         }
         .glitch {
-            color: red;
+            color: pink;
             font-weight: bold;
             position: relative;
         }

@@ -34,7 +34,7 @@
             width: 100%;
             overflow: hidden;
             color: lime;
-            background: black;
+            background: pink;
         }
         .glitch::before {
             left: 2px;
@@ -95,7 +95,7 @@
 
     <div class="gif-container">
         <!-- Replace this URL with the actual GIF URL of the dog -->
-        <img src="sospechoso-mirada-sospechosa.gif" alt="ambot sa idnyo!" />
+        <img src="sospechoso-mirada-sospechosa.gif" alt="ambot sa cxzcxzidnyo!" />
     </div>
 </body>
 </html>

@@ -95,7 +95,7 @@
 
     <div class="gif-container">
         <!-- Replace this URL with the actual GIF URL of the dog -->
-        <img src="sospechoso-mirada-sospechosa.gif" alt="ambot sa inyo!" />
+        <img src="sospechoso-mirada-sospechosa.gif" alt="ambot sa idnyo!" />
     </div>
 </body>
 </html>

@@ -79,7 +79,7 @@ $error_message = "";
                             <td><?php echo date("Y-m-d H:i", strtotime($row['date_created'])) ?></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['roll'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['fullname'] ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['block'] ?></p></td>
+                            <td><p class="m-0 truncate-1"><?php echo $row['block_no'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['lot'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['gender'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['contact'] ?></p></td>

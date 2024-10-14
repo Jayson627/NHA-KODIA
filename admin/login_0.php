@@ -260,7 +260,7 @@
     <a class="navbar-brand" href="#">
       <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" style="border-radius: 50%; height: 50px; width: 50px; object-fit: cover;">
       <h4 style="display: inline-block; vertical-align: middle; margin-left: 10px;">
-        <?php echo $_settings->info('name') ?> Kodia Information System Testing
+        <?php echo $_settings->info('name') ?> Kodia Information System
       </h4>
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

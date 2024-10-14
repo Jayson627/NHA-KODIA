@@ -258,7 +258,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
     <a class="navbar-brand" href="#">
-      
+      <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" style="border-radius: 50%; height: 50px; width: 50px; object-fit: cover;">
       <h4 style="display: inline-block; vertical-align: middle; margin-left: 10px;">
         <?php echo $_settings->info('name') ?> Kodia Information System Testing
       </h4>

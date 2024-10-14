@@ -151,7 +151,7 @@
 
 <div class="login-container">
     <div class="card-header">
-    Kodia Information System
+    Kodia Information System Tom
     </div>
     <form id="resident-form" action="process_resident.php" method="post" style="padding: 20px;">
         <label for="block-number">Block Number</label>

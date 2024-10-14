@@ -1,3 +1,77 @@
+<?php
+include_once('connection.php'); // Include your database connection
+
+// Define the capacity for each block
+$block_capacity = 2;
+
+// Initialize variables
+$occupied_blocks = 6;
+$unoccupied_blocks = 6;
+
+// Get the total number of blocks
+$total_block = $conn->query("SELECT COUNT(*) as total FROM `blocks`")->fetch_assoc()['total'];
+
+// Query to count occupied blocks
+$occupied_blocks_query = $conn->query("
+    SELECT COUNT(b.block_no) AS occupied_count
+    FROM blocks b
+    LEFT JOIN student_list s ON b.block_no = s.block_no
+    GROUP BY b.block_no
+    HAVING COUNT(s.id) >= $block_capacity
+");
+
+if ($occupied_blocks_query) {
+    $occupied_blocks = $occupied_blocks_query->num_rows; // Count of occupied blocks
+}
+
+// Calculate unoccupied blocks
+$unoccupied_blocks = $total_block - $occupied_blocks;
+
+
+// Get available blocks for the dropdown (only blocks that are not fully occupied)
+$blocks = [];
+$result = $conn->query("
+    SELECT b.block_no, COUNT(s.id) AS assigned_count 
+    FROM blocks b
+    LEFT JOIN student_list s ON b.block_no = s.block_no
+    GROUP BY b.block_no
+    HAVING assigned_count < $block_capacity
+");
+
+if (!$result) {
+    // Display the SQL error if the query fails
+    echo "SQL Error: " . $conn->error;
+} else {
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $blocks[] = $row['block_no'];
+        }
+    }
+}
+
+
+// Get available lots for the dropdown (only lots that are not assigned)
+$lots = [];
+$result = $conn->query("SELECT lot_no FROM lots WHERE lot_no NOT IN (SELECT lot FROM student_list)");
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $lots[] = $row['lot_no'];
+    }
+}
+
+// Fetch student details if updating
+if (isset($_GET['id'])) {
+    $qry = $conn->query("SELECT * FROM `student_list` WHERE id = '{$_GET['id']}'");
+    if ($qry->num_rows > 0) {
+        $res = $qry->fetch_array();
+        foreach ($res as $k => $v) {
+            if (!is_numeric($k)) {
+                $$k = $v;
+            }
+        }
+    }
+}
+?>
 
 <?php
 if(isset($_GET['id'])){
@@ -31,6 +105,7 @@ if(isset($_POST['roll'])){
     exit;
 }
 ?>
+
 
 
 <div class="content py-3">
@@ -85,15 +160,30 @@ if(isset($_POST['roll'])){
                                 <div id="contact-error" class="text-danger" style="display: none;">Invalid Contact No. Must be 11 digits and only numbers are allowed.</div>
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="block" class="control-label">Block #</label>
-                                <input type="text" name="block" id="block" value="<?= isset($block) ? $block : "" ?>" class="form-control form-control-sm rounded-0" required>
-                                <div id="block-error" class="text-danger" style="display: none;">Invalid Block No. Only numbers are allowed.</div>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="lot" class="control-label">Lot #</label>
-                                <input type="text" name="lot" id="lot" value="<?= isset($lot) ? $lot : "" ?>" class="form-control form-control-sm rounded-0" required>
-                                <div id="lot-error" class="text-danger" style="display: none;">Invalid Lot No. Only numbers are allowed.</div>
-                            </div>
+    <label for="block" class="control-label">Block #</label>
+    <select name="block_no" id="block" class="form-control form-control-sm rounded-0" required>
+        <option value="">Select Block</option>
+        <?php foreach ($blocks as $block_no): ?>
+            <option value="<?= htmlspecialchars($block_no) ?>" <?= isset($block) && $block == $block_no ? 'selected' : '' ?>>
+                <?= htmlspecialchars($block_no) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <div id="block-error" class="text-danger" style="display: none;">Please select a valid Block.</div>
+</div>
+
+<div class="form-group col-md-4">
+    <label for="lot" class="control-label">Lot #</label>
+    <select name="lot" id="lot" class="form-control form-control-sm rounded-0" required>
+        <option value="">Select Lot</option>
+        <?php foreach ($lots as $lot_no): ?>
+            <option value="<?= htmlspecialchars($lot_no) ?>" <?= isset($lot) && $lot == $lot_no ? 'selected' : '' ?>>
+                <?= htmlspecialchars($lot_no) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <div id="lot-error" class="text-danger" style="display: none;">Please select a valid Lot.</div>
+</div>
                             <div class="row">
                                 <div class="form-group col-md-12">
                                     <label for="present_address" class="control-label">Barranggay</label>

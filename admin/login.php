@@ -88,14 +88,5 @@
         }
     </style>
 </head>
-<body>
-    <div class="message">
-        <div class="glitch"> </div>
-    </div>
 
-    <div class="gif-container">
-        <!-- Replace this URL with the actual GIF URL of the dog -->
-        <img src="sospechoso-mirada-sospechosa.gif" alt="ambot sa cxzcxzidnyo!" />
-    </div>
-</body>
 </html>

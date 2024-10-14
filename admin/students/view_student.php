@@ -84,7 +84,7 @@ if (isset($_GET['id'])) {
         <div class="col-md-4">
             <div class="form-group">
                 <label class="control-label text-muted">Block #</label>
-                <div class="pl-4"><?= isset($block) ? $block : 'N/A' ?></div>
+                <div class="pl-4"><?= isset($block_no) ? $block_no : 'N/A' ?></div>
             </div>
         </div>
         <div class="col-md-4">

@@ -6,7 +6,7 @@ $block_number = $_POST['block_number'];
 $lot_number = $_POST['lot_number'];
 
 // Prepare SQL query
-$stmt = $conn->prepare("SELECT COUNT(*) as count FROM student_list WHERE block = ? AND lot = ?");
+$stmt = $conn->prepare("SELECT COUNT(*) as count FROM student_list WHERE block_no = ? AND lot = ?");
 $stmt->bind_param("ss", $block_number, $lot_number);
 $stmt->execute();
 $result = $stmt->get_result();

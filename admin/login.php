@@ -100,41 +100,58 @@
       border-color: #007bff;
     }
 
-    /* About Section */
-    #about {
-      display: none;
-      height: auto;
-      width: 100%;
-      color: #333;
-      background-color: lightblue;
-      padding: 20px;
-    }
+   /* About Section */
+#about {
+  display: none;
+  height: auto; /* Change to auto for better content fitting */
+  width: 100%;
+  color: #333;
+  background-color: lightblue;
+  padding: 20px; /* Reduced padding for better mobile fit */
+}
 
-    #about h2 {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 15px;
-      text-align: center;
-      color: #007bff;
-    }
+#about h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px; /* Reduced margin */
+  text-align: center;
+  color: #007bff;
+}
 
-    #about p {
-      text-align: justify;
-      font-size: 16px;
-      line-height: 1.5;
-      color: #555;
-      margin-bottom: 15px;
-    }
+#about p {
+  text-align: justify; /* Justify text for better readability */
+  font-size: 16px;
+  line-height: 1.5; /* Adjust line-height for better spacing */
+  color: #555;
+  margin-bottom: 15px; /* Reduced margin */
+}
 
-    #about .container {
-      max-width: 100%;
-      background: whitesmoke;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+#about .container {
+  max-width: 100%;
+  background: whitesmoke;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+}
 
-    /* Media Queries */
+/* Media Queries for Mobile Devices */
+@media (max-width: 576px) {
+  #about h2 {
+    font-size: 20px; /* Smaller heading for mobile */
+  }
+
+  #about p {
+    font-size: 14px; /* Smaller paragraph text */
+    margin: 10px 0; /* Adjust margin for mobile */
+  }
+
+  #about .container {
+    padding: 15px; /* Reduced padding for mobile */
+  }
+}
+
+
+    /* Media Queries for Mobile Devices */
     @media (max-width: 768px) {
       .navbar-brand h4 {
         font-size: 1rem;
@@ -156,35 +173,37 @@
     }
 
     @media (max-width: 576px) {
-      .navbar-toggler {
-        background-color: #007bff;
-        border: none;
-        border-radius: 25px;
-        padding: 10px 15px;
-        transition: background-color 0.3s, transform 0.3s;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  .navbar-toggler {
+    background-color: #007bff; /* Change button background color */
+    border: none; /* Remove border */
+    border-radius: 25px; /* Rounded corners */
+    padding: 10px 15px; /* Add some padding */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  }
+
+  .navbar-toggler:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+  }
+
+  .navbar-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); /* White lines for better visibility */
+  }
+}
+
+
+      /* Optional: adjust styles for better visibility */
+      #about p {
+        font-size: 14px;
       }
 
-      .navbar-toggler:hover {
-        background-color: #0056b3;
-        transform: scale(1.05);
+      #about .container {
+        padding: 10px;
       }
+    
 
-      .navbar-toggler .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-      }
-    }
-
-    /* Optional: adjust styles for better visibility */
-    #about p {
-      font-size: 14px;
-    }
-
-    #about .container {
-      padding: 10px;
-    }
-
-    /* Navbar collapse styles */
+    /* Hide navbar collapse by default */
     .navbar-collapse {
       display: none !important;
     }
@@ -192,6 +211,7 @@
     .navbar-toggler.collapsed + .navbar-collapse {
       display: block !important;
     }
+
   </style>
 
   <!-- jQuery -->
@@ -236,7 +256,7 @@
 </head>
 <body class="hold-transition">
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
+  <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
     <a class="navbar-brand" href="#">
       <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" style="border-radius: 50%; height: 50px; width: 50px; object-fit: cover;">
       <h4 style="display: inline-block; vertical-align: middle; margin-left: 10px;">
@@ -279,7 +299,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="fas fa-lock"></i></span>
             </div>
-            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
+            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" autocomplete="one-time-code" required>
             <div class="input-group-append">
               <span class="input-group-text">
                 <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
@@ -301,7 +321,7 @@
   <div id="about">
     <div class="container">
       <h2>About Kodia NHA</h2>
-      <p>The National Housing Authority (NHA) of Kodia is located in Barangay Kodia, Madridejos, Cebu. The housing consists of 750 units, 27 blocks, and 58 lots. Based on history, the Kodia NHA was constructed the year after Typhoon Yolanda and was turned over to the barangay in May 2021. All barangays in Madridejos, except for Barangay Tugas and Kangwayan, were provided with housing units. Each barangay was allocated 50 units for those residents who needed to evacuate during typhoons. The process of allocation involved barangay officials distributing forms to the recipients to fill out the necessary information.</p>
+      <p>The National Housing Authorityfdd (NHA) of Kodia is located in Barangay Kodia, Madridejos, Cebu. The housing consists of 750 units, 27 blocks, and 58 lots. Based on history, the Kodia NHA was constructed the year after Typhoon Yolanda and was turned over to the barangay in May 2021. All barangays in Madridejos, except for Barangay Tugas and Kangwayan, were provided with housing units. Each barangay was allocated 50 units for those residents who needed to evacuate during typhoons. The process of allocation involved barangay officials distributing forms to the recipients to fill out the necessary information.</p>
       <p>Every barangay received 50 units, while Barangay Kodia received 100 units because the housing was built in their areas. Based on our survey, the barangays with the most residents living in the housing are Barangay Mancilang and Barangay Poblacion, as they are closest to the sea and most prone to typhoons. According to our survey, there are over 80 units that are not occupied but have owners. There is a possibility that the housing units may be reclaimed if they are not occupied for over a year.</p>
     </div>
   </div>

@@ -25,20 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
         $stmt->bind_param("i", $delete_id);
         
         if ($stmt->execute()) {
-            echo "<div class='alert alert-success text-center'>Incident deleted successfully</div>";
+            $success_message = "Incident deleted successfully.";
         } else {
-            echo "<div class='alert alert-danger text-center'>Error deleting incident: " . $stmt->error . "</div>";
+            $error_message = "Error deleting incident: " . $stmt->error;
         }
 
         $stmt->close();
     } else {
-        echo "<div class='alert alert-danger text-center'>Error preparing statement: " . $conn->error . "</div>";
+        $error_message = "Error preparing statement: " . $conn->error;
     }
-    
-    // Refresh the page to update the list
-   
 }
 
+// Fetch incidents
 $query = "SELECT * FROM incidents";
 $result = $conn->query($query);
 ?>
@@ -59,15 +57,25 @@ $result = $conn->query($query);
         }
     </style>
     <script>
-        function confirmDelete() {
-            return confirm("Are you sure you want to delete this incident?");
+        function confirmDelete(id) {
+            const confirmed = confirm("Are you sure you want to delete this incident?");
+            if (confirmed) {
+                document.getElementById("delete-form-" + id).submit();
+            }
         }
     </script>
 </head>
 <body>
 <div class="container">
     <h2 class="text-center">Incident Reports</h2>
-    <table class="table table-bordered">
+    
+    <?php if (isset($success_message)): ?>
+        <div class="alert alert-success text-center"><?= $success_message ?></div>
+    <?php elseif (isset($error_message)): ?>
+        <div class="alert alert-danger text-center"><?= $error_message ?></div>
+    <?php endif; ?>
+    
+    <table class="table table-bordered table-striped">
         <thead class="thead-dark">
         <tr>
             <th>ID</th>
@@ -87,9 +95,9 @@ $result = $conn->query($query);
                         <td>" . $row['description'] . "</td>
                         <td>" . $row['reported_by'] . "</td>
                         <td>
-                            <form action='' method='post' onsubmit='return confirmDelete();'>
+                            <form id='delete-form-" . $row['id'] . "' action='' method='post' style='display: inline;'>
                                 <input type='hidden' name='delete_id' value='" . $row['id'] . "'>
-                                <button type='submit' class='btn btn-danger'>Delete</button>
+                                <button type='button' class='btn btn-danger' onclick='confirmDelete(" . $row['id'] . ");'>Delete</button>
                             </form>
                         </td>
                       </tr>";

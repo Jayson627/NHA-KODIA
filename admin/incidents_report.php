@@ -1,48 +1,3 @@
-<?php
-// Database credentials
-$servername = "127.0.0.1:3306";
-$username = "u510162695_sis_db";
-$password = "1Sis_dbpassword";
-$dbname = "u510162695_sis_db";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connections
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Handle deletion
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    $delete_id = $_POST['delete_id'];
-    
-    // SQL to delete a record
-    $delete_query = "DELETE FROM incidents WHERE id = ?";
-    
-    // Prepare and bind
-    if ($stmt = $conn->prepare($delete_query)) {
-        $stmt->bind_param("i", $delete_id);
-        
-        if ($stmt->execute()) {
-            echo "<div class='alert alert-success text-center'>Incident deleted successfully</div>";
-        } else {
-            echo "<div class='alert alert-danger text-center'>Error deleting incident: " . $stmt->error . "</div>";
-        }
-
-        $stmt->close();
-    } else {
-        echo "<div class='alert alert-danger text-center'>Error preparing statement: " . $conn->error . "</div>";
-    }
-    
-    // Refresh the page to update the list
-   
-}
-
-$query = "SELECT * FROM incidents";
-$result = $conn->query($query);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,6 +11,14 @@ $result = $conn->query($query);
         }
         .table {
             margin-top: 20px;
+        }
+        /* Form styling */
+        .form-group {
+            max-width: 500px; /* Set max width for form inputs */
+            margin: 0 auto; /* Center the form */
+        }
+        .form-control {
+            width: 100%; /* Full width for inputs */
         }
     </style>
     <script>

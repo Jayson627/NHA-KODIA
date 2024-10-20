@@ -18,15 +18,28 @@
   <!-- Custom CSS -->
   <style>
     /* General Styles */
-    html, body {
-      height: 100%;
-      width: 100%;
+    body {
+      height: 100vh;
       margin: 0;
-      padding: 0;
       font-family: 'Roboto', sans-serif;
-      background-image: url("<?php echo validate_image($_settings->info('cover')) ?>");
+      background: url('nha.jpg') no-repeat center center fixed;
       background-size: cover;
-      background-repeat: no-repeat;
+      animation: slide 15s infinite;
+    }
+
+    @keyframes slide {
+      0% {
+        background-image: url('houses.jpg');
+      }
+      33% {
+        background-image: url('bahay.jpg');
+      }
+      67% {
+        background-image: url('pasunod.jpg');
+      }
+      100% {
+        background-image: url('nha.jpg');
+      }
     }
 
     /* Navbar */
@@ -60,6 +73,8 @@
       height: 100%;
       align-items: center;
       justify-content: center;
+      position: relative; /* Added for stacking context */
+      z-index: 1; /* Ensure the login form is above the background */
     }
 
     .card {
@@ -100,58 +115,41 @@
       border-color: #007bff;
     }
 
-   /* About Section */
-#about {
-  display: none;
-  height: auto; /* Change to auto for better content fitting */
-  width: 100%;
-  color: #333;
-  background-color: lightblue;
-  padding: 20px; /* Reduced padding for better mobile fit */
-}
+    /* About Section */
+    #about {
+      display: none;
+      height: auto;
+      width: 100%;
+      color: #333;
+      background-color: lightblue;
+      padding: 20px;
+    }
 
-#about h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 15px; /* Reduced margin */
-  text-align: center;
-  color: #007bff;
-}
+    #about h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      text-align: center;
+      color: #007bff;
+    }
 
-#about p {
-  text-align: justify; /* Justify text for better readability */
-  font-size: 16px;
-  line-height: 1.5; /* Adjust line-height for better spacing */
-  color: #555;
-  margin-bottom: 15px; /* Reduced margin */
-}
+    #about p {
+      text-align: justify;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #555;
+      margin-bottom: 15px;
+    }
 
-#about .container {
-  max-width: 100%;
-  background: whitesmoke;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
-}
+    #about .container {
+      max-width: 100%;
+      background: whitesmoke;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
-/* Media Queries for Mobile Devices */
-@media (max-width: 576px) {
-  #about h2 {
-    font-size: 20px; /* Smaller heading for mobile */
-  }
-
-  #about p {
-    font-size: 14px; /* Smaller paragraph text */
-    margin: 10px 0; /* Adjust margin for mobile */
-  }
-
-  #about .container {
-    padding: 15px; /* Reduced padding for mobile */
-  }
-}
-
-
-    /* Media Queries for Mobile Devices */
+    /* Media Queries */
     @media (max-width: 768px) {
       .navbar-brand h4 {
         font-size: 1rem;
@@ -173,37 +171,35 @@
     }
 
     @media (max-width: 576px) {
-  .navbar-toggler {
-    background-color: #007bff; /* Change button background color */
-    border: none; /* Remove border */
-    border-radius: 25px; /* Rounded corners */
-    padding: 10px 15px; /* Add some padding */
-    transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-  }
-
-  .navbar-toggler:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-    transform: scale(1.05); /* Slightly enlarge on hover */
-  }
-
-  .navbar-toggler .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"); /* White lines for better visibility */
-  }
-}
-
-
-      /* Optional: adjust styles for better visibility */
-      #about p {
-        font-size: 14px;
+      .navbar-toggler {
+        background-color: #007bff;
+        border: none;
+        border-radius: 25px;
+        padding: 10px 15px;
+        transition: background-color 0.3s, transform 0.3s;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       }
 
-      #about .container {
-        padding: 10px;
+      .navbar-toggler:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
       }
-    
 
-    /* Hide navbar collapse by default */
+      .navbar-toggler .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+      }
+    }
+
+    /* Optional: adjust styles for better visibility */
+    #about p {
+      font-size: 14px;
+    }
+
+    #about .container {
+      padding: 10px;
+    }
+
+    /* Navbar collapse styles */
     .navbar-collapse {
       display: none !important;
     }
@@ -211,7 +207,6 @@
     .navbar-toggler.collapsed + .navbar-collapse {
       display: block !important;
     }
-
   </style>
 
   <!-- jQuery -->

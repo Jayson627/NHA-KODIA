@@ -24,7 +24,7 @@
       font-family: 'Roboto', sans-serif;
       background: url('nha.jpg') no-repeat center center fixed;
       background-size: cover;
-      animation: slide 15s infinite;
+      animation: slide 25s infinite;
     }
 
     @keyframes slide {

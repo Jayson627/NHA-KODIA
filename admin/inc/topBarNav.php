@@ -128,4 +128,4 @@ document.getElementById('notificationDropdown').addEventListener('click', functi
     };
     xhr.send(); // Send AJAX request to update notifications
 });
-</script>
+</script>jayson

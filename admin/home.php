@@ -46,10 +46,12 @@
         <div class="row">
         <?php 
             // Queries for data (lots, blocks, students, children)
-            $total_lot = $conn->query("SELECT * FROM `lot_numbers`")->num_rows;
-           
+            $total_lot = $conn->query("SELECT * FROM `lots`")->num_rows;
+            $occupied_lots = $conn->query("SELECT COUNT(DISTINCT lot) AS occupied_count FROM `student_list`")->fetch_assoc()['occupied_count'];
+            $unoccupied_lots = $total_lot - $occupied_lots;
             $total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;
-           
+            $occupied_blocks = $conn->query("SELECT COUNT(DISTINCT block_no) AS occupied_count FROM `student_list`")->fetch_assoc()['occupied_count'];
+            $unoccupied_blocks = $total_block - $occupied_blocks;
             $total_students = $conn->query("SELECT * FROM `student_list`")->num_rows;
             $total_children = $conn->query("SELECT * FROM `children`")->num_rows;
         ?>
@@ -93,7 +95,47 @@
                     <span class="info-box-number text-right"><?php echo $total_children; ?></span>
                 </div>
             </div>
-      
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+    <div class="info-box bg-gradient-blue shadow">
+        <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-box"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Occupied Blocks</span>
+            <span class="info-box-number text-right"><?php echo $occupied_blocks; ?></span>
+        </div>
+    </div>
+</div>
+
+<div class="col-12 col-sm-6 col-md-6 col-lg-3">
+    <div class="info-box bg-gradient-blue shadow">
+        <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-box"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Unoccupied Blocks</span>
+            <span class="info-box-number text-right"><?php echo $unoccupied_blocks; ?></span>
+        </div>
+    </div>
+</div>
+
+        <!-- Additional info boxes for Occupied and Unoccupied lots/blocks -->
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="info-box bg-gradient-red shadow">
+                <span class="info-box-icon elevation-1"><i class="fas fa-lock"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Occupied Lots</span>
+                    <span class="info-box-number text-right"><?php echo $occupied_lots; ?></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="info-box bg-gradient-lightblue shadow">
+                <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fas fa-door-open"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Unoccupied Lots</span>
+                    <span class="info-box-number text-right"><?php echo $unoccupied_lots; ?></span>
+                </div>
+            </div>
+        </div>
 
         <!-- Chart.js Charts wrapped in responsive containers -->
         <div class="row mt-4">
@@ -134,7 +176,11 @@
         var data = {
             labels: [
                 'Total Lots', 
+                'Occupied Lots', 
+                'Unoccupied Lots', 
                 'Total Blocks', 
+                'Occupied Blocks', 
+                'Unoccupied Blocks', 
                 'Household Heads', 
                 'Children'
             ],
@@ -142,19 +188,31 @@
                 label: 'Total Counts',
                 data: [
                     <?php echo $total_lot; ?>,
+                    <?php echo $occupied_lots; ?>,
+                    <?php echo $unoccupied_lots; ?>,
                     <?php echo $total_block; ?>,
+                    <?php echo $occupied_blocks; ?>,
+                    <?php echo $unoccupied_blocks; ?>,
                     <?php echo $total_students; ?>,
                     <?php echo $total_children; ?>
                 ],
                 backgroundColor: [
                     'rgba(255, 105, 180, 0.6)', // Total Lots
+                    'rgba(255, 99, 132, 0.6)',  // Occupied Lots
+                    'rgba(153, 102, 255, 0.6)', // Unoccupied Lots
                     'rgba(54, 162, 235, 0.6)',  // Total Blocks
+                    'rgba(255, 159, 64, 0.6)',  // Occupied Blocks
+                    'rgba(75, 192, 192, 0.6)',  // Unoccupied Blocks
                     'rgba(255, 255, 0, 0.6)',   // Household Heads
                     'rgba(75, 192, 75, 0.6)'    // Children
                 ],
                 borderColor: [
                     'rgba(255, 105, 180, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(153, 102, 255, 1)',
                     'rgba(54, 162, 235, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(75, 192, 192, 1)',
                     'rgba(255, 255, 0, 1)',
                     'rgba(75, 192, 75, 1)'
                 ],

@@ -35,8 +35,8 @@
 <?php
     // Check if the success message is set
     if (isset($_SESSION['success_message'])) {
-        echo "<script>alert('" . $_SESSION['success_message'] . "');</script>";
-        unset($_SESSION['success_message']);
+        echo "<script>alert('" . $_SESSION['success_message'] . "');</script>"; // Show the alert
+        unset($_SESSION['success_message']); // Unset the message after displaying
     }
 
     // Queries for data (lots, blocks, students, children)

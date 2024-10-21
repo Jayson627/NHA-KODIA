@@ -19,7 +19,7 @@
 	}
 </style>
 <div class="col-lg-12">
-	<div class="card card-outline card-primary rounded-0 shadow">
+	<div class="card card-outline card-primary rounded-0 pink">
 		<div class="card-header">
 			<h5 class="card-title">System Information</h5>
 			<!-- <div class="card-tools">
@@ -55,7 +55,7 @@
 	            </div>
 			</div>
 			<div class="form-group d-flex justify-content-center">
-				<img src="<?php echo validate_image($_settings->info('cover')) ?>" alt="" id="cimg2" class="img-fluid img-thumbnail bg-gradient-dark border-dark">
+				<img src="<?php echo validate_image($_settings->info('cover')) ?>" alt="" id="cimg2" class="img-fluid img-thumbnail bg-gradient-dark border-blue">
 			</div>
 			</form>
 		</div>

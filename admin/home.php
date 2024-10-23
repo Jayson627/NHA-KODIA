@@ -37,7 +37,7 @@
         <div class="row">
             <?php 
                 // Query for total lots
-                $total_lot = $conn->query("SELECT * FROM `lots`")->num_rows;
+                $total_lot = $conn->query("SELECT * FROM `lot_numbers`")->num_rows;
                 
                 // Query for total blocks
                 $total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;

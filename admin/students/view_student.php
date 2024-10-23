@@ -90,7 +90,7 @@ if (isset($_GET['id'])) {
         <div class="col-md-4">
             <div class="form-group">
                 <label class="control-label text-muted">Lot #</label>
-                <div class="pl-4"><?= isset($lot) ? $lot : 'N/A' ?></div>
+                <div class="pl-4"><?= isset($lot_no) ? $lot_no : 'N/A' ?></div>
             </div>
         </div>
         <div class="col-md-4">

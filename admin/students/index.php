@@ -56,7 +56,7 @@ $error_message = "";
                         <tr class="bg-gradient-dark text-light">
                             <th>#</th>
                             <th>Date Created</th>
-                            <th>Contact No.</th>
+                            <th>House no.</th>
                             <th>Name</th>
                             <th>Block</th>
                             <th>Lot</th>
@@ -80,7 +80,7 @@ $error_message = "";
                             <td><p class="m-0 truncate-1"><?php echo $row['roll'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['fullname'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['block_no'] ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['lot_numbers'] ?></p></td>
+                            <td><p class="m-0 truncate-1"><?php echo $row['lot_no'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['gender'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['contact'] ?></p></td>
                             <td><p class="m-0 truncate-1"><?php echo $row['present_address'] ?></p></td>

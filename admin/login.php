@@ -247,31 +247,32 @@
         <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
       </div>
       <div class="card-body">
-        <form id="login-frm" action="" method="post">
-          <div class="form-group input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-            </div>
-            <input type="text" class="form-control" autofocus name="username" placeholder="Enter Username">
-          </div>
-          <div class="form-group input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            </div>
-            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
-            <div class="input-group-append">
-              <span class="input-group-text">
-                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
-              </span>
-            </div>
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          </div>
-          <div class="form-group text-center">
-            <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
-          </div>
-        </form>
+      <form id="login-frm" action="" method="post">
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text"><i class="fas fa-user"></i></span>
+    </div>
+    <input type="text" class="form-control" name="username" placeholder="Enter Username" autocomplete="username">
+  </div>
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text"><i class="fas fa-lock"></i></span>
+    </div>
+    <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required autocomplete="current-password">
+    <div class="input-group-append">
+      <span class="input-group-text">
+        <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+      </span>
+    </div>
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+  </div>
+  <div class="form-group text-center">
+    <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
+  </div>
+</form>
+
       </div>
     </div>
   </div>

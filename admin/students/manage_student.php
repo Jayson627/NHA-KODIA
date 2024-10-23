@@ -1,98 +1,40 @@
 <?php
 include_once('connection.php'); // Include your database connection
 
-// Define the capacity for each block
-$block_capacity = 2;
-
-// Initialize variables
-$occupied_blocks = 6;
-$unoccupied_blocks = 6;
-
-// Get the total number of blocks
-$total_block = $conn->query("SELECT COUNT(*) as total FROM `blocks`")->fetch_assoc()['total'];
-
-// Query to count occupied blocks
-$occupied_blocks_query = $conn->query("
-    SELECT COUNT(b.block_no) AS occupied_count
-    FROM blocks b
-    LEFT JOIN student_list s ON b.block_no = s.block_no
-    GROUP BY b.block_no
-    HAVING COUNT(s.id) >= $block_capacity
-");
-
-if ($occupied_blocks_query) {
-    $occupied_blocks = $occupied_blocks_query->num_rows; // Count of occupied blocks
-}
-
-// Calculate unoccupied blocks
-$unoccupied_blocks = $total_block - $occupied_blocks;
-
-
-// Get available blocks for the dropdown (only blocks that are not fully occupied)
+// Fetch available blocks
 $blocks = [];
-$result = $conn->query("
-    SELECT b.block_no, COUNT(s.id) AS assigned_count 
-    FROM blocks b
-    LEFT JOIN student_list s ON b.block_no = s.block_no
-    GROUP BY b.block_no
-    HAVING assigned_count < $block_capacity
-");
-
-if (!$result) {
-    // Display the SQL error if the query fails
-    echo "SQL Error: " . $conn->error;
-} else {
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $blocks[] = $row['block_no'];
-        }
-    }
+$block_result = $conn->query("SELECT block_no FROM blocks");
+while ($row = $block_result->fetch_assoc()) {
+    $blocks[] = $row['block_no'];
 }
 
-
-// Get available lots for the dropdown (only lots that are not assigned)
+// Fetch available lots
 $lots = [];
-$result = $conn->query("SELECT lot_no FROM lots WHERE lot_no NOT IN (SELECT lot FROM student_list)");
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $lots[] = $row['lot_no'];
-    }
+$lot_result = $conn->query("SELECT lot_number FROM lot_numbers");
+while ($row = $lot_result->fetch_assoc()) {
+    $lots[] = $row['lot_number'];
 }
 
-// Fetch student details if updating
+// Fetch student data if ID is set
 if (isset($_GET['id'])) {
     $qry = $conn->query("SELECT * FROM `student_list` WHERE id = '{$_GET['id']}'");
     if ($qry->num_rows > 0) {
         $res = $qry->fetch_array();
         foreach ($res as $k => $v) {
-            if (!is_numeric($k)) {
+            if (!is_numeric($k))
                 $$k = $v;
-            }
         }
     }
 }
-?>
 
-<?php
-if(isset($_GET['id'])){
-    $qry = $conn->query("SELECT * FROM `student_list` where id = '{$_GET['id']}'");
-    if($qry->num_rows > 0){
-        $res = $qry->fetch_array();
-        foreach($res as $k => $v){
-            if(!is_numeric($k))
-            $$k = $v;
-        }
-    }
-}
-?>
-<?php
-if(isset($_POST['roll'])){
+// Handle form submission for saving student data
+if (isset($_POST['roll'])) {
     $id = isset($_POST['id']) ? $_POST['id'] : '';
     $roll = $_POST['roll'];
 
     // Check if the household number already exists
     $check = $conn->query("SELECT * FROM `student_list` WHERE roll = '$roll' AND id != '$id'");
-    if($check->num_rows > 0){
+    if ($check->num_rows > 0) {
         echo json_encode(['status' => 'error', 'msg' => 'Household number is already in use.']);
         exit;
     }
@@ -105,7 +47,6 @@ if(isset($_POST['roll'])){
     exit;
 }
 ?>
-
 
 
 <div class="content py-3">
@@ -164,25 +105,19 @@ if(isset($_POST['roll'])){
     <select name="block_no" id="block" class="form-control form-control-sm rounded-0" required>
         <option value="">Select Block</option>
         <?php foreach ($blocks as $block_no): ?>
-            <option value="<?= htmlspecialchars($block_no) ?>" <?= isset($block) && $block == $block_no ? 'selected' : '' ?>>
+            <option value="<?= htmlspecialchars($block_no) ?>" <?= isset($student) && $student['block_no'] == $block_no ? 'selected' : '' ?>>
                 <?= htmlspecialchars($block_no) ?>
             </option>
         <?php endforeach; ?>
     </select>
-    <div id="block-error" class="text-danger" style="display: none;">Please select a valid Block.</div>
 </div>
 
 <div class="form-group col-md-4">
     <label for="lot" class="control-label">Lot #</label>
-    <select name="lot" id="lot" class="form-control form-control-sm rounded-0" required>
+    <select name="lot_no" id="lot" class="form-control form-control-sm rounded-0" required>
         <option value="">Select Lot</option>
-        <?php foreach ($lots as $lot_no): ?>
-            <option value="<?= htmlspecialchars($lot_no) ?>" <?= isset($lot) && $lot == $lot_no ? 'selected' : '' ?>>
-                <?= htmlspecialchars($lot_no) ?>
-            </option>
-        <?php endforeach; ?>
+        <!-- Options will be populated dynamically -->
     </select>
-    <div id="lot-error" class="text-danger" style="display: none;">Please select a valid Lot.</div>
 </div>
                             <div class="row">
                                 <div class="form-group col-md-12">
@@ -210,6 +145,39 @@ if(isset($_POST['roll'])){
     </div>
 </div>
 <script>
+    $(function() {
+    $('#block').change(function() {
+        var blockNo = $(this).val();
+        var lotSelect = $('#lot');
+
+        // Clear previous options
+        lotSelect.empty();
+        lotSelect.append('<option value="">Select Lot</option>');
+
+        if (blockNo) {
+            $.ajax({
+                url: 'get_lots.php', // Your PHP script to fetch lots
+                method: 'POST',
+                data: { block_no: blockNo },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        $.each(response.lots, function(index, lot) {
+                            lotSelect.append('<option value="' + lot + '">' + lot + '</option>');
+                        });
+                    } else {
+                        console.error(response.msg);
+                    }
+                },
+                error: function(err) {
+                    console.error('Error fetching lots:', err);
+                }
+            });
+        }
+    });
+});
+
+
     $(function(){
         // Validation function for household No.
         $('#roll').on('input', function() {

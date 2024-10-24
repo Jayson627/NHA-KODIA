@@ -82,8 +82,30 @@
     </div>
     <div class="footer-text">
      
-    
+    </div>
+  </div>
 
+  <!-- Include Bootstrap 5 JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- SweetAlert Script for OTP Success and Redirect -->
+  <!-- <script>
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'OTP Sent',
+        text: 'An OTP code has been sent to your email address!',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to about.php after user clicks "OK" on SweetAlert
+          window.location.href = '../admin/funtion.php';
+        }
+      });
+    });
+  </script> -->
 
 </body>
 </html>

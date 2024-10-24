@@ -16,11 +16,11 @@ if (isset($_POST["btn-forgotpass"])) {
     if ($query) {
         
         //Set Params 
-        $mail->SetFrom("kodia@do-not.reply");
+        $mail->SetFrom("alcantarajayson118@gmail.com");
         $mail->AddAddress("$email");
         $mail->Subject = "Reset Password OTP";
         $mail->Body = "Use this OTP Code to reset your password: ".$reset_code."<br/>".
-        "Click the link to reset password: http://localhost/sis/admin/reset_password.php?reset&email=$email"  //pulihan $reset_coede
+        "Click the link to reset password: http://localhost/sis/admin/reset_password.php?reset&email=$reset_code"  //pulihan $reset_coede
         ;
 
 

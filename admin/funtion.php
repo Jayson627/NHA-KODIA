@@ -15,7 +15,7 @@ if (isset($_POST["btn-forgotpass"])) {
  
     if ($query) {
         
-        //Set Paramss 
+        //Set Paramss oki na pre
         $mail->SetFrom("alcantarajayson118@gmail.com");
         $mail->AddAddress("$email");
         $mail->Subject = "Reset Password OTP";

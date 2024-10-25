@@ -238,7 +238,7 @@
           <a class="nav-link" href="about.php"><i class="fas fa-info-circle"></i> About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="resident1.php"><i class="fas fa-users"></i> Residents</a>
+          <a class="nav-link" href="people.php"><i class="fas fa-users"></i> Residents</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="president.php"><i class="fas fa-user-tie"></i> President</a>

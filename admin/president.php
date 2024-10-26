@@ -90,7 +90,7 @@
             font-weight: bold;
         }
 
-        .login-container input[type="text"],
+        .login-container input[type="email"],
         .login-container input[type="password"] {
             width: 90%;
             padding: 12px;
@@ -170,7 +170,7 @@
 
 <div class="login-container">
     <div class="card-header">
-    Kodia Information System
+        President Login
     </div>
     <?php
     if (isset($_GET['status'])) {
@@ -188,8 +188,8 @@
     }
     ?>
     <form action="process_president.php" method="post" autocomplete="off" style="padding: 20px;">
-        <label for="name">Name:</label>
-        <input type="text" id="name" placeholder="Enter Username" name="name" autocomplete="off" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Enter Email" name="email" autocomplete="off" required>
         
         <label for="password">Password:</label>
         <input type="password" id="password" placeholder="Enter Password" name="password" autocomplete="new-password" required>

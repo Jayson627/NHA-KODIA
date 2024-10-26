@@ -1,61 +1,63 @@
 <?php
 session_start();
-
-
-// Database credentials
-$servername = "127.0.0.1:3306";
-$username = "u510162695_sis_db";
-$password = "1Sis_dbpassword";
-$dbname = "u510162695_sis_db";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connections
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Initialize error message variable
-$error_message = "";
-
+include_once('connection.php'); 
 
 // Handle login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['name'];
+    $email = $_POST['email']; // Changed from 'name' to 'email'
     $password = $_POST['password'];
 
-    // Prepare and execute SQL query
-    $stmt = $conn->prepare("SELECT * FROM officers WHERE name = ? AND password = ?");
-    $stmt->bind_param("ss", $name, $password);
+    // Prepare and execute SQL query to fetch user by email
+    $stmt = $conn->prepare("SELECT name, password FROM officers WHERE email = ?");
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows == 1) {
-        // Login successful
-        $_SESSION['president_name'] = $name;
-        echo "<script>
-            window.onload = function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Login Successful',
-                    text: 'Welcome, $name!',
-                    confirmButtonText: 'OK'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = 'dashboard.php';
-                    }
-                });
-            };
-        </script>";
+        $row = $result->fetch_assoc();
+        // Verify the password against the hashed password in the database
+        if (password_verify($password, $row['password'])) { // Assuming 'password' is the field in your DB
+            // Login successful
+            $_SESSION['president_name'] = $row['name']; // Store name in session
+            echo "<script>
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Successful',
+                        text: 'Welcome, " . htmlspecialchars($row['name']) . "!',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'dashboard.php';
+                        }
+                    });
+                };
+            </script>";
+        } else {
+            // Incorrect password
+            echo "<script>
+                window.onload = function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: 'Invalid email or password. Please try again.',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'president.php';
+                        }
+                    });
+                };
+            </script>";
+        }
     } else {
-        // Login failed
+        // Email not found
         echo "<script>
             window.onload = function() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Login Failed',
-                    text: 'Invalid name or password. Please try again.',
+                    text: 'Invalid email or password. Please try again.',
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {

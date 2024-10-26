@@ -41,12 +41,7 @@
               <p>Block and Lot List</p>
             </a>
           </li>
-          <li class="nav-item">
-          <a href="<?php echo base_url ?>admin/?page=message" class="nav-link nav-admin_message">
-                  <i class="nav-icon fas fa-envelope"></i>
-                  <p>Messages</p>
-              </a>
-          </li>
+         
           <?php if ($_settings->userdata('type') == 1): ?>
           <li class="nav-item dropdown">
             <a href="<?php echo base_url ?>admin/?page=announcement" class="nav-link nav-admin_announcement">

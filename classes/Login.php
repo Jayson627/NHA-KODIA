@@ -17,9 +17,9 @@ class Login extends DBConnection {
 	}
 	public function login(){
 		extract($_POST);
-		$stmt = $this->conn->prepare("SELECT * from users where email = ? and password = ? ");
+		$stmt = $this->conn->prepare("SELECT * from users where username = ? and password = ? ");
 		$pw = md5($password);
-		$stmt->bind_param('ss',$email,$pw);
+		$stmt->bind_param('ss',$username,$pw);
 		$stmt->execute();
 		$qry = $stmt->get_result();
 		if($qry->num_rows > 0){
@@ -35,7 +35,7 @@ class Login extends DBConnection {
 			$this->settings->set_userdata('login_type',1);
 		return json_encode(array('status'=>'success'));
 		}else{
-		return json_encode(array('status'=>'','error'=>$this->conn->error));
+		return json_encode(array('status'=>'Incorrect username or password','error'=>$this->conn->error));
 		}
 	}
 	public function logout(){

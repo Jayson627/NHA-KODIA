@@ -1,7 +1,5 @@
 <?php
 session_start(); // Start a session
-
-
 include_once('connection.php'); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -11,22 +9,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $block_no = htmlspecialchars(trim($_POST['block_no']));
     $fullname = htmlspecialchars(trim($_POST['fullname']));
 
-    // Query to check if the data exists
-    $qry = $conn->prepare("SELECT * FROM `student_list` WHERE `roll` = ? AND `block_no` = ? AND `lot_no` = ? AND CONCAT(lastname, ', ', firstname, ' ', middlename) = ?");
-    $qry->bind_param("ssss", $house_no, $block_no, $lot_no, $fullname);
-    $qry->execute();
-    $result = $qry->get_result();
-
-    if ($result->num_rows > 0) {
-        // Match found, fetch first name and set success message
-        $row = $result->fetch_assoc();
-        $first_name = htmlspecialchars($row['firstname']); // Get the first name
-        $success_message = "Welcome, $first_name!"; // Updated success message
+    // Strong validation: Check if inputs are numeric
+    if (!preg_match('/^\d+$/', $house_no)) {
+        $error_message = "House No must be a valid number.";
+    } elseif (!preg_match('/^\d+$/', $lot_no)) {
+        $error_message = "Lot No must be a valid number.";
+    } elseif (!preg_match('/^\d+$/', $block_no)) {
+        $error_message = "Block No must be a valid number.";
+    } elseif (empty($fullname)) {
+        $error_message = "Full Name is required.";
     } else {
-        $error_message = "No matching household found.";
-    }
+        // Query to check if the data exists
+        $qry = $conn->prepare("SELECT * FROM `student_list` WHERE `roll` = ? AND `block_no` = ? AND `lot_no` = ? AND CONCAT(lastname, ', ', firstname, ' ', middlename) = ?");
+        $qry->bind_param("ssss", $house_no, $block_no, $lot_no, $fullname);
+        $qry->execute();
+        $result = $qry->get_result();
 
-    $qry->close();
+        if ($result->num_rows > 0) {
+            // Match found, fetch first name and set success message
+            $row = $result->fetch_assoc();
+            $first_name = htmlspecialchars($row['firstname']);
+            $success_message = "Welcome, $first_name!";
+        } else {
+            $error_message = "No matching household found.";
+        }
+
+        $qry->close();
+    }
 }
 
 $conn->close();
@@ -151,13 +160,13 @@ $conn->close();
 
     <form method="post" action="">
         <label for="house_no">House No:</label>
-        <input type="text" id="house_no" name="house_no" placeholder="Enter House Number" required>
+        <input type="text" id="house_no" name="house_no" placeholder="Enter House Number" required pattern="\d+">
 
         <label for="lot_no">Lot No:</label>
-        <input type="text" id="lot_no" name="lot_no" placeholder="Enter Lot Number" required>
+        <input type="text" id="lot_no" name="lot_no" placeholder="Enter Lot Number" required pattern="\d+">
 
         <label for="block_no">Block No:</label>
-        <input type="text" id="block_no" name="block_no" placeholder="Enter Block Number" required>
+        <input type="text" id="block_no" name="block_no" placeholder="Enter Block Number" required pattern="\d+">
 
         <label for="fullname">Full Name:</label>
         <input type="text" id="fullname" name="fullname" placeholder="Enter Full Name" required>

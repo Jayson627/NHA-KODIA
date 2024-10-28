@@ -22,13 +22,13 @@ Class Users extends DBConnection {
 				return 4;
 			}
 		}
-		$chk = $this->conn->query("SELECT * FROM `users` where username ='{$username}' ".($id>0? " and id!= '{$id}' " : ""))->num_rows;
+		$chk = $this->conn->query("SELECT * FROM `users` where email ='{$email}' ".($id>0? " and id!= '{$id}' " : ""))->num_rows;
 		if($chk > 0){
 			return 3;
 			exit;
 		}
 		foreach($_POST as $k => $v){
-			if(in_array($k,array('firstname','middlename','lastname','username','type'))){
+			if(in_array($k,array('firstname','middlename','lastname','email','type'))){
 				if(!empty($data)) $data .=" , ";
 				$data .= " {$k} = '{$v}' ";
 			}

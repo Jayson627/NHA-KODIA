@@ -235,9 +235,6 @@
         <?php echo $_settings->info('name') ?> Kodia Information System
       </h4>
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
@@ -245,56 +242,53 @@
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-users"></i> Login As
+            Login as
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#" id="login-as-admin">Admin</a>
-            <a class="dropdown-item" href="residents.php">Users</a>
+            <a class="dropdown-item" id="login-as-admin" href="#">Admin</a>
+            <a class="dropdown-item" id="login-as-resident" href="residents.php">Resident</a>
+            
           </div>
         </li>
       </ul>
     </div>
   </nav>
 
-  <!-- Login Form Section -->
-  <div id="login">
+  <!-- Login Form -->
+  <div id="login" class="container">
     <div class="card">
       <div class="card-header">
-        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
+        <h4>Login</h4>
       </div>
       <div class="card-body">
-        <form id="login-frm" action="" method="post">
-          <input type="hidden" name="role" id="role" value="">
-          <div class="form-group input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-            </div>
-            <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
-                   pattern=".+@gmail\.com$" title="Please enter a valid Gmail address (e.g., example@gmail.com)">
-          </div>
-
-          <div class="form-group input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            </div>
-            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required
-                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" 
-                   title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
-            <div class="input-group-append">
-              <span class="input-group-text">
-                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
-              </span>
+        <form id="login-frm" method="post" action="" class="needs-validation" novalidate>
+          <input type="hidden" name="role" id="role" value="admin">
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+              </div>
+              <input type="email" name="email" class="form-control" id="email" required placeholder="Enter your email">
             </div>
           </div>
           <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <label for="password">Password</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              </div>
+              <input type="password" name="password" class="form-control" id="password" required placeholder="Enter your password">
+              <div class="input-group-append">
+                <span class="input-group-text" id="togglePassword"><i class="fas fa-eye"></i></span>
+              </div>
+            </div>
           </div>
-          <div class="form-group text-center">
-            <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
-          </div>
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
         </form>
       </div>
     </div>
   </div>
+
 </body>
 </html>

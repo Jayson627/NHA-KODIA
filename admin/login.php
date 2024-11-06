@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  
   <title>Login</title>
   <!-- Bootstrap 4 -->
   <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
@@ -22,61 +22,52 @@
       height: 100vh;
       margin: 0;
       font-family: 'Roboto', sans-serif;
-      background: url('nha.jpg') no-repeat center center fixed;
+      background: url('houses.jpg') no-repeat center center fixed;
       background-size: cover;
-      animation: slide 15s infinite;
     }
-
-    @keyframes slide {
-      0% {
-        background-image: url('houses.jpg');
-      }
-      33% {
-        background-image: url('bahay.jpg');
-      }
-      67% {
-        background-image: url('pasunod.jpg');
-      }
-      100% {
-        background-image: url('nha.jpg');
-      }
-    }
-
     /* Navbar */
     .navbar {
       background-color: #343a40;
     }
-
     .navbar-brand img {
       border-radius: 50%;
       height: 40px;
       width: 40px;
     }
-
     .navbar-brand h4 {
       font-size: 1.2rem;
       margin-left: 10px;
     }
-
     .navbar-nav .nav-link {
       color: #ffffff;
       font-weight: bold;
     }
-
     .navbar-nav .nav-link:hover {
       color: #f0f0f0;
     }
-
+    /* Dropdown */
+    .dropdown-menu {
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px 0;
+    }
+    .dropdown-item {
+      padding: 10px 20px;
+      transition: background-color 0.3s;
+    }
+    .dropdown-item:hover {
+      background-color: #007bff;
+      color: white;
+    }
     /* Login Form */
     #login {
+      height: 100vh;
       display: flex;
-      height: 100%;
       align-items: center;
       justify-content: center;
       position: relative;
       z-index: 1;
     }
-
     .card {
       width: 90%;
       max-width: 400px;
@@ -86,7 +77,6 @@
       overflow: hidden;
       background-color: #ffffff;
     }
-
     .card-header {
       background-color: #007bff;
       color: white;
@@ -94,89 +84,54 @@
       border-bottom: none;
       padding: 15px 0;
     }
-
     .card-body {
       padding: 20px;
     }
-
     .input-group-text {
       background-color: #007bff;
       color: white;
       border: none;
     }
-
     .form-control {
       border-radius: 0 20px 20px 0;
     }
-
     .btn-primary {
       border-radius: 20px;
       background-color: #007bff;
       border-color: #007bff;
     }
-
-    /* About Section */
-    #about {
-      display: none;
-      height: auto;
-      width: 100%;
-      color: #333;
-      background-color: lightblue;
-      padding: 20px;
+    /* Animated Text */
+    .animated-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: #ffffff;
+      white-space: nowrap;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 1s ease-in-out;
     }
-
-    #about h2 {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 15px;
-      text-align: center;
-      color: #007bff;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
-
-    #about p {
-      text-align: justify;
-      font-size: 16px;
-      line-height: 1.5;
-      color: #555;
-      margin-bottom: 15px;
-    }
-
-    #about .container {
-      max-width: 100%;
-      background: whitesmoke;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
     /* Media Queries */
     @media (max-width: 768px) {
       .navbar-brand h4 {
         font-size: 1rem;
       }
-
       .navbar-brand img {
         height: 35px;
         width: 35px;
       }
-
       .card {
         width: 95%;
         max-width: none;
       }
-
       .card-header h4 {
         font-size: 1.2rem;
       }
-    }
-
-    /* Optional: adjust styles for better visibility */
-    #about p {
-      font-size: 14px;
-    }
-
-    #about .container {
-      padding: 10px;
     }
   </style>
 
@@ -188,7 +143,41 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
 
   <script>
+    let typingInterval; // Variable to hold the typing interval
+    const text = "Welcome to NHA Kodia Information System";
+    const speed = 150; // Typing speed in milliseconds
+    let index = 0;
+
+    function type() {
+      if (index < text.length) {
+        document.getElementById("animated-text").innerHTML += text.charAt(index);
+        index++;
+        typingInterval = setTimeout(type, speed); // Store the timeout in typingInterval
+      } else {
+        setTimeout(() => {
+          document.getElementById("animated-text").innerHTML = ""; // Clear the text
+          index = 0; // Reset index
+          type(); // Restart typing
+        }, 2000); // Pause before restarting
+      }
+    }
+
     $(document).ready(function() {
+      $('#login').hide(); // Ensure login form is hidden initially
+      $('#animated-text').show(); // Show animated text initially
+
+      // Show login form only when "Admin", "Resident", or "Officer" link is clicked
+      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+        e.preventDefault(); // Prevent default link behavior
+        $('#login').fadeIn(); // Show login form
+        $('#animated-text').hide(); // Hide animated text
+
+        // Set role and form action based on which link was clicked
+        const role = $(this).attr('id').replace('login-as-', ''); // Get role from the ID
+        $('#role').val(role);
+        $('#login-frm').attr('action', role + '_login.php'); // Set form action
+      });
+
       // Show/hide password functionality
       $('#togglePassword').on('click', function() {
         const passwordField = $('#password');
@@ -202,20 +191,6 @@
           passwordField.attr('type', 'password');
           icon.removeClass('fa-eye-slash').addClass('fa-eye');
         }
-      });
-
-      // Show description when "About" link is clicked
-      $('a.nav-link[href="about.php"]').on('click', function(e) {
-        e.preventDefault();
-        $('#login').hide();
-        $('#about').fadeIn();
-      });
-
-      // Show login form when "Login" link is clicked
-      $('a.nav-link[href="#"]').on('click', function(e) {
-        e.preventDefault();
-        $('#about').hide();
-        $('#login').fadeIn();
       });
 
       // Validate email and password before form submission
@@ -242,11 +217,18 @@
         }
       });
     });
+
+    window.onload = function() {
+      type(); // Start typing when the page loads
+    };
   </script>
 </head>
 <body class="hold-transition">
+  <!-- Animated Text -->
+  <div id="animated-text" class="animated-text"></div>
+
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-blue  bg-blue">
+  <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
     <a class="navbar-brand" href="#">
       <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" style="border-radius: 50%; height: 50px; width: 50px; object-fit: cover;">
       <h4 style="display: inline-block; vertical-align: middle; margin-left: 10px;">
@@ -261,11 +243,14 @@
         <li class="nav-item">
           <a class="nav-link" href="about.php"><i class="fas fa-info-circle"></i> About</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="people.php"><i class="fas fa-users"></i> Residents</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="president.php"><i class="fas fa-user-tie"></i> President</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-users"></i> Login As
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#" id="login-as-admin">Admin</a>
+            <a class="dropdown-item" href="residents.php">Users</a>
+          </div>
         </li>
       </ul>
     </div>
@@ -279,6 +264,7 @@
       </div>
       <div class="card-body">
         <form id="login-frm" action="" method="post">
+          <input type="hidden" name="role" id="role" value="">
           <div class="form-group input-group">
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -308,15 +294,6 @@
           </div>
         </form>
       </div>
-    </div>
-  </div>
-
-  <!-- Description Section -->
-  <div id="about">
-    <div class="container">
-      <h2>About Kodia NHA</h2>
-      <p>The National Housing Authority (NHA) of Kodia is located in Barangay Kodia, Madridejos, Cebu. The housing consists of 750 units, 27 blocks, and 58 lots. Based on history, the Kodia NHA was constructed the year after Typhoon Yolanda and was turned over to the barangay in May 2021. All barangays in Madridejos, except for Barangay Tugas and Kangwayan, were provided with housing units. Each barangay was allocated 50 units for those residents who needed to evacuate during typhoons. The process of allocation involved barangay officials distributing forms to the recipients to fill out the necessary information.</p>
-      <p>Every barangay received 50 units, while Barangay Kodia received 100 units because the housing was built in their areas. Based on our survey, the barangays with the most residents living in the housing are Barangay Mancilang and Barangay Poblacion, as they are closest to the sea and most prone to typhoons. According to our survey, there are over 80 units that are not occupied but have owners. There is a possibility that the housing units may be reclaimed if they are not occupied for over a year.</p>
     </div>
   </div>
 </body>

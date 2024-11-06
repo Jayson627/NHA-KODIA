@@ -1,143 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php require_once('../config.php'); ?>
-<?php require_once('inc/header.php'); ?>
-<body class="hold-transition">
-  <script>
-    start_loader();
-  </script>
-  <style>
-    html, body {
-      height: 100%;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      background-image: url("<?php echo validate_image($_settings->info('cover')) ?>");
-      background-size: cover;
-      background-repeat: no-repeat;
-    }
-    .login-title {
-      text-shadow: 2px 2px black;
-    }
-    .navbar-brand img {
-      border-radius: 50%;
-      height: 50px;
-      width: 50px;
-      object-fit: cover;
-    }
-    .navbar-nav .nav-link {
-      color: white;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-    .navbar-nav .nav-link:hover {
-      color: #ddd;
-    }
-    .navbar-nav .active .nav-link {
-      color: #bbb;
-    }
-    #login {
-      display: flex;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
-    }
-    .card {
-      width: 100%;
-      max-width: 400px;
-      border: none;
-      border-radius: 10px; /* Rounded corners */
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      overflow: hidden; /* Ensures shadow and border radius work correctly */
-    }
-    .card-header {
-      background-color: #007bff;
-      color: white;
-      text-align: center;
-      border-bottom: none;
-      padding: 15px 0;
-    }
-    .card-body {
-      padding: 20px;
-    }
-    .form-control {
-      border-radius: 20px; 
-      border: 1px solid #ced4da; /* Light gray border */
-      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
-    }
-    .form-control:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-    .btn-primary {
-      border-radius: 20px; 
-      background-color: #007bff; 
-      border-color: #007bff; 
-    }
-    .btn-primary:hover {
-      background-color: #0069d9; 
-      border-color: #0062cc;
-    }
-    .btn-primary:focus, .btn-primary.focus {
-      box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5); 
-    }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Kodia NHA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('houses.jpg'); /* Replace with your image path */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+        }
+        h2 {
+            font-size: 3em; /* Increase heading size */
+            border-right: 2px solid #fff; /* Cursor effect */
+            white-space: nowrap; /* Prevent line breaks */
+            overflow: hidden; /* Cut off content */
+            width: 0; /* Start with width of 0 */
+            animation: typing 4s steps(40, end) forwards, blink-caret 0.75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #fff; }
+        }
+        .home-button {
+            position: fixed; /* Fix the button in place */
+            top: 20px; /* Adjust distance from the top */
+            right: 20px; /* Adjust distance from the right */
+            background: none;
+            border: none; /* Remove the default border */
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+            text-decoration: underline; /* Underline effect */
+            z-index: 1000; /* Ensure it stays on top */
+        }
+        p {
+            font-size: 1.5em; /* Increase paragraph size */
+            line-height: 1.6; /* Adjust line height for better readability */
+            opacity: 0;
+            animation: fadeIn 1s forwards 4.5s; /* Delay to fade in after typing */
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
 
-    /* Carousel styles */
-    .carousel-caption {
-      background: rgba(0, 0, 0, 0.5); /* Semi-transparent background for captions */
-      color: white;
-      padding: 10px;
-      text-align: center;
-    }
+    <button class="home-button" onclick="location.href='login.php'">Home</button>
+    <h2>About Kodia NHA</h2>
+    <p id="description"></p>
 
-    .carousel-inner .item img {
-      display: block;
-      margin: auto;
-      max-height: 400px; /* Limit maximum height of images */
-    }
-  </style>
+    <script>
+        const description = `The National Housing Authority (NHA) of Kodia is located in Barangay Kodia, Madridejos, Cebu. The housing consists of 750 units, 27 blocks, and 58 lots. Based on history, the Kodia NHA was constructed the year after Typhoon Yolanda and was turned over to the barangay in May 2021. All barangays in Madridejos, except for Barangay Tugas and Kangwayan, were provided with housing units. Each barangay was allocated 50 units for those residents who needed to evacuate during typhoons. The process of allocation involved barangay officials distributing forms to the recipients to fill out the necessary information.
+        
+        Every barangay received 50 units, while Barangay Kodia received 100 units because the housing was built in their areas. Based on our survey, the barangays with the most residents living in the housing are Barangay Mancilang and Barangay Poblacion, as they are closest to the sea and most prone to typhoons. According to our survey, there are over 80 units that are not occupied but have owners. There is a possibility that the housing units may be reclaimed if they are not occupied for over a year.`;
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">
-      <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo">
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="About.php">About</a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Login <span class="sr-only">(current)</span></a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+        // Split description into sentences and add a line break after each
+        const sentences = description.split('. ').map(sentence => sentence + '.').join('');
 
- 
+        let i = 0;
+        const speed = 50; // Typing speed in milliseconds
 
- 
+        function type() {
+            if (i < sentences.length) {
+                document.getElementById("description").innerHTML += sentences.charAt(i);
+                i++;
+                setTimeout(type, speed);
+            }
+        }
 
-  <!-- jQuery -->
-  <script src="plugins/jquery/jquery.min.js"></script>
-  <!-- Bootstrap 4 -->
-  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="dist/js/adminlte.min.js"></script>
-  
+        // Start typing effect after heading animation
+        setTimeout(type, 4500); // Delay to match the end of the title animation
+    </script>
 
-  <script>
-    $(document).ready(function() {
-      end_loader();
-    });
-  </script>
 </body>
 </html>

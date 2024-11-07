@@ -1,19 +1,5 @@
 <?php
-session_start();
-
-// Database connection parameters
-$servername = "localhost";
-$username = "root";  // Change as necessary
-$password = "";      // Change as necessary
-$dbname = "sis_db";  // Change to your database name
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include_once('connection.php'); 
 
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

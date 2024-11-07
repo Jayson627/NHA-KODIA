@@ -89,12 +89,7 @@
                                     <p>Incidents Report</p>
                                 </a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a href="<?php echo base_url ?>admin/?page=officer" class="nav-link nav-admin_officer">
-                                    <i class="nav-icon fas fa-user-shield"></i>
-                                    <p>Officer in Purok</p>
-                                </a>
-                            </li>
+
                             <li class="nav-item dropdown">
                                 <a href="<?php echo base_url ?>admin/?page=user/list" class="nav-link nav-user_list">
                                     <i class="nav-icon fas fa-users-cog"></i>

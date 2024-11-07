@@ -25,26 +25,19 @@
       background: url('houses.jpg') no-repeat center center fixed;
       background-size: cover;
     }
-
     /* Navbar */
     .navbar {
       background-color: #343a40;
     }
-    .navbar-brand {
-      display: flex;
-      align-items: center;
-    }
     .navbar-brand img {
       border-radius: 50%;
-      height: 50px;
-      width: 50px;
-      object-fit: cover;
+      height: 40px;
+      width: 40px;
     }
     .navbar-brand h4 {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       margin-left: 10px;
     }
-
     .navbar-nav .nav-link {
       color: #ffffff;
       font-weight: bold;
@@ -52,7 +45,6 @@
     .navbar-nav .nav-link:hover {
       color: #f0f0f0;
     }
-
     /* Dropdown */
     .dropdown-menu {
       border-radius: 0.5rem;
@@ -67,6 +59,10 @@
       background-color: #007bff;
       color: white;
     }
+    /* Make Navbar always visible */
+    .navbar-collapse {
+      display: block !important; /* Always visible on all screen sizes */
+    }
 
     /* Login Form */
     #login {
@@ -77,16 +73,14 @@
       position: relative;
       z-index: 1;
     }
-
-    /* Card Styling */
     .card {
-      width: 100%;
-      max-width: 450px;
+      width: 90%;
+      max-width: 400px;
       border: none;
       border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      overflow: hidden;
       background-color: #ffffff;
-      padding: 20px;
     }
     .card-header {
       background-color: #007bff;
@@ -98,29 +92,19 @@
     .card-body {
       padding: 20px;
     }
-
-    /* Form Input Styling */
     .input-group-text {
       background-color: #007bff;
       color: white;
       border: none;
     }
-
     .form-control {
       border-radius: 0 20px 20px 0;
     }
-
     .btn-primary {
       border-radius: 20px;
       background-color: #007bff;
       border-color: #007bff;
     }
-
-    /* Password Visibility */
-    #togglePassword {
-      cursor: pointer;
-    }
-
     /* Animated Text */
     .animated-text {
       position: absolute;
@@ -137,43 +121,23 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
-    /* Mobile Specific Styles */
+    /* Media Queries */
     @media (max-width: 768px) {
       .navbar-brand h4 {
+        font-size: 1rem;
+      }
+      .navbar-brand img {
+        height: 35px;
+        width: 35px;
+      }
+      .card {
+        width: 95%;
+        max-width: none;
+      }
+      .card-header h4 {
         font-size: 1.2rem;
       }
-
-      .navbar-brand img {
-        height: 40px;
-        width: 40px;
-      }
-
-      .card {
-        width: 90%;
-        max-width: 400px;
-      }
-
-      .input-group {
-        margin-bottom: 15px;
-      }
-
-      .form-control {
-        font-size: 14px;
-      }
-
-      .navbar-nav {
-        text-align: center;
-      }
-
-      .navbar-nav .nav-item {
-        width: 100%;
-        margin-bottom: 10px;
-      }
     }
-    .navbar-toggler-icon {
-    background-color: white !important; /* Override default color */
-  }
   </style>
 
   <!-- jQuery -->
@@ -184,39 +148,42 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
 
   <script>
-    let typingInterval;
+    let typingInterval; // Variable to hold the typing interval
     const text = "Welcome to NHA Kodia Information System";
-    const speed = 150;
+    const speed = 150; // Typing speed in milliseconds
     let index = 0;
 
     function type() {
       if (index < text.length) {
         document.getElementById("animated-text").innerHTML += text.charAt(index);
         index++;
-        typingInterval = setTimeout(type, speed);
+        typingInterval = setTimeout(type, speed); // Store the timeout in typingInterval
       } else {
         setTimeout(() => {
-          document.getElementById("animated-text").innerHTML = "";
-          index = 0;
-          type();
-        }, 2000);
+          document.getElementById("animated-text").innerHTML = ""; // Clear the text
+          index = 0; // Reset index
+          type(); // Restart typing
+        }, 2000); // Pause before restarting
       }
     }
 
     $(document).ready(function() {
-      $('#login').hide();
-      $('#animated-text').show();
+      $('#login').hide(); // Ensure login form is hidden initially
+      $('#animated-text').show(); // Show animated text initially
 
+      // Show login form only when "Admin", "Resident", or "Officer" link is clicked
       $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
-        e.preventDefault();
-        $('#login').fadeIn();
-        $('#animated-text').hide();
+        e.preventDefault(); // Prevent default link behavior
+        $('#login').fadeIn(); // Show login form
+        $('#animated-text').hide(); // Hide animated text
 
-        const role = $(this).attr('id').replace('login-as-', '');
+        // Set role and form action based on which link was clicked
+        const role = $(this).attr('id').replace('login-as-', ''); // Get role from the ID
         $('#role').val(role);
-        $('#login-frm').attr('action', role + '_login.php');
+        $('#login-frm').attr('action', role + '_login.php'); // Set form action
       });
 
+      // Show/hide password functionality
       $('#togglePassword').on('click', function() {
         const passwordField = $('#password');
         const passwordFieldType = passwordField.attr('type');
@@ -231,6 +198,7 @@
         }
       });
 
+      // Validate email and password before form submission
       $('#login-frm').on('submit', function(e) {
         const email = $('[name="email"]').val();
         const emailPattern = /.+@gmail\.com$/;
@@ -238,14 +206,14 @@
         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
         if (!emailPattern.test(email)) {
-          e.preventDefault();
+          e.preventDefault(); // Prevent form submission
           Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
             text: 'Please enter a valid Gmail address.',
           });
         } else if (!passwordPattern.test(password)) {
-          e.preventDefault();
+          e.preventDefault(); // Prevent form submission
           Swal.fire({
             icon: 'error',
             title: 'Invalid Password',
@@ -256,7 +224,7 @@
     });
 
     window.onload = function() {
-      type();
+      type(); // Start typing when the page loads
     };
   </script>
 </head>
@@ -267,13 +235,12 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
     <a class="navbar-brand" href="#">
-      <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo">
-      <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
+      <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" style="border-radius: 50%; height: 50px; width: 50px; object-fit: cover;">
+      <h4 style="display: inline-block; vertical-align: middle; margin-left: 10px;">
+        <?php echo $_settings->info('name') ?> Kodia Information System
+      </h4>
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse collapse" id="navbarNav">
+    <div class="navbar-collapse"> <!-- Removed the collapsible behavior -->
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <a class="nav-link" href="about.php"><i class="fas fa-info-circle"></i> About</a>
@@ -304,7 +271,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="fas fa-user"></i></span>
             </div>
-            <input type="email" class="form-control" name="email" placeholder="Enter email" required
+            <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
                    pattern=".+@gmail\.com$" title="Please enter a valid Gmail address (e.g., example@gmail.com)">
           </div>
 

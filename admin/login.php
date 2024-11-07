@@ -25,49 +25,90 @@
       background: url('houses.jpg') no-repeat center center fixed;
       background-size: cover;
     }
+
     /* Navbar */
     .navbar {
       background-color: #343a40;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+
     .navbar-brand img {
       border-radius: 50%;
-      height: 40px;
-      width: 40px;
+      height: 50px;
+      width: 50px;
     }
     .navbar-brand h4 {
-      font-size: 1.2rem;
+      font-size: 1.5rem;
       margin-left: 10px;
+      color: #ffffff;
+      font-weight: bold;
     }
+
+    .navbar-nav {
+      display: flex;
+      justify-content: flex-end;
+      margin-left: auto;
+    }
+
     .navbar-nav .nav-link {
       color: #ffffff;
       font-weight: bold;
+      margin-left: 20px;
     }
     .navbar-nav .nav-link:hover {
       color: #f0f0f0;
     }
-    /* Dropdown */
-    .dropdown-menu {
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 10px 0;
+
+    /* Push Menu Styles */
+    #push-menu {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #343a40;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+      z-index: 1000;
     }
-    .dropdown-item {
-      padding: 10px 20px;
-      transition: background-color 0.3s;
+
+    #push-menu a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: white;
+      display: block;
+      transition: 0.3s;
     }
-    .dropdown-item:hover {
+
+    #push-menu a:hover {
       background-color: #007bff;
+    }
+
+    #push-menu .close-btn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
       color: white;
     }
 
-    .navbar-toggler-icon {
-  display: inline-block;
-  width: 1.5em;
-  height: 1.5em;
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23ffffff' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
+    .open-menu-btn {
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+      display: none;
+    }
+
+    .open-menu-btn:hover {
+      color: #007bff;
+    }
+
     /* Login Form */
     #login {
       height: 100vh;
@@ -109,6 +150,7 @@
       background-color: #007bff;
       border-color: #007bff;
     }
+
     /* Animated Text */
     .animated-text {
       position: absolute;
@@ -125,6 +167,7 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
+
     /* Media Queries */
     @media (max-width: 768px) {
       .navbar-brand h4 {
@@ -140,6 +183,28 @@
       }
       .card-header h4 {
         font-size: 1.2rem;
+      }
+
+      /* Hide Links in Mobile View */
+      .navbar-nav .nav-link {
+        display: none !important;
+      }
+
+      /* Show Push Menu only on small screens (mobile view) */
+      #push-menu {
+        width: 0; /* Hide the push menu by default */
+      }
+
+      /* Only show the open menu button (hamburger) on mobile */
+      .open-menu-btn {
+        display: block;
+      }
+
+      /* Hide the Push Menu Button on larger screens */
+      @media (min-width: 769px) {
+        .open-menu-btn {
+          display: none;
+        }
       }
     }
   </style>
@@ -225,6 +290,15 @@
           });
         }
       });
+
+      // Push Menu Toggle
+      $('.open-menu-btn').click(function() {
+        $('#push-menu').css('width', '250px'); // Show the push menu
+      });
+
+      $('.close-btn').click(function() {
+        $('#push-menu').css('width', '0'); // Hide the push menu
+      });
     });
 
     window.onload = function() {
@@ -233,37 +307,34 @@
   </script>
 </head>
 <body class="hold-transition">
-  <!-- Animated Text -->
-  <div id="animated-text" class="animated-text"></div>
-
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
     <a class="navbar-brand" href="#">
-      <img src="<?= validate_image($_settings->info('logo')) ?>" alt="Logo" style="border-radius: 50%; height: 50px; width: 50px; object-fit: cover;">
-      <h4 style="display: inline-block; vertical-align: middle; margin-left: 10px;">
-        <?php echo $_settings->info('name') ?> Kodia Information System
-      </h4>
+      <img src="lo.png" alt="Logo">
+      
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="about.php"><i class="fas fa-info-circle"></i> About</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-users"></i> Login As
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#" id="login-as-admin">Admin</a>
-            <a class="dropdown-item" href="residents.php">Users</a>
-          </div>
-        </li>
-      </ul>
+
+    <!-- Push Menu Button (Hamburger) -->
+    <span class="open-menu-btn">&#9776; </span>
+
+    <!-- Navbar Links on the right -->
+    <div class="navbar-nav">
+      <a href="about.php" class="nav-link">About</a>
+      <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
+      <a href="residents.php" class="nav-link">Login as Resident</a>
+    </div>
+
+    <!-- Push Menu -->
+    <div id="push-menu">
+      <a href="javascript:void(0)" class="close-btn">&times;</a>
+      <a href="about.php">About</a>
+      <a href="#" id="login-as-admin">Login as Admin</a>
+      <a href="residents.php">Login as Resident</a>
     </div>
   </nav>
+
+  <!-- Animated Text -->
+  <div id="animated-text" class="animated-text"></div>
 
   <!-- Login Form Section -->
   <div id="login">

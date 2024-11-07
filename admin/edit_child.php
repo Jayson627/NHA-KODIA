@@ -1,17 +1,5 @@
 <?php
-// Database connection
-$servername = "127.0.0.1:3306";
-$username = "u510162695_sis_db";
-$password = "1Sis_dbpassword";
-$dbname = "u510162695_sis_db";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include_once('connection.php'); 
 
 if (isset($_GET['id'])) {
     $qry = $conn->query("SELECT * FROM `children` WHERE id = '{$_GET['id']}'");
@@ -91,8 +79,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="card-body">
             <form method="POST">
                 <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" class="form-control" name="name" value="<?= htmlspecialchars($child['name']); ?>" required>
+                    <label for="first_name">First Name:</label>
+                    <input type="text" class="form-control" name="first_name" value="<?= htmlspecialchars($child['first_name']); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="middle_name">Middle Name:</label>
+                    <input type="text" class="form-control" name="middle_name" value="<?= htmlspecialchars($child['middle_name']); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" class="form-control" name="last_name" value="<?= htmlspecialchars($child['last_name']); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="extension_name">Extension Name:</label>
+                    <input type="text" class="form-control" name="extension_name" value="<?= htmlspecialchars($child['extension_name']); ?>" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -133,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="form-group">
                     <label for="contact_number">Contact Number:</label>
                     <input type="text" class="form-control" name="contact_number" value="<?= htmlspecialchars($child['contact_number']); ?>" required>
+                    <textarea class="form-control mb-2 mr-sm-2" id="remark" name="remark" placeholder="Remarks (optional)" rows="3"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
                 <a href="view_child.php?id=<?= $_GET['id'] ?>" class="btn btn-secondary">Cancel</a>

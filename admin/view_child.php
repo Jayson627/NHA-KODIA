@@ -1,17 +1,5 @@
 <?php
-// Database connection
-$servername = "127.0.0.1:3306";
-$username = "u510162695_sis_db";
-$password = "1Sis_dbpassword";
-$dbname = "u510162695_sis_db";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include_once('connection.php'); 
 
 if (isset($_GET['id'])) {
     $qry = $conn->query("SELECT * FROM `children` WHERE id = '{$_GET['id']}'");
@@ -68,7 +56,10 @@ if (isset($_GET['id'])) {
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>Name:</strong> <?= htmlspecialchars($child['name']); ?></p>
+                    <p><strong>First Name:</strong> <?= htmlspecialchars($child['first_name']); ?></p>
+                    <p><strong>Middle Name:</strong> <?= htmlspecialchars($child['middle_name']); ?></p>
+                    <p><strong>Last Name:</strong> <?= htmlspecialchars($child['last_name']); ?></p>
+                    <p><strong>Extension Name:</strong> <?= htmlspecialchars($child['extension_name']); ?></p>
                     <p><strong>Age:</strong> <?= htmlspecialchars($child['age']); ?></p>
                     <p><strong>Gender:</strong> <?= htmlspecialchars($child['gender']); ?></p>
                 </div>
@@ -77,6 +68,7 @@ if (isset($_GET['id'])) {
                     <p><strong>Birthdate:</strong> <?= htmlspecialchars($child['birthdate']); ?></p>
                     <p><strong>Educational Attainment:</strong> <?= htmlspecialchars($child['educational_attainment']); ?></p>
                     <p><strong>Contact Number:</strong> <?= htmlspecialchars($child['contact_number']); ?></p>
+                    <p><strong>Remark:</strong> <?= htmlspecialchars($child['remark']); ?></p>
                 </div>
             </div>
             

@@ -1,10 +1,19 @@
 <?php
 session_start();
-include_once('connection.php'); 
+include_once('connection.php');
 
 // Fetch announcements from the database
-$sql = "SELECT id, title, content, date FROM announcements ORDER BY date DESC";
-$result = $conn->query($sql);
+$announcements = [];
+$result = $conn->query("SELECT * FROM announcements WHERE CURDATE() BETWEEN start_date AND end_date");
+
+if ($result) {
+    $announcements = $result->fetch_all(MYSQLI_ASSOC);
+} else {
+    error_log("Database query failed: " . $conn->error);
+}
+
+// Close the database connection
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -12,18 +21,22 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Announcements</title>
+    <title>View Announcements & Incident Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('nha.jpg'); /* Path to your background image */
-            background-size: cover; /* Cover the entire viewport */
-            background-repeat: no-repeat; /* Prevent repeating the image */
+            background-image: url('houses.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             margin: 0;
             padding: 0;
+            height: 100vh;
         }
         .header {
-            background-color: #007BFF;
+            background-color: rgba(0, 123, 255, 0.8);
             color: #fff;
             padding: 10px 20px;
             display: flex;
@@ -35,258 +48,220 @@ $result = $conn->query($sql);
             margin: 0;
             color: #ffffff;
         }
-        .header .icons {
+        .icons {
             display: flex;
             align-items: center;
-            margin-left: auto;
+            gap: 10px;
         }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none; /* Hide announcements by default */
-        }
-        .announcement {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            background: #fff;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        .announcement h2 {
-            margin-top: 0;
-        }
-        .announcement .date {
-            font-size: 0.9em;
-            color: #555;
-            margin-bottom: 10px;
-        }
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 15px;
-            border: 1px solid #888;
-            width: 50%;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-        .modal-content h2 {
-            text-align: center;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .logout-btn {
-            display: flex;
-            align-items: center;
+        .btn {
             color: white;
             padding: 10px 15px;
             border-radius: 5px;
             text-decoration: none;
             font-size: 16px;
             transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
         }
-        .logout-btn i {
+        .btn i {
             margin-right: 8px;
-            font-size: 18px;
         }
-        .logout-btn:hover {
+        .btn:hover {
             background-color: blue;
         }
-        .report-btn, .message-btn, .announcement-btn {
+        .welcome-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
             color: white;
-            background-color: transparent;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-            margin-left: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 3s ease-in-out infinite alternate;
         }
-        .report-btn:hover, .message-btn:hover, .announcement-btn:hover {
-            background-color: blue;
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translate(-50%, -60%); }
+            100% { opacity: 1; transform: translate(-50%, -50%); }
         }
-        .form-group {
-            margin-bottom: 10px; 
-            text-align: center;
+        .announcement-container, .incident-form-container {
+            padding: 20px;
+            color: white;
         }
-        .form-group label {
-            display: block;
-            margin-bottom: 2px; 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            color: black;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .incident-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            color: black;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .incident-form h3 {
+            color: #007BFF;
+        }
+        .incident-form label {
             font-weight: bold;
+            margin-top: 10px;
+            display: block;
         }
-        .form-group input, .form-group textarea {
-            width: calc(100% - 10px);
-            max-width: 250px; 
-            padding: 5px; 
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .incident-form select, .incident-form input, .incident-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             box-sizing: border-box;
         }
-        .form-group textarea {
-            resize: vertical;
-            height: 80px; 
-        }
-        .submit-btn {
+        .incident-form button {
+            margin-top: 15px;
+            padding: 10px 20px;
             background-color: #007BFF;
             color: white;
             border: none;
-            padding: 8px 15px; 
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-            display: block;
-            margin: 10px auto;
+            width: 100%;
         }
-        .submit-btn:hover {
+        .incident-form button:hover {
             background-color: #0056b3;
         }
-        .president-name {
-            color: #fff;
-            margin-left: 20px;
+        /* Close Button */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 <div class="header">
+    <h1>Dashboard</h1>
     <div class="icons">
-        <button class="announcement-btn" onclick="toggleAnnouncements()">Announcements</button>
-        <button class="report-btn" onclick="openIncidentModal()">Report</button>
-        <a href="people.php" class="logout-btn">
+        <a href="#" class="btn" onclick="toggleAnnouncements()">
+            <i class="fas fa-bell"></i> Announcements
+        </a>
+        <a href="#" class="btn" onclick="toggleIncidentForm()">
+            <i class="fas fa-exclamation-triangle"></i> Report Incident
+        </a>
+        <a href="residents.php" class="btn">
             <i class="fas fa-sign-out-alt"></i> Logout
         </a>
     </div>
 </div>
 
-<div class="container" id="announcements">
-    <h1>Announcements</h1>
+<div class="welcome-text" id="welcomeText">Welcome </div>
 
-    <?php
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            echo "<div class='announcement'>";
-            echo "<h2>" . $row["title"] . "</h2>";
-            echo "<div class='date'>" . $row["date"] . "</div>";
-            echo "<p>" . $row["content"] . "</p>";
-            echo "</div>";
-        }
-    } else {
-        echo "No announcements found.";
-    }
-    ?>
+<!-- Announcements Section -->
+<div class="announcement-container" id="announcementContainer" style="display: none;">
+    <button class="close-btn" onclick="toggleAnnouncements()">×</button>
+    <h2>Current Announcements</h2>
+    <?php if (count($announcements) > 0): ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>Announcement</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($announcements as $announcement): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($announcement['announcement']); ?></td>
+                        <td><?php echo htmlspecialchars($announcement['start_date']); ?></td>
+                        <td><?php echo htmlspecialchars($announcement['end_date']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p>No announcements available at the moment.</p>
+    <?php endif; ?>
 </div>
 
-<!-- The Incident Modal -->
-<div id="incidentModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeIncidentModal()">&times;</span>
-        <h2>Report an Incident</h2>
-        <form action="submit_incident.php" method="POST">
-            <div class="form-group">
-                <label for="incident_date">Incident Date:</label>
-                <input type="date" id="incident_date" name="incident_date" required>
-            </div>
-            <div class="form-group">
-                <label for="incident_description">Description:</label>
-                <textarea id="incident_description" name="incident_description" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="reported_by">Reported By:</label>
-                <input type="text" id="reported_by" name="reported_by" required>
-            </div>
-            <div style="text-align: center;">
-                <input type="submit" class="submit-btn" value="Submit Report">
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- The Message Modal -->
-<div id="messageModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeMessageModal()">&times;</span>
-        <h2>Send a Message</h2>
-        <form action="submit_message.php" method="POST">
-            <div class="form-group">
-                <label for="lot_no">Lot No.:</label>
-                <input type="text" id="lot_no" name="lot_no" required>
-            </div>
-            <div class="form-group">
-                <label for="block_no">Block No.:</label>
-                <input type="text" id="block_no" name="block_no" required>
-            </div>
-            <div class="form-group">
-                <label for="sender_name">Sender Name:</label>
-                <input type="text" id="sender_name" name="sender_name" required>
-            </div>
-            <div class="form-group">
-                <label for="message_content">Message:</label>
-                <textarea id="message_content" name="message_content" required></textarea>
-            </div>
-            <div style="text-align: center;">
-                <input type="submit" class="submit-btn" value="Send Message">
-            </div>
-        </form>
-    </div>
+<!-- Incident Report Form -->
+<div class="incident-form-container" id="incidentFormContainer" style="display: none;">
+    <button class="close-btn" onclick="toggleIncidentForm()">×</button>
+    <form class="incident-form" action="submit_incident.php" method="POST">
+        <h3>Incident Report</h3>
+        
+        <label for="incidentType">Incident Type</label>
+        <select name="incidentType" id="incidentType" required>
+            <option value="Fire">Fire</option>
+            <option value="Accident">Accident</option>
+            <option value="Flood">Flood</option>
+            <option value="Theft">Theft</option>
+            <option value="Other">Other</option>
+        </select>
+        
+        <label for="reportBy">Report By</label>
+        <input type="text" name="reportBy" id="reportBy" placeholder="Your name" required>
+        
+        <label for="description">Description</label>
+        <textarea name="description" id="description" placeholder="Describe the incident" rows="4" required></textarea>
+        
+        <label for="date">Date</label>
+        <input type="date" name="date" id="date" required>
+        
+        <button type="submit">Submit Report</button>
+    </form>
 </div>
 
 <script>
     function toggleAnnouncements() {
-        const announcements = document.getElementById('announcements');
-        announcements.style.display = announcements.style.display === 'none' || announcements.style.display === '' ? 'block' : 'none';
+        var container = document.getElementById('announcementContainer');
+        var welcomeText = document.getElementById('welcomeText');
+        container.style.display = (container.style.display === 'none') ? 'block' : 'none';
+        welcomeText.style.display = (container.style.display === 'block') ? 'none' : 'block'; // Hide welcome text
     }
 
-    function openIncidentModal() {
-        document.getElementById('incidentModal').style.display = 'block';
-    }
-
-    function closeIncidentModal() {
-        document.getElementById('incidentModal').style.display = 'none';
-    }
-
-    function openMessageModal() {
-        document.getElementById('messageModal').style.display = 'block';
-    }
-
-    function closeMessageModal() {
-        document.getElementById('messageModal').style.display = 'none';
-    }
-
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('incidentModal')) {
-            closeIncidentModal();
-        } else if (event.target == document.getElementById('messageModal')) {
-            closeMessageModal();
-        }
+    function toggleIncidentForm() {
+        var container = document.getElementById('incidentFormContainer');
+        var welcomeText = document.getElementById('welcomeText');
+        container.style.display = (container.style.display === 'none') ? 'block' : 'none';
+        welcomeText.style.display = (container.style.display === 'block') ? 'none' : 'block'; // Hide welcome text
     }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (isset($_SESSION['message'])): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '<?php echo $_SESSION['message']; ?>',
+            confirmButtonText: 'OK'
+        });
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
+});
+</script>
+
 </body>
 </html>

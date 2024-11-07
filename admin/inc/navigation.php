@@ -68,6 +68,13 @@
                                     <p>Block and Lot List</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+    <a href="<?php echo base_url ?>admin/?page=approved_accounts" class="nav-link nav-admin_approved_accounts">
+        <i class="nav-icon fas fa-user"></i>
+        <p>Approved Accounts</p>
+    </a>
+</li>
+
 
                             <?php if ($_settings->userdata('type') == 1): ?>
                             <li class="nav-item dropdown">

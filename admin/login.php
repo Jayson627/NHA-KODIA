@@ -5,7 +5,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
   <title>Login</title>
   <!-- Bootstrap 4 -->
   <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
@@ -33,13 +32,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap; /* Allow items to wrap on smaller screens */
     }
 
     .navbar-brand img {
       border-radius: 50%;
-      height: 50px;
-      width: 50px;
+      height: 80px;
+      width: 80px;
     }
+
     .navbar-brand h4 {
       font-size: 1.5rem;
       margin-left: 10px;
@@ -51,15 +52,29 @@
       display: flex;
       justify-content: flex-end;
       margin-left: auto;
+      flex-wrap: wrap;
     }
 
     .navbar-nav .nav-link {
       color: #ffffff;
       font-weight: bold;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       margin-left: 20px;
+      padding: 8px 15px;
+      border-radius: 30px;
+      transition: all 0.3s ease;
     }
+
     .navbar-nav .nav-link:hover {
       color: #f0f0f0;
+      background-color: #007bff;
+      padding: 8px 20px;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
     }
 
     /* Push Menu Styles */
@@ -103,6 +118,7 @@
       color: white;
       cursor: pointer;
       display: none;
+      z-index: 1050;
     }
 
     .open-menu-btn:hover {
@@ -118,6 +134,7 @@
       position: relative;
       z-index: 1;
     }
+
     .card {
       width: 90%;
       max-width: 400px;
@@ -127,6 +144,7 @@
       overflow: hidden;
       background-color: #ffffff;
     }
+
     .card-header {
       background-color: #007bff;
       color: white;
@@ -134,17 +152,21 @@
       border-bottom: none;
       padding: 15px 0;
     }
+
     .card-body {
       padding: 20px;
     }
+
     .input-group-text {
       background-color: #007bff;
       color: white;
       border: none;
     }
+
     .form-control {
       border-radius: 0 20px 20px 0;
     }
+
     .btn-primary {
       border-radius: 20px;
       background-color: #007bff;
@@ -163,6 +185,7 @@
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
       animation: fadeIn 1s ease-in-out;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -173,38 +196,51 @@
       .navbar-brand h4 {
         font-size: 1rem;
       }
+
       .navbar-brand img {
         height: 35px;
         width: 35px;
       }
+
       .card {
         width: 95%;
         max-width: none;
       }
+
       .card-header h4 {
         font-size: 1.2rem;
       }
 
-      /* Hide Links in Mobile View */
       .navbar-nav .nav-link {
         display: none !important;
       }
 
-      /* Show Push Menu only on small screens (mobile view) */
+      /* Show Push Menu only on small screens */
       #push-menu {
-        width: 0; /* Hide the push menu by default */
+        width: 0;
       }
 
-      /* Only show the open menu button (hamburger) on mobile */
+      /* Display the hamburger menu button in mobile */
       .open-menu-btn {
         display: block;
       }
 
-      /* Hide the Push Menu Button on larger screens */
-      @media (min-width: 769px) {
-        .open-menu-btn {
-          display: none;
-        }
+      .navbar-nav {
+        display: none;
+      }
+
+      .open-menu-btn {
+        margin-left: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .animated-text {
+        font-size: 2rem; /* Adjust animated text size for very small screens */
+      }
+
+      .card-header h4 {
+        font-size: 1.1rem;
       }
     }
   </style>
@@ -217,42 +253,39 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
 
   <script>
-    let typingInterval; // Variable to hold the typing interval
+    let typingInterval;
     const text = "Welcome to NHA Kodia Information System";
-    const speed = 150; // Typing speed in milliseconds
+    const speed = 150; 
     let index = 0;
 
     function type() {
       if (index < text.length) {
         document.getElementById("animated-text").innerHTML += text.charAt(index);
         index++;
-        typingInterval = setTimeout(type, speed); // Store the timeout in typingInterval
+        typingInterval = setTimeout(type, speed); 
       } else {
         setTimeout(() => {
-          document.getElementById("animated-text").innerHTML = ""; // Clear the text
-          index = 0; // Reset index
-          type(); // Restart typing
-        }, 2000); // Pause before restarting
+          document.getElementById("animated-text").innerHTML = "";
+          index = 0; 
+          type();
+        }, 2000); 
       }
     }
 
     $(document).ready(function() {
-      $('#login').hide(); // Ensure login form is hidden initially
-      $('#animated-text').show(); // Show animated text initially
+      $('#login').hide();
+      $('#animated-text').show();
 
-      // Show login form only when "Admin", "Resident", or "Officer" link is clicked
       $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
-        e.preventDefault(); // Prevent default link behavior
-        $('#login').fadeIn(); // Show login form
-        $('#animated-text').hide(); // Hide animated text
+        e.preventDefault();
+        $('#login').fadeIn();
+        $('#animated-text').hide();
 
-        // Set role and form action based on which link was clicked
-        const role = $(this).attr('id').replace('login-as-', ''); // Get role from the ID
+        const role = $(this).attr('id').replace('login-as-', '');
         $('#role').val(role);
-        $('#login-frm').attr('action', role + '_login.php'); // Set form action
+        $('#login-frm').attr('action', role + '_login.php');
       });
 
-      // Show/hide password functionality
       $('#togglePassword').on('click', function() {
         const passwordField = $('#password');
         const passwordFieldType = passwordField.attr('type');
@@ -267,7 +300,6 @@
         }
       });
 
-      // Validate email and password before form submission
       $('#login-frm').on('submit', function(e) {
         const email = $('[name="email"]').val();
         const emailPattern = /.+@gmail\.com$/;
@@ -275,14 +307,14 @@
         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
         if (!emailPattern.test(email)) {
-          e.preventDefault(); // Prevent form submission
+          e.preventDefault(); 
           Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
             text: 'Please enter a valid Gmail address.',
           });
         } else if (!passwordPattern.test(password)) {
-          e.preventDefault(); // Prevent form submission
+          e.preventDefault(); 
           Swal.fire({
             icon: 'error',
             title: 'Invalid Password',
@@ -291,52 +323,45 @@
         }
       });
 
-      // Push Menu Toggle
       $('.open-menu-btn').click(function() {
-        $('#push-menu').css('width', '250px'); // Show the push menu
+        $('#push-menu').css('width', '250px'); 
       });
 
       $('.close-btn').click(function() {
-        $('#push-menu').css('width', '0'); // Hide the push menu
+        $('#push-menu').css('width', '0'); 
       });
     });
 
     window.onload = function() {
-      type(); // Start typing when the page loads
+      type(); 
     };
   </script>
 </head>
-<body class="hold-transition">
+<body>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
     <a class="navbar-brand" href="#">
       <img src="lo.png" alt="Logo">
-      
     </a>
 
-    <!-- Push Menu Button (Hamburger) -->
-    <span class="open-menu-btn">&#9776; </span>
+    <span class="open-menu-btn">&#9776;</span>
 
-    <!-- Navbar Links on the right -->
     <div class="navbar-nav">
       <a href="about.php" class="nav-link">About</a>
       <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
       <a href="residents.php" class="nav-link">Login as Resident</a>
     </div>
 
-    <!-- Push Menu -->
     <div id="push-menu">
       <a href="javascript:void(0)" class="close-btn">&times;</a>
       <a href="about.php">About</a>
-      <a href="#" id="login-as-admin">Login as Admin</a>
-      <a href="residents.php">Login as Resident</a>
+      <a href="#" id="login-as-admin"> Admin</a>
+      <a href="residents.php"> Resident</a>
     </div>
   </nav>
 
-  <!-- Animated Text -->
   <div id="animated-text" class="animated-text"></div>
 
-  <!-- Login Form Section -->
   <div id="login">
     <div class="card">
       <div class="card-header">
@@ -350,7 +375,7 @@
               <span class="input-group-text"><i class="fas fa-user"></i></span>
             </div>
             <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
-                   pattern=".+@gmail\.com$" title="Please enter a valid Gmail address (e.g., example@gmail.com)">
+                   pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
           </div>
 
           <div class="form-group input-group">

@@ -84,7 +84,7 @@
       position: fixed;
       top: 0;
       left: 0;
-      background-color: #343a40;
+      background-color: white;
       overflow-x: hidden;
       transition: 0.5s;
       padding-top: 60px;
@@ -95,13 +95,13 @@
       padding: 8px 8px 8px 32px;
       text-decoration: none;
       font-size: 25px;
-      color: white;
+      color: black;
       display: block;
       transition: 0.3s;
     }
 
     #push-menu a:hover {
-      background-color: #007bff;
+      background-color: blue;
     }
 
     #push-menu .close-btn {
@@ -110,7 +110,7 @@
       right: 25px;
       font-size: 36px;
       margin-left: 50px;
-      color: white;
+      color: red;
     }
 
     .open-menu-btn {

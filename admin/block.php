@@ -169,7 +169,6 @@ $conn->close();
                         </td>
                         <td>
                             <a href="edit_block.php?block_no=<?php echo urlencode($block_no); ?>" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="block.php?delete=<?php echo urlencode($block_no); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this block?');">Delete</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

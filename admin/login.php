@@ -46,22 +46,23 @@
       color: #f0f0f0;
     }
     /* Dropdown */
-.dropdown-menu {
-  background-color: #ffffff; /* Change to white */
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 10px 0;
-}
-.dropdown-item {
-  padding: 10px 20px;
-  transition: background-color 0.3s;
-  color: #343a40; /* Adjust text color for readability on white background */
-}
-.dropdown-item:hover {
-  background-color: #007bff;
-  color: white;
-}
+    .dropdown-menu {
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px 0;
+    }
+    .dropdown-item {
+      padding: 10px 20px;
+      transition: background-color 0.3s;
+    }
+    .dropdown-item:hover {
+      background-color: #007bff;
+      color: white;
+    }
 
+    .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  }
     /* Login Form */
     #login {
       height: 100vh;

@@ -138,22 +138,8 @@ if ($qry->num_rows > 0) {
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "sis_db";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connections
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Initialize error message variable
-$error_message = "";
+include_once('connection.php'); // Include your database connection
 
 // Pagination setup
 $limit = 10; // Number of records per page

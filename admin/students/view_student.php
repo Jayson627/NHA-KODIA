@@ -1,12 +1,11 @@
 <?php
-if (isset($_GET['id'])) {
-    $qry = $conn->query("SELECT *, CONCAT(lastname,', ', firstname,' ', middlename) as fullname FROM student_list WHERE id = '{$_GET['id']}'");
-    if ($qry->num_rows > 0) {
-        $res = $qry->fetch_array();
-        foreach ($res as $k => $v) {
-            if (!is_numeric($k)) {
-                $$k = $v;
-            }
+// Query to retrieve household and spouse full names with extensions
+$qry = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename, ' ', owner_extension) as fullname, CONCAT(spouse_lastname, ', ', spouse_firstname, ' ', spouse_middlename, ' ', spouse_extension) as spouse_fullname FROM student_list WHERE id = '{$_GET['id']}'");
+if ($qry->num_rows > 0) {
+    $res = $qry->fetch_array();
+    foreach ($res as $k => $v) {
+        if (!is_numeric($k)) {
+            $$k = $v;
         }
     }
 }
@@ -53,73 +52,97 @@ if (isset($_GET['id'])) {
                         </div>
                     </div>
                 </div>
-                <fieldset class="border-bottom">
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <div class="form-group">
-                <label class="control-label text-muted">Name</label>
-                <div class="pl-4"><?= isset($fullname) ? $fullname : 'N/A' ?></div>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label text-muted">Gender</label>
-                <div class="pl-4"><?= isset($gender) ? $gender : 'N/A' ?></div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label text-muted">Date of Birth</label>
-                <div class="pl-4"><?= isset($dob) ? date("M d, Y", strtotime($dob)) : 'N/A' ?></div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label text-muted">Contact #</label>
-                <div class="pl-4"><?= isset($contact) ? $contact : 'N/A' ?></div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label text-muted">Block #</label>
-                <div class="pl-4"><?= isset($block_no) ? $block_no : 'N/A' ?></div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label text-muted">Lot #</label>
-                <div class="pl-4"><?= isset($lot_no) ? $lot_no : 'N/A' ?></div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label class="control-label text-muted">Barangay</label>
-                <div class="pl-4"><?= isset($present_address) ? $present_address : 'N/A' ?></div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group">
-                <label class="control-label text-muted">Remarks</label>
-                <div class="pl-4"><?= isset($permanent_address) ? $permanent_address : 'N/A' ?></div>
-            </div>
-        </div>
-    </div>
-</fieldset>
+                <fieldset class="border p-3 mb-3">
+                <legend class="w-auto">Owner Details</legend>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Name</label>
+                            <div class="pl-4"><?= isset($fullname) ? $fullname : 'N/A' ?></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Sex</label>
+                            <div class="pl-4"><?= isset($gender) ? $gender : 'N/A' ?></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Date of Birth</label>
+                            <div class="pl-4"><?= isset($dob) ? date("M d, Y", strtotime($dob)) : 'N/A' ?></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Age #</label>
+                            <div class="pl-4"><?= isset($owner_age) ? $owner_age : 'N/A' ?></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Contact #</label>
+                            <div class="pl-4"><?= isset($contact) ? $contact : 'N/A' ?></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Block #</label>
+                            <div class="pl-4"><?= isset($block_no) ? $block_no : 'N/A' ?></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Lot #</label>
+                            <div class="pl-4"><?= isset($lot_no) ? $lot_no : 'N/A' ?></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Remarks</label>
+                            <div class="pl-4"><?= isset($permanent_address) ? $permanent_address : 'N/A' ?></div>
+                        </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Spouse Name</label>
+                            <div class="pl-4"><?= isset($spouse_fullname) ? $spouse_fullname : 'N/A' ?></div>
+                        </div>
+                        <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label text-muted">Spouse Age</label>
+                            <div class="pl-4"><?= isset($spouse_age) ? $spouse_age : 'N/A' ?></div>
+                        </div>
+                        <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label text-muted"> Spouse Date of Birth</label>
+                            <div class="pl-4"><?= isset($spouse_dob) ? $spouse_dob : 'N/A' ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                    </div>
+                </div>
+            </fieldset>
 
             </div>
             <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Database credentials
-$servername = "127.0.0.1:3306";
-$username = "u510162695_sis_db";
-$password = "1Sis_dbpassword";
-$dbname = "u510162695_sis_db";
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "sis_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -146,9 +169,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
     $birthdate = $_POST['birthdate'];
     $educational_attainment = $_POST['educational_attainment'];
     $contact_number = $_POST['contact_number'];
+    $contact_number = $_POST['remark'];
 
         // Insert new child record
-        $stmt = $conn->prepare("INSERT INTO children (name, age, gender, status, birthdate, educational_attainment, contact_number) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO children (name, age, gender, status, birthdate, educational_attainment, contact_number remark) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sisssss", $name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number);
         if ($stmt->execute()) {
             $error_message = "Success: Record has been added!";
@@ -187,35 +211,45 @@ $conn->close();
 <div class="container mt-5">
 <h2>Children Information</h2>
 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Status</th>
-            <th>Birthdate</th>
-            <th>Educational Attainment</th>
-            <th>Contact Number</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php if (!empty($children)): ?>
-            <?php foreach ($children as $child): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($child['name']); ?></td>
-                    <td><?php echo htmlspecialchars($child['age']); ?></td>
-                    <td><?php echo htmlspecialchars($child['gender']); ?></td>
-                    <td><?php echo htmlspecialchars($child['status']); ?></td>
-                    <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
-                    <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
-                    <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
-                    <td>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Full Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Status</th>
+        <th>Birthdate</th>
+        <th>Educational Attainment</th>
+        <th>Contact Number</th>
+        <th>Remarks</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php if (!empty($children)): ?>
+        <?php foreach ($children as $child): ?>
+            <tr>
+                <td>
+                    <?php 
+                    $fullName = htmlspecialchars($child['first_name']) . ' ' . 
+                                htmlspecialchars($child['middle_name']) . ' ' . 
+                                htmlspecialchars($child['last_name']);
+                    if (!empty($child['extension_name'])) {
+                        $fullName .= ' ' . htmlspecialchars($child['extension_name']);
+                    }
+                    echo $fullName; 
+                    ?>
+                </td>
+                <td><?php echo htmlspecialchars($child['age']); ?></td>
+                <td><?php echo htmlspecialchars($child['gender']); ?></td>
+                <td><?php echo htmlspecialchars($child['status']); ?></td>
+                <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
+                <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
+                <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
+                <td><?php echo htmlspecialchars($child['remark']); ?></td>
+                <td>
                     <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
                     <a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="children.php?delete=<?php echo $child['id']; ?>" class="btn btn-sm btn-danger">Delete</a>
-                        
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -271,6 +305,7 @@ $conn->close();
                             <th>Birthdate</th>
                             <th>Educational Attainment</th>
                             <th>Contact Number</th>
+                             <th>Remarks</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -284,6 +319,7 @@ $conn->close();
                                     <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
                                     <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
                                     <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
+                                    <td><?php echo htmlspecialchars($child['remark']); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>

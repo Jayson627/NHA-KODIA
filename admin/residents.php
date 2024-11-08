@@ -1,7 +1,7 @@
 <?php
 session_start();
-include_once('connection.php'); 
 
+include_once('connection.php'); 
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['create_account'])) {
@@ -170,6 +170,19 @@ $conn->close();
         .form-container.active {
             display: block;
         }
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .eye-icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -189,7 +202,13 @@ $conn->close();
         <input type="text" name="house_no" placeholder="House No" required pattern="^\d{1,4}$" title="House number should contain 1-4 digits">
         <input type="email" name="email" placeholder="Email" required>
         <input type="text" name="username" placeholder="Username" required pattern="^[A-Za-z0-9_]{5,20}$" title="Username should be alphanumeric, 5-20 characters, and may include underscores">
-        <input type="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
+        
+        <!-- Password input with show/hide toggle -->
+        <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
+            <span id="togglePassword" class="eye-icon">&#128065;</span>
+        </div>
+        
         <select name="role" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
             <option value="residents">Residents</option>
             <option value="president">President</option>
@@ -208,7 +227,13 @@ $conn->close();
     <div class="form-container active" id="login">
         <form method="POST">
             <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required minlength="8">
+            
+            <!-- Password input with show/hide toggle -->
+            <div class="password-wrapper">
+                <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
+                <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
+            </div>
+            
             <button type="submit" name="login">Login</button>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
@@ -216,7 +241,6 @@ $conn->close();
             <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
-
     <script>
         function toggleForm() {
             const createAccountForm = document.getElementById('create-account');
@@ -233,6 +257,28 @@ $conn->close();
                 formTitle.textContent = 'Create Account';
             }
         }
+
+          // Toggle password visibility for account creation
+          const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        togglePassword.addEventListener('click', function (e) {
+            // Toggle the password type between text and password
+            const type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+            // Change the eye icon
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Toggle password visibility for login
+        const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+        const loginPasswordField = document.getElementById('login-password');
+        toggleLoginPassword.addEventListener('click', function (e) {
+            // Toggle the password type between text and password
+            const type = loginPasswordField.type === 'password' ? 'text' : 'password';
+            loginPasswordField.type = type;
+            // Change the eye icon
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
 
         function validateForm() {
         const dob = document.querySelector('input[name="dob"]').value;

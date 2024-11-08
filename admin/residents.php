@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once('connection.php'); 
 
 // Handle form submission for account creation and login

@@ -1,4 +1,4 @@
-<?php
+3<?php
 include_once('connection.php'); // Include your database connection
 
 // Fetch available blocks
@@ -146,20 +146,20 @@ if (isset($_POST['roll'])) {
                                 <label for="present_address" class="control-label">Barangay</label>
                                 <select name="present_address" id="present_address" class="form-control form-control-sm rounded-0" required>
                                     <option value="" disabled selected>Select a Barangay</option>
-                                    <option value="Barangay 1">Barangay kangwayan</option>
-                                    <option value="Barangay 2">Barangay Tugas</option>
-                                    <option value="Barangay 3">Barangay Kaongkod</option>
-                                    <option value="Barangay 4">Barangay Mancilang</option>
-                                    <option value="Barangay 5">Barangay Kodia</option>
-                                    <option value="Barangay 6">Barangay Pili</option>
-                                    <option value="Barangay 7">Barangay Tarong</option>
-                                    <option value="Barangay 8">Barangay Maalat</option>
-                                    <option value="Barangay 9">Barangay Talangnan</option>
-                                    <option value="Barangay 10">Barangay San Agustin</option>
-                                    <option value="Barangay 11">Barangay Malbago</option>
-                                    <option value="Barangay 12">Barangay Tabagak</option>
-                                    <option value="Barangay 13">Barangay Bunakan</option>
-                                    <option value="Barangay 14">Barangay Poblacion</option>
+                                    <option value="kangwayan">Barangay kangwayan</option>
+                                    <option value=" Tugas ">Barangay Tugas</option>
+                                    <option value="Kaongkod ">Barangay Kaongkod</option>
+                                    <option value=" Mancilang ">Barangay Mancilang</option>
+                                    <option value="Kodia ">Barangay Kodia</option>
+                                    <option value="Pili ">Barangay Pili</option>
+                                    <option value=" Tarong ">Barangay Tarong</option>
+                                    <option value="Maalat ">Barangay Maalat</option>
+                                    <option value=" Talangnan ">Barangay Talangnan</option>
+                                    <option value="San Agustin ">Barangay San Agustin</option>
+                                    <option value="Malbago ">Barangay Malbago</option>
+                                    <option value="Tabagak ">Barangay Tabagak</option>
+                                    <option value= Bunakan">Barangay Bunakan</option>
+                                    <option value="Poblacion ">Barangay Poblacion</option>
                                 </select>
                                 <div id="present_address-error" class="text-danger" style="display: none;">Invalid Barangay. Please select a valid option.</div>
                             </div>

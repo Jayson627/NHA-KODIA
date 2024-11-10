@@ -305,6 +305,7 @@ $conn->close();
             <th>Lot</th>
             <th>Contact No.</th>
             <th>Barangay</th> 
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -324,6 +325,7 @@ $conn->close();
             <td><p class="m-0 truncate-1"><?php echo $row['lot_no']; ?></p></td>
             <td><p class="m-0 truncate-1"><?php echo $row['contact']; ?></p></td>
             <td><p class="m-0 truncate-1"><?php echo $row['present_address']; ?></p></td>
+            <td><p class="m-0 truncate-1"><?php echo $row['message']; ?></p></td>
             </td>
         </tr>
         <?php endwhile; ?>

@@ -1,3 +1,86 @@
+<?php
+// Include PHPMailer
+require("PHPMailer/src/PHPMailer.php");
+require("PHPMailer/src/SMTP.php");
+require("PHPMailer/src/Exception.php");
+
+include_once('connection.php'); // Include your database connection
+$message = ""; 
+// Approve or update status of residents
+if (isset($_POST['action']) && isset($_POST['id'])) {
+    $id = $_POST['id'];
+    $action = $_POST['action'];
+    $newStatus = ($action === 'approve') ? 'approved' : 'pending';
+
+    $stmt = $conn->prepare("UPDATE residents SET status = ? WHERE id = ?");
+    $stmt->bind_param("si", $newStatus, $id);
+
+    if ($stmt->execute()) {
+        $message = "Account status updated successfully!"; 
+
+        // Fetch the resident's email and name
+        $stmt = $conn->prepare("SELECT email, fullname FROM residents WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->bind_result($email, $fullname);
+        $stmt->fetch();
+
+        // Send approval email
+        if ($email) {
+            sendApprovalEmail($email, $fullname);
+        }
+
+    } else {
+        $message = "Error updating status: " . $stmt->error; // Set error message
+    }
+
+    $stmt->close();
+}
+
+// Retrieve all pending residents
+$sql = "SELECT id, fullname, dob, lot_no, house_no, email, username, created_at, status, role 
+        FROM residents 
+        WHERE status = 'pending'";
+$result = $conn->query($sql);
+
+// Function to send email notification
+function sendApprovalEmail($toEmail, $fullname) {
+    $mail = new PHPMailer\PHPMailer\PHPMailer();
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com'; // Set the SMTP server to Gmail
+        $mail->SMTPAuth = true;
+        $mail->Username = 'alcantarajayson118@gmail.com'; // Your Gmail address
+        $mail->Password = 'xbzybthzvcrfmqmy'; // Your Gmail app password (if 2FA enabled)
+        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;  // Use TLS encryption
+        $mail->Port = 587;  // Port for TLS
+
+        // Recipients
+        $mail->setFrom('alcantarajayson118@gmail.com', 'NHA KODIA');
+        $mail->addAddress($toEmail, $fullname); // Add recipient email
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Account Approval Notification';
+        $mail->Body    = "<h3>Hello $fullname,</h3><p>Your account has been approved. You can now access your account.</p><p>Thank you for your patience.</p>";
+        
+        // Send email
+        if ($mail->send()) {
+            echo 'Approval email sent.';
+        } else {
+            echo 'Error sending email: ' . $mail->ErrorInfo;
+        }
+
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+}
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,39 +130,6 @@
         .action-button:hover {
             background-color: #4c51bf;
         }
-        
-        /* Responsive styling for mobile view */
-        @media (max-width: 768px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-                width: 100%;
-            }
-            thead tr {
-                display: none; /* Hide header row */
-            }
-            tr {
-                margin-bottom: 10px;
-                border-bottom: 2px solid #ddd;
-            }
-            td {
-                display: flex;
-                justify-content: space-between;
-                padding: 8px;
-                border: none;
-                border-bottom: 1px solid #ddd;
-                position: relative;
-            }
-            td::before {
-                content: attr(data-label); /* Use the data-label attribute to label the columns */
-                font-weight: bold;
-                color: #5a67d8;
-                flex: 0 0 50%;
-            }
-            .action-button {
-                width: 100%;
-                margin-top: 8px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -123,25 +173,26 @@
             <th>Username</th>
             <th>Created At</th>
             <th>Status</th>
-            <th>Role</th>
+            <th>Role</th> <!-- Added Role Column -->
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
         <?php
         if ($result->num_rows > 0) {
+            // Output data for each row
             while($row = $result->fetch_assoc()) {
                 echo "<tr>
-                        <td data-label='Full Name'>{$row['fullname']}</td>
-                        <td data-label='Date of Birth'>{$row['dob']}</td>
-                        <td data-label='Lot No'>{$row['lot_no']}</td>
-                        <td data-label='House No'>{$row['house_no']}</td>
-                        <td data-label='Email'>{$row['email']}</td>
-                        <td data-label='Username'>{$row['username']}</td>
-                        <td data-label='Created At'>{$row['created_at']}</td>
-                        <td data-label='Status'>{$row['status']}</td>
-                        <td data-label='Role'>{$row['role']}</td>
-                        <td data-label='Action'>
+                        <td>{$row['fullname']}</td>
+                        <td>{$row['dob']}</td>
+                        <td>{$row['lot_no']}</td>
+                        <td>{$row['house_no']}</td>
+                        <td>{$row['email']}</td>
+                        <td>{$row['username']}</td>
+                        <td>{$row['created_at']}</td>
+                        <td>{$row['status']}</td>
+                        <td>{$row['role']}</td> <!-- Displaying the Role -->
+                        <td>
                             <form method='POST' style='display:inline;'>
                                 <input type='hidden' name='id' value='{$row['id']}'>
                                 <button type='submit' name='action' value='approve' class='action-button'>Approve</button>
@@ -150,7 +201,7 @@
                       </tr>";
             }
         } else {
-            echo "<tr><td colspan='10'>No pending accounts found.</td>";
+            echo "<tr><td colspan='10'>No pending accounts found.</td>"; // Updated colspan
         }
         ?>
     </tbody>

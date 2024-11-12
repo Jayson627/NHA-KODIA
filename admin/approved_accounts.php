@@ -79,8 +79,6 @@ function sendApprovalEmail($toEmail, $fullname) {
 
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -130,6 +128,67 @@ function sendApprovalEmail($toEmail, $fullname) {
         .action-button:hover {
             background-color: #4c51bf;
         }
+        
+        /* Responsive Design for Small Screens */
+        @media (max-width: 768px) {
+            table, th, td {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .action-button {
+                padding: 5px 8px;
+                font-size: 12px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            table thead {
+                display: none; /* Hide the header row */
+            }
+
+            table tr {
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            table td {
+                display: block;
+                text-align: right;
+                font-size: 14px;
+                position: relative;
+                padding-left: 50%; /* Create space for labels */
+            }
+
+            table td::before {
+                content: attr(data-label); /* Show column label before data */
+                position: absolute;
+                left: 10px;
+                font-weight: bold;
+            }
+
+            td[data-label="Full Name"] { padding-left: 20px; }
+            td[data-label="Date of Birth"] { padding-left: 20px; }
+            td[data-label="Lot No"] { padding-left: 20px; }
+            td[data-label="House No"] { padding-left: 20px; }
+            td[data-label="Email"] { padding-left: 20px; }
+            td[data-label="Username"] { padding-left: 20px; }
+            td[data-label="Created At"] { padding-left: 20px; }
+            td[data-label="Status"] { padding-left: 20px; }
+            td[data-label="Role"] { padding-left: 20px; }
+
+            td:last-child {
+                text-align: center;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -183,15 +242,15 @@ function sendApprovalEmail($toEmail, $fullname) {
             // Output data for each row
             while($row = $result->fetch_assoc()) {
                 echo "<tr>
-                        <td>{$row['fullname']}</td>
-                        <td>{$row['dob']}</td>
-                        <td>{$row['lot_no']}</td>
-                        <td>{$row['house_no']}</td>
-                        <td>{$row['email']}</td>
-                        <td>{$row['username']}</td>
-                        <td>{$row['created_at']}</td>
-                        <td>{$row['status']}</td>
-                        <td>{$row['role']}</td> <!-- Displaying the Role -->
+                        <td data-label='Full Name'>{$row['fullname']}</td>
+                        <td data-label='Date of Birth'>{$row['dob']}</td>
+                        <td data-label='Lot No'>{$row['lot_no']}</td>
+                        <td data-label='House No'>{$row['house_no']}</td>
+                        <td data-label='Email'>{$row['email']}</td>
+                        <td data-label='Username'>{$row['username']}</td>
+                        <td data-label='Created At'>{$row['created_at']}</td>
+                        <td data-label='Status'>{$row['status']}</td>
+                        <td data-label='Role'>{$row['role']}</td> <!-- Displaying the Role -->
                         <td>
                             <form method='POST' style='display:inline;'>
                                 <input type='hidden' name='id' value='{$row['id']}'>

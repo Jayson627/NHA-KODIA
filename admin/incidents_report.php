@@ -49,13 +49,49 @@ $result = $conn->query($query);
         .table {
             margin-top: 20px;
         }
+        .table th, .table td {
+            white-space: nowrap; /* Prevent text from breaking in columns */
+        }
+
+        .form-control {
+            font-size: 14px;
+        }
+
         @media (max-width: 576px) {
             .table th, .table td {
                 padding: 0.5rem;
-                font-size: 14px;
-            }
-            .table {
                 font-size: 12px; /* Adjust table font size for small screens */
+            }
+
+            .table {
+                font-size: 12px;
+            }
+
+            .form-control {
+                font-size: 12px;
+            }
+
+            .btn {
+                font-size: 12px; /* Adjust button size */
+                padding: 5px 10px;
+            }
+
+            .alert {
+                font-size: 14px; /* Adjust alert font size */
+            }
+
+            .table-responsive {
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .incident-row {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 15px;
+            }
+
+            .incident-row .form-control, .incident-row .btn {
+                width: 100%;
             }
         }
     </style>
@@ -102,18 +138,13 @@ $result = $conn->query($query);
                     }
 
                     echo "</td>
-                            <td>";
-
-                    // Show reporter's name in the "Assigned To" column, as they are the ones handling or resolving the incident
-                    echo htmlspecialchars($row['reported_by']);
-
-                    echo "</td>
+                            <td>" . htmlspecialchars($row['reported_by']) . "</td>
                             <td>";
 
                     // Show Resolve button if the incident is pending
                     if ($row['status'] === 'pending') {
                         echo "
-                        <form action='' method='post'>
+                        <form action='' method='post' class='incident-row'>
                             <input type='hidden' name='resolve_id' value='" . htmlspecialchars($row['id']) . "'>
                             <textarea name='resolution_notes' class='form-control mb-2' placeholder='Enter resolution notes'></textarea>
                             <button type='submit' class='btn btn-success btn-sm'>Resolve</button>

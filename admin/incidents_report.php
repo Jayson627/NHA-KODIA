@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resolve_id'])) {
     }
 }
 
-// Fetch all incident reports
-$query = "SELECT * FROM incidents";
+// Fetch all incidents with "pending" status only (resolved incidents will not show up)
+$query = "SELECT * FROM incidents WHERE status = 'pending'";
 $result = $conn->query($query);
 ?>
 

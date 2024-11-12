@@ -79,8 +79,6 @@ function sendApprovalEmail($toEmail, $fullname) {
 
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -130,6 +128,46 @@ function sendApprovalEmail($toEmail, $fullname) {
         .action-button:hover {
             background-color: #4c51bf;
         }
+
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            table, th, td {
+                font-size: 12px;
+                padding: 8px;
+            }
+            th, td {
+                text-align: center;
+            }
+            .action-button {
+                font-size: 12px;
+                padding: 5px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                font-size: 10px;
+            }
+            th, td {
+                padding: 5px;
+            }
+            .action-button {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
+            td {
+                display: block;
+                width: 100%;
+                text-align: right;
+            }
+            td:before {
+                content: attr(data-label);
+                font-weight: bold;
+                display: block;
+                text-align: left;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -173,7 +211,7 @@ function sendApprovalEmail($toEmail, $fullname) {
             <th>Username</th>
             <th>Created At</th>
             <th>Status</th>
-            <th>Role</th> <!-- Added Role Column -->
+            <th>Role</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -183,16 +221,16 @@ function sendApprovalEmail($toEmail, $fullname) {
             // Output data for each row
             while($row = $result->fetch_assoc()) {
                 echo "<tr>
-                        <td>{$row['fullname']}</td>
-                        <td>{$row['dob']}</td>
-                        <td>{$row['lot_no']}</td>
-                        <td>{$row['house_no']}</td>
-                        <td>{$row['email']}</td>
-                        <td>{$row['username']}</td>
-                        <td>{$row['created_at']}</td>
-                        <td>{$row['status']}</td>
-                        <td>{$row['role']}</td> <!-- Displaying the Role -->
-                        <td>
+                        <td data-label='Full Name'>{$row['fullname']}</td>
+                        <td data-label='Date of Birth'>{$row['dob']}</td>
+                        <td data-label='Lot No'>{$row['lot_no']}</td>
+                        <td data-label='House No'>{$row['house_no']}</td>
+                        <td data-label='Email'>{$row['email']}</td>
+                        <td data-label='Username'>{$row['username']}</td>
+                        <td data-label='Created At'>{$row['created_at']}</td>
+                        <td data-label='Status'>{$row['status']}</td>
+                        <td data-label='Role'>{$row['role']}</td>
+                        <td data-label='Action'>
                             <form method='POST' style='display:inline;'>
                                 <input type='hidden' name='id' value='{$row['id']}'>
                                 <button type='submit' name='action' value='approve' class='action-button'>Approve</button>

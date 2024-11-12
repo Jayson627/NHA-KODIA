@@ -1,8 +1,8 @@
 <?php if($_settings->chk_flashdata('success')): ?>
 <script>
-    alert_toast("<?php echo $_settings->flashdata('success') ?>",'success')
+	alert_toast("<?php echo $_settings->flashdata('success') ?>",'success')
 </script>
-<?php endif;?>
+<?php endif; ?>
 
 <style>
     .img-avatar {
@@ -17,28 +17,66 @@
         .table thead {
             display: none; /* Hide the header on small screens */
         }
+
         .table, .table tbody, .table tr, .table td {
             display: block; /* Make each row a block */
             width: 100%; /* Full width */
         }
+
         .table tr {
             margin-bottom: 15px; /* Space between rows */
-            border: 1px solid #dee2e6; /* Border between rows */
-            padding: 10px; /* Padding inside rows */
+            border: 1px solid #dee2e6; /* Add a border */
+            border-radius: 5px;
+            padding: 10px 0;
         }
+
         .table td {
             text-align: right; /* Right align text */
             position: relative; /* Position relative for pseudo-elements */
             padding-left: 50%; /* Add padding for the label */
-            word-wrap: break-word; /* Ensure text doesn't overflow */
+            padding-right: 20px; /* Add space on the right */
+            border: none; /* Remove borders between cells */
         }
+
         .table td::before {
             content: attr(data-label); /* Use data-label for each cell */
             position: absolute; /* Position absolute for the label */
-            left: 10px; /* Align left */
+            left: 10px;
+            top: 0;
             font-weight: bold;
             text-align: left; /* Align to the left */
-            top: 10px; /* Space from top */
+        }
+
+        .dropdown-menu {
+            min-width: 120px;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .table td p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .table .btn-sm {
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+
+        .img-avatar {
+            width: 30px;
+            height: 30px;
+        }
+    }
+
+    /* Mobile Optimized Card Header */
+    @media (max-width: 768px) {
+        .card-header {
+            padding: 10px;
+            font-size: 16px;
         }
     }
 </style>
@@ -70,7 +108,7 @@
                         while($row = $qry->fetch_assoc()):
                     ?>
                         <tr>
-                            <td class="text-center" data-label="#"> <?php echo $i++; ?></td>
+                            <td class="text-center" data-label="#"><?php echo $i++; ?></td>
                             <td class="text-center" data-label="Avatar">
                                 <img src="<?php echo validate_image($row['avatar']) ?>" class="img-avatar img-thumbnail p-0 border-2" alt="user_avatar">
                             </td>
@@ -101,62 +139,62 @@
 </div>
 
 <script>
-    $(document).ready(function(){
-        $('.delete_data').click(function(){
-            _conf("Are you sure to delete this User permanently?","delete_user",[$(this).attr('data-id')])
-        });
-        $('.table td,.table th').addClass('py-1 px-2 align-middle');
-        $('.table').dataTable({
-            responsive: true // Ensure DataTable is responsive
-        });
-        $('.verify_user').click(function(){
-            _conf("Are you sure to verify <b>"+$(this).attr('data-name')+"<b/>?","verify_user",[$(this).attr('data-id')])
-        });
-    });
+	$(document).ready(function(){
+		$('.delete_data').click(function(){
+			_conf("Are you sure to delete this User permanently?","delete_user",[$(this).attr('data-id')])
+		});
+		$('.table td,.table th').addClass('py-1 px-2 align-middle');
+		$('.table').dataTable({
+			responsive: true // Ensure DataTable is responsive
+		});
+		$('.verify_user').click(function(){
+			_conf("Are you sure to verify <b>"+$(this).attr('data-name')+"<b/>?","verify_user",[$(this).attr('data-id')])
+		});
+	});
 
-    function delete_user($id){
-        start_loader();
-        $.ajax({
-            url:_base_url_+"classes/Users.php?f=delete",
-            method:"POST",
-            data:{id: $id},
-            dataType:"json",
-            error: err => {
-                console.log(err);
-                alert_toast("An error occurred.",'error');
-                end_loader();
-            },
-            success:function(resp){
-                if(typeof resp == 'object' && resp.status == 'success'){
-                    location.reload();
-                }else{
-                    alert_toast("An error occurred.",'error');
-                    end_loader();
-                }
-            }
-        });
-    }
+	function delete_user($id){
+		start_loader();
+		$.ajax({
+			url:_base_url_+"classes/Users.php?f=delete",
+			method:"POST",
+			data:{id: $id},
+			dataType:"json",
+			error: err => {
+				console.log(err);
+				alert_toast("An error occurred.",'error');
+				end_loader();
+			},
+			success:function(resp){
+				if(typeof resp == 'object' && resp.status == 'success'){
+					location.reload();
+				}else{
+					alert_toast("An error occurred.",'error');
+					end_loader();
+				}
+			}
+		});
+	}
 
-    function verify_user($id){
-        start_loader();
-        $.ajax({
-            url:_base_url_+"classes/Users.php?f=verify_user",
-            method:"POST",
-            data:{id: $id},
-            dataType:"json",
-            error: err => {
-                console.log(err);
-                alert_toast("An error occurred.",'error');
-                end_loader();
-            },
-            success:function(resp){
-                if(typeof resp == 'object' && resp.status == 'success'){
-                    location.reload();
-                }else{
-                    alert_toast("An error occurred.",'error');
-                    end_loader();
-                }
-            }
-        });
-    }
+	function verify_user($id){
+		start_loader();
+		$.ajax({
+			url:_base_url_+"classes/Users.php?f=verify_user",
+			method:"POST",
+			data:{id: $id},
+			dataType:"json",
+			error: err => {
+				console.log(err);
+				alert_toast("An error occurred.",'error');
+				end_loader();
+			},
+			success:function(resp){
+				if(typeof resp == 'object' && resp.status == 'success'){
+					location.reload();
+				}else{
+					alert_toast("An error occurred.",'error');
+					end_loader();
+				}
+			}
+		});
+	}
 </script>

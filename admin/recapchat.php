@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 // Your Google reCAPTCHA secret key
 $secretKey = '6LceIn0qAAAAAMmeLWO8Ie2w0pFZLnUSrUDn-iYa'; 
 // Function to verify the CAPTCHA response with Google
@@ -67,3 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     exit();
 }
 ?>
+
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+

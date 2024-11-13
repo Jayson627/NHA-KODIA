@@ -2,6 +2,69 @@
 <html lang="en">
 <?php require_once('../config.php'); ?>
 <?php require_once('inc/header.php'); ?>
+<?php
+session_start();
+
+// Initialize session variables for tracking login attempts and cooldown time
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+}
+
+if (!isset($_SESSION['last_failed_login_time'])) {
+    $_SESSION['last_failed_login_time'] = 0;
+}
+
+// Function to handle login logic
+function login($email, $password) {
+    // Replace with actual authentication logic (e.g., check against a database)
+    $correct_email = "admin@example.com"; // Example email for admin
+    $correct_password = "adminPassword"; // Example password for admin (ensure hashing for real-world use)
+
+    if ($email !== $correct_email || $password !== $correct_password) {
+        return false; // Incorrect credentials
+    }
+    return true; // Correct credentials
+}
+
+// Handle login form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Check if user is within the login attempt limit and cooldown
+    if ($_SESSION['login_attempts'] >= 3 && (time() - $_SESSION['last_failed_login_time']) < 30) {
+        // If too many failed attempts, inform user of the wait time
+        $wait_time = 30 - (time() - $_SESSION['last_failed_login_time']);
+        echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Too many login attempts',
+                    text: 'Please wait for $wait_time seconds before trying again.'
+                });
+              </script>";
+        exit;
+    }
+
+    // Attempt login
+    if (login($email, $password)) {
+        $_SESSION['login_attempts'] = 0; // Reset login attempts after successful login
+        echo "<script>Swal.fire({icon: 'success', title: 'Login successful'});</script>";
+        // Redirect to the dashboard or admin page here
+    } else {
+        // Increment failed attempts and set the last failed login time
+        $_SESSION['login_attempts'] += 1;
+        $_SESSION['last_failed_login_time'] = time();
+        echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Incorrect Credentials',
+                    text: 'You have made {$_SESSION['login_attempts']} of 3 attempts.'
+                });
+              </script>";
+    }
+}
+?>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -252,89 +315,27 @@
   <!-- Bootstrap JS -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
 
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
   <script>
-    let typingInterval;
-    const text = "Welcome to NHA Kodia Information System";
-    const speed = 150; 
-    let index = 0;
-
-    function type() {
-      if (index < text.length) {
-        document.getElementById("animated-text").innerHTML += text.charAt(index);
-        index++;
-        typingInterval = setTimeout(type, speed); 
-      } else {
-        setTimeout(() => {
-          document.getElementById("animated-text").innerHTML = "";
-          index = 0; 
-          type();
-        }, 2000); 
-      }
-    }
-
     $(document).ready(function() {
-      $('#login').hide();
-      $('#animated-text').show();
+      // Handle login form submission and display alerts based on the session variables
+      const loginAttempts = <?php echo $_SESSION['login_attempts']; ?>;
+      const lastFailedLoginTime = <?php echo $_SESSION['last_failed_login_time']; ?>;
+      const currentTime = Math.floor(Date.now() / 1000); // Get current timestamp
+      const cooldownTime = 30; // Cooldown time in seconds (30 seconds)
+      const maxAttempts = 3;
 
-      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
-        e.preventDefault();
-        $('#login').fadeIn();
-        $('#animated-text').hide();
-
-        const role = $(this).attr('id').replace('login-as-', '');
-        $('#role').val(role);
-        $('#login-frm').attr('action', role + '_login.php');
-      });
-
-      $('#togglePassword').on('click', function() {
-        const passwordField = $('#password');
-        const passwordFieldType = passwordField.attr('type');
-        const icon = $(this);
-
-        if (passwordFieldType === 'password') {
-          passwordField.attr('type', 'text');
-          icon.removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-          passwordField.attr('type', 'password');
-          icon.removeClass('fa-eye-slash').addClass('fa-eye');
-        }
-      });
-
-      $('#login-frm').on('submit', function(e) {
-        const email = $('[name="email"]').val();
-        const emailPattern = /.+@gmail\.com$/;
-        const password = $('[name="password"]').val();
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-        if (!emailPattern.test(email)) {
-          e.preventDefault(); 
-          Swal.fire({
-            icon: 'error',
-            title: 'Invalid Email',
-            text: 'Please enter a valid Gmail address.',
-          });
-        } else if (!passwordPattern.test(password)) {
-          e.preventDefault(); 
-          Swal.fire({
-            icon: 'error',
-            title: 'Invalid Password',
-            text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-          });
-        }
-      });
-
-      $('.open-menu-btn').click(function() {
-        $('#push-menu').css('width', '250px'); 
-      });
-
-      $('.close-btn').click(function() {
-        $('#push-menu').css('width', '0'); 
-      });
+      if (loginAttempts >= maxAttempts && (currentTime - lastFailedLoginTime) < cooldownTime) {
+        const waitTime = cooldownTime - (currentTime - lastFailedLoginTime);
+        Swal.fire({
+          icon: 'error',
+          title: 'Too many login attempts',
+          text: `Please wait for ${waitTime} seconds before trying again.`
+        });
+      }
     });
-
-    window.onload = function() {
-      type(); 
-    };
   </script>
 </head>
 <body>
@@ -355,8 +356,8 @@
     <div id="push-menu">
       <a href="javascript:void(0)" class="close-btn">&times;</a>
       <a href="about.php">About</a>
-      <a href="#" id="login-as-admin"> Admin</a>
-      <a href="residents.php"> Resident</a>
+      <a href="#" id="login-as-admin">Admin</a>
+      <a href="residents.php">Resident</a>
     </div>
   </nav>
 
@@ -365,37 +366,20 @@
   <div id="login">
     <div class="card">
       <div class="card-header">
-        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
+        <h4>Login to Dashboard</h4>
       </div>
       <div class="card-body">
-        <form id="login-frm" action="" method="post">
-          <input type="hidden" name="role" id="role" value="">
-          <div class="form-group input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-            </div>
-            <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
-                   pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
+        <form method="POST" id="login-frm">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
           </div>
-
-          <div class="form-group input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            </div>
-            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required
-                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" 
-                   title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
-            <div class="input-group-append">
-              <span class="input-group-text">
-                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
-              </span>
-            </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
           </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          </div>
-          <div class="form-group text-center">
-            <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Login</button>
           </div>
         </form>
       </div>

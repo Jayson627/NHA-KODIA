@@ -299,29 +299,58 @@
           icon.removeClass('fa-eye-slash').addClass('fa-eye');
         }
       });
-
       $('#login-frm').on('submit', function(e) {
-        const email = $('[name="email"]').val();
-        const emailPattern = /.+@gmail\.com$/;
-        const password = $('[name="password"]').val();
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    e.preventDefault(); // Prevent form submission to handle validation
 
-        if (!emailPattern.test(email)) {
-          e.preventDefault(); 
-          Swal.fire({
+    const email = $('[name="email"]').val();
+    const password = $('[name="password"]').val();
+
+    // Client-side validation
+    const emailPattern = /.+@gmail\.com$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!emailPattern.test(email)) {
+        Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
             text: 'Please enter a valid Gmail address.',
-          });
-        } else if (!passwordPattern.test(password)) {
-          e.preventDefault(); 
-          Swal.fire({
+        });
+    } else if (!passwordPattern.test(password)) {
+        Swal.fire({
             icon: 'error',
             title: 'Invalid Password',
             text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-          });
-        }
-      });
+        });
+    } else {
+        // If validation passes, submit the form (or send AJAX request to backend)
+        $.ajax({
+            url: $('#login-frm').attr('action'), // Assuming action contains the URL for login
+            method: 'POST',
+            data: $(this).serialize(), // Send form data
+            success: function(response) {
+                if (response === 'invalid') {
+                    // Incorrect login details
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: 'Incorrect email or password. Please try again.',
+                    });
+                } else if (response === 'success') {
+                    // Redirect or handle successful login
+                    window.location.href = 'dashboard.php'; // Or wherever the user should go after login
+                }
+            },
+            error: function() {
+                // Handle server-side errors (like network issues)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'An error occurred. Please try again later.',
+                });
+            }
+        });
+    }
+});
 
       $('.open-menu-btn').click(function() {
         $('#push-menu').css('width', '250px'); 

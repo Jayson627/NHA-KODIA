@@ -243,6 +243,10 @@
         font-size: 1.1rem;
       }
     }
+    .recaptcha-container .g-recaptcha {
+        transform: scale(0.8); /* Adjust the scale as needed */
+        transform-origin: 0 0; /* Ensure it scales from the top-left corner */
+    }
   </style>
 
   <!-- jQuery -->
@@ -392,7 +396,9 @@
             </div>
           </div>
           <div class="form-group">
-          <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
+          <div class="recaptcha-container">
+    <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
+</div>
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
           <div class="form-group text-center">

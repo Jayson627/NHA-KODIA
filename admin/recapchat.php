@@ -2,7 +2,7 @@
 session_start();
 
 // Your Google reCAPTCHA secret key
-$secretKey = '6LeuGX0qAAAAABASLS-ICpRhebIUTbtaxA6d4r3U'; 
+$secretKey = '6LceIn0qAAAAAMmeLWO8Ie2w0pFZLnUSrUDn-iYa'; 
 // Function to verify the CAPTCHA response with Google
 function verifyCaptcha($response) {
     global $secretKey;

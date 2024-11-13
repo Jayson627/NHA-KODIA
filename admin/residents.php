@@ -264,7 +264,7 @@ $conn->close();
         <div style="margin: 10px 0;">
             <input type="checkbox" id="terms" name="terms" required>
             <label for="terms">I agree to the <a href="terms.php" target="_blank">Terms and Conditions</a></label>
-            <div class="g-recaptcha" data-sitekey="6LeuGX0qAAAAANzmu5gSnO0lZkzHWSC_Si837yPl"></div>
+            <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
   
 
         </div>

@@ -389,6 +389,7 @@
               <span class="input-group-text">
                 <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
               </span>
+              <div class="g-recaptcha" data-sitekey="6LeuGX0qAAAAANzmu5gSnO0lZkzHWSC_Si837yPl"></div>
             </div>
           </div>
           <div class="form-group">

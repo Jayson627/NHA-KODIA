@@ -1,7 +1,29 @@
 <?php
 session_start();
 
-include_once('connection.php'); 
+// Database connection parameters
+$servername = "localhost";
+$username = "root";  // Change as necessary
+$password = "";      // Change as necessary
+$dbname = "sis_db";  // Change to your database name
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Initialize login attempts tracking
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+}
+
+if (!isset($_SESSION['first_failed_attempt_time'])) {
+    $_SESSION['first_failed_attempt_time'] = 0;
+}
+
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['create_account'])) {
@@ -20,55 +42,92 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
         // Execute and check for success
         if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully!";
+            $_SESSION['message'] = "Account created successfully! Your account is not approved yet. Please wait for approval. Check your Email.";
         } else {
             $_SESSION['message'] = "Error creating account. Please try again.";
         }
         $stmt->close();
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
-    } if (isset($_POST['login'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-    
-        // Prepare and execute the statement to get the user and their role
-        $stmt = $conn->prepare("SELECT password, role FROM residents WHERE username = ?");
-        $stmt->bind_param("s", $username);
+    }
+
+    if (isset($_POST['login'])) {
+        $email = $_POST['email']; 
+        $password = $_POST['password']; 
+
+        // Check if the user has exceeded the maximum login attempts (3)
+        if ($_SESSION['login_attempts'] >= 3) {
+            $time_left = 50 - (time() - $_SESSION['first_failed_attempt_time']);
+            if ($time_left > 0) {
+                $_SESSION['message'] = "You have been locked out due to multiple failed login attempts. Please try again in ";
+                $_SESSION['time_left'] = $time_left; // Store the remaining time
+                $_SESSION['message_type'] = 'error'; // Indicate that it's an error
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            } else {
+                // Reset after cooldown
+                $_SESSION['login_attempts'] = 0;
+                $_SESSION['first_failed_attempt_time'] = 0;
+            }
+        }
+        
+
+        // Prepare the query to check if the email exists and retrieve the hashed password and status
+        $stmt = $conn->prepare("SELECT password, status, role FROM residents WHERE email = ?");
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-    
-        // Check if user exists
+
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($hashedPassword, $role);
+            $stmt->bind_result($hashedPassword, $status, $role);
             $stmt->fetch();
-    
-            // Verify the password
-            if (password_verify($password, $hashedPassword)) {
-                // Convert role to lowercase to avoid case sensitivity issues
-                $role = strtolower($role);
-    
-                // Check role and redirect accordingly
-                if ($role === 'president') {  
-                    header("Location: dashboard.php"); 
-                    exit();
-                } else if ($role === 'residents') { 
-                    header("Location: people_dashboard.php");
-                    exit();
+
+            // Check if the account is approved
+            if ($status === 'approved') {
+                // Verify password
+                if (password_verify($password, $hashedPassword)) {
+                    // Password is correct, log the user in
+                    $_SESSION['email'] = $email;  // Store session data
+                    $_SESSION['role'] = $role;    // Store the user's role (president or residents)
+                    
+                    // Reset login attempts on successful login
+                    $_SESSION['login_attempts'] = 0;
+                    $_SESSION['first_failed_attempt_time'] = 0;
+                    
+                    // Redirect to the appropriate dashboard based on role
+                    if ($role === 'president') {
+                        header("Location: dashboard.php");
+                    } else {
+                        header("Location: people_dashboard.php");
+                    }
+                    exit();  // Stop script execution
+                } else {
+                    $_SESSION['login_attempts']++;
+                    if ($_SESSION['login_attempts'] === 1) {
+                        $_SESSION['first_failed_attempt_time'] = time();
+                    }
+                    $_SESSION['message'] = "Invalid password!";
                 }
             } else {
-                $_SESSION['message'] = "Invalid username or password!";
+                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
             }
         } else {
-            $_SESSION['message'] = "Invalid username or password!";
+            $_SESSION['login_attempts']++;
+            if ($_SESSION['login_attempts'] === 1) {
+                $_SESSION['first_failed_attempt_time'] = time();
+            }
+            $_SESSION['message'] = "Invalid email or password!";
         }
-    
+
         $stmt->close();
+        header("Location: " . $_SERVER['PHP_SELF']);  // Redirect to show message
+        exit();
     }
-    
 }
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -77,6 +136,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account / Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -188,7 +248,7 @@ $conn->close();
 <body>
 <header>
     <img src="lo.png" alt="Logo" class="logo">
-    <h1 style="margin: 0;">NHA Kodia-IS</h1>
+    <h1 style="margin: 0;">NHA Kodia Information System</h1>
     <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
 </header>
 
@@ -218,6 +278,9 @@ $conn->close();
         <div style="margin: 10px 0;">
             <input type="checkbox" id="terms" name="terms" required>
             <label for="terms">I agree to the <a href="terms.php" target="_blank">Terms and Conditions</a></label>
+            <div class="g-recaptcha" data-sitekey="6LeuGX0qAAAAANzmu5gSnO0lZkzHWSC_Si837yPl"></div>
+  
+
         </div>
 
         <button type="submit" name="create_account">Create Account</button>
@@ -226,15 +289,17 @@ $conn->close();
 </div>
     <div class="form-container active" id="login">
         <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="email" required>
             
             <!-- Password input with show/hide toggle -->
             <div class="password-wrapper">
                 <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
+            <div class="g-recaptcha" data-sitekey="6LeuGX0qAAAAANzmu5gSnO0lZkzHWSC_Si837yPl"></div>
             
             <button type="submit" name="login">Login</button>
+            
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
@@ -311,17 +376,44 @@ $conn->close();
         return true;
     }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            <?php if (isset($_SESSION['message'])): ?>
-                Swal.fire({
-                    icon: '<?php echo (strpos($_SESSION['message'], "Error") !== false || strpos($_SESSION['message'], "Invalid") !== false) ? "error" : "success"; ?>',
-                    title: '<?php echo (strpos($_SESSION['message'], "Error") !== false || strpos($_SESSION['message'], "Invalid") !== false) ? "Error" : "Success"; ?>',
-                    text: '<?php echo $_SESSION['message']; ?>',
-                    confirmButtonText: 'OK'
-                });
-                <?php unset($_SESSION['message']); ?>
-            <?php endif; ?>
+    document.addEventListener('DOMContentLoaded', function() {
+    <?php if (isset($_SESSION['message']) && isset($_SESSION['time_left'])): ?>
+        let remainingTime = <?php echo $_SESSION['time_left']; ?>; // Get the remaining time from PHP session
+        const lockoutMessage = "<?php echo $_SESSION['message']; ?>";
+        
+        // Show the alert with the remaining time
+        const swalAlert = Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: lockoutMessage + remainingTime + " seconds.",
+            showConfirmButton: false, // Hide the default confirm button
+            allowOutsideClick: false, // Prevent closing the alert by clicking outside
         });
+
+        // Update the text every second
+        const interval = setInterval(() => {
+            remainingTime--;
+            swalAlert.update({
+                text: lockoutMessage + remainingTime + " seconds." // Update the text with the new time
+            });
+            
+            if (remainingTime <= 0) {
+                clearInterval(interval); // Stop the countdown when time reaches 0
+                swalAlert.update({
+                    text: "You can try logging in now.", // Once the time is up
+                    icon: 'success',
+                    showConfirmButton: true, // Show the confirm button when the countdown ends
+                });
+            }
+        }, 1000); // Update every second
+
+        <?php unset($_SESSION['message']); ?>
+        <?php unset($_SESSION['time_left']); ?>
+        <?php unset($_SESSION['message_type']); ?>
+    <?php endif; ?>
+});
+
+
     </script>
 
 </body>

@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <!-- Google Fonts - Roboto -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-  <!-- Custom CSS -->
+  <!-- Custom CSS --><script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     /* General Styles */
     body {
@@ -393,12 +393,10 @@
           </div>
           <div class="form-group">
           
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <button type="submit" class="btn btn-primary btn-block">Signhgfh In</button>
           </div>
-         
-          <div class="form-group text-center">
           <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
-  
+          <div class="form-group text-center">
             <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
           </div>
         </form>
@@ -407,4 +405,4 @@
   </div>
 </body>
 </html>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+

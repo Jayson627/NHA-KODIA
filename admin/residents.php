@@ -122,7 +122,8 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account / Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
+    <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script>  -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -404,3 +405,4 @@ $conn->close();
 
 </body>
 </html>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>

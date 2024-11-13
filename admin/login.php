@@ -244,7 +244,7 @@
       }
     }
     .recaptcha-container .g-recaptcha {
-        transform: scale(0.6); /* Adjust the scale as needed */
+        transform: scale(0.7); /* Adjust the scale as needed */
         transform-origin: 0 0; /* Ensure it scales from the top-left corner */
     }
   </style>

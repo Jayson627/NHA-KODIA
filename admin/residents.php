@@ -235,6 +235,7 @@ $conn->close();
             </div>
             
             <button type="submit" name="login">Login</button>
+            <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
@@ -326,3 +327,4 @@ $conn->close();
 
 </body>
 </html>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>

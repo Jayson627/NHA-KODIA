@@ -13,36 +13,57 @@
         border-radius: 0;
     }
 
-    /* Responsive styling for table on smaller screens */
-    @media (max-width: 768px) {
-        .table thead {
-            display: none; /* Hide the table header */
-        }
-        .table, .table tbody, .table tr, .table td {
-            display: block;
-            width: 100%;
-        }
-        .table tr {
-            margin-bottom: 15px;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-        }
-        .table td {
-            text-align: right;
-            position: relative;
-            padding-left: 50%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .table td::before {
-            content: attr(data-label);
-            position: absolute;
-            left: 10px;
-            font-weight: bold;
-            text-align: left;
-        }
+	@media (max-width: 768px) {
+    /* Make form fields full width */
+    .form-group input,
+    .form-group select,
+    .form-group textarea,
+    .card-body .btn {
+        width: 100%;
+        margin-bottom: 10px; /* Ensure some space between form fields */
     }
+
+    /* Make the table more mobile-friendly */
+    .table thead {
+        display: none; /* Hide the table header on mobile */
+    }
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        width: 100%;
+    }
+    .table tr {
+        margin-bottom: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+    }
+    .table td {
+        position: relative;
+        padding-left: 50%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+        text-align: left;
+    }
+}
+
+/* Modify card headers and footers for mobile */
+@media (max-width: 576px) {
+    .card-header h3 {
+        font-size: 18px; /* Reduce the header size for smaller screens */
+    }
+    .card-tools {
+        font-size: 14px; /* Reduce the tools size */
+    }
+}
 </style>
 
 <div class="card card-outline card-primary">

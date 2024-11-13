@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <!-- Google Fonts - Roboto -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-  <!-- Custom CSS --><script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     /* General Styles */
     body {
@@ -373,38 +373,39 @@
       </div>
       <div class="card-body">
         <form id="login-frm" action="" method="post">
-          <input type="hidden" name="role" id="role" value="">
-          <div class="form-group input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-            </div>
-            <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
-                   pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
-          </div>
+    <input type="hidden" name="role" id="role" value="">
+    <div class="form-group input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+        </div>
+        <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
+               pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
+    </div>
 
-          <div class="form-group input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            </div>
-            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required
-                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" 
-                   title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
-            <div class="input-group-append">
-              <span class="input-group-text">
+    <div class="form-group input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+        </div>
+        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required
+               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" 
+               title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
+        <div class="input-group-append">
+            <span class="input-group-text">
                 <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
-              </span>
-            </div>
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          </div>
-          <div class="form-group text-center">
-            <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
-          </div>
-          <div class="recaptcha-container">
-    <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
-</div>
-        </form>
+            </span>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+    </div>
+    <div class="form-group text-center">
+        <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
+    </div>
+    <div class="recaptcha-container">
+        <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
+    </div>
+</form>
+
       </div>
     </div>
   </div>

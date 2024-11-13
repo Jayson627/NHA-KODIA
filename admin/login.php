@@ -398,12 +398,12 @@
           <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
-          <div class="recaptcha-container">
-    <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
-</div>
           <div class="form-group text-center">
             <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
           </div>
+          <div class="recaptcha-container">
+    <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
+</div>
         </form>
       </div>
     </div>

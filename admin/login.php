@@ -392,7 +392,7 @@
             </div>
           </div>
           <div class="form-group">
-          <div class="g-recaptcha" data-sitekey="6LeuGX0qAAAAANzmu5gSnO0lZkzHWSC_Si837yPl"></div>
+          <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
           <div class="form-group text-center">

@@ -273,119 +273,133 @@
     }
 
     $(document).ready(function() {
-      const maxAttempts = 3; // Maximum failed attempts
-      const lockoutTime = 50000; // Lockout time in milliseconds (50 seconds)
-      const lastAttemptTime = localStorage.getItem('lastAttemptTime');
-      const attemptCount = parseInt(localStorage.getItem('attemptCount')) || 0;
-
-      // Check if the user is locked out from previous failed attempts
-      if (lastAttemptTime && (Date.now() - lastAttemptTime) < lockoutTime) {
-        const remainingTime = lockoutTime - (Date.now() - lastAttemptTime);
-        $('#login-frm').find('button').prop('disabled', true);
-        $('#login-frm').prepend('<div class="alert alert-warning">You have been locked out. Please try again in ' + Math.ceil(remainingTime / 1000) + ' seconds.</div>');
-
-        setTimeout(function() {
-          $('#login-frm').find('button').prop('disabled', false);
-          localStorage.removeItem('attemptCount');
-          localStorage.removeItem('lastAttemptTime');
-          $('#login-frm').find('.alert').remove();
-        }, remainingTime);
-        return;
-      }
-
       $('#login').hide();
       $('#animated-text').show();
 
       $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
         e.preventDefault();
-        var role = $(this).data('role');
-        $('#role').val(role);
-        $('#login').show();
+        $('#login').fadeIn();
         $('#animated-text').hide();
+
+        const role = $(this).attr('id').replace('login-as-', '');
+        $('#role').val(role);
+        $('#login-frm').attr('action', role + '_login.php');
+      });
+
+      $('#togglePassword').on('click', function() {
+        const passwordField = $('#password');
+        const passwordFieldType = passwordField.attr('type');
+        const icon = $(this);
+
+        if (passwordFieldType === 'password') {
+          passwordField.attr('type', 'text');
+          icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+          passwordField.attr('type', 'password');
+          icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
       });
 
       $('#login-frm').on('submit', function(e) {
         const email = $('[name="email"]').val();
-        const password = $('[name="password"]').val();
-
         const emailPattern = /.+@gmail\.com$/;
+        const password = $('[name="password"]').val();
         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
         if (!emailPattern.test(email)) {
-          e.preventDefault();
+          e.preventDefault(); 
           Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
             text: 'Please enter a valid Gmail address.',
           });
-          incrementFailedAttempts();
         } else if (!passwordPattern.test(password)) {
-          e.preventDefault();
+          e.preventDefault(); 
           Swal.fire({
             icon: 'error',
             title: 'Invalid Password',
             text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
           });
-          incrementFailedAttempts();
-        } else {
-          localStorage.removeItem('attemptCount');
-          localStorage.removeItem('lastAttemptTime');
         }
       });
 
-      function incrementFailedAttempts() {
-        let attempts = parseInt(localStorage.getItem('attemptCount')) || 0;
-        attempts += 1;
+      $('.open-menu-btn').click(function() {
+        $('#push-menu').css('width', '250px'); 
+      });
 
-        if (attempts >= maxAttempts) {
-          localStorage.setItem('lastAttemptTime', Date.now());
-          Swal.fire({
-            icon: 'error',
-            title: 'Too Many Attempts',
-            text: 'You have reached the maximum number of login attempts. Please try again after 50 seconds.',
-          });
-        }
-
-        localStorage.setItem('attemptCount', attempts);
-      }
-
-      type(); // Start the typing animation when page loads
+      $('.close-btn').click(function() {
+        $('#push-menu').css('width', '0'); 
+      });
     });
+
+    window.onload = function() {
+      type(); 
+    };
   </script>
 </head>
 <body>
-  <!-- Push Menu -->
-  <div id="push-menu">
-    <a href="javascript:void(0)" class="close-btn">&times;</a>
-    <a href="#" id="login-as-admin" data-role="admin">Login as Admin</a>
-    <a href="#" id="login-as-resident" data-role="resident">Login as Resident</a>
-    <a href="#" id="login-as-officer" data-role="officer">Login as Officer</a>
-  </div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
+    <a class="navbar-brand" href="#">
+      <img src="lo.png" alt="Logo">
+    </a>
 
-  <!-- Animated Text -->
-  <div class="animated-text" id="animated-text"></div>
+    <span class="open-menu-btn">&#9776;</span>
 
-  <!-- Login Form -->
+    <div class="navbar-nav">
+      <a href="about.php" class="nav-link">About</a>
+      <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
+      <a href="residents.php" class="nav-link">Login as Resident</a>
+    </div>
+
+    <div id="push-menu">
+      <a href="javascript:void(0)" class="close-btn">&times;</a>
+      <a href="about.php">About</a>
+      <a href="#" id="login-as-admin"> Admin</a>
+      <a href="residents.php"> Resident</a>
+    </div>
+  </nav>
+
+  <div id="animated-text" class="animated-text"></div>
+
   <div id="login">
     <div class="card">
       <div class="card-header">
-        <h4>Login</h4>
+        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
       </div>
       <div class="card-body">
-        <form id="login-frm">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" name="email" class="form-control" required>
+        <form id="login-frm" action="" method="post">
+          <input type="hidden" name="role" id="role" value="">
+          <div class="form-group input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
+                   pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
+          </div>
+
+          <div class="form-group input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+            </div>
+            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required
+                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" 
+                   title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+              </span>
+            </div>
           </div>
           <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" name="password" class="form-control" required>
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
-          <button type="submit" class="btn btn-primary btn-block">Login</button>
+          <div class="form-group text-center">
+            <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
+          </div>
         </form>
       </div>
     </div>
   </div>
-
 </body>
 </html>

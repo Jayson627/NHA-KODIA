@@ -13,57 +13,32 @@
         border-radius: 0;
     }
 
-	@media (max-width: 768px) {
-    /* Make form fields full width */
-    .form-group input,
-    .form-group select,
-    .form-group textarea,
-    .card-body .btn {
-        width: 100%;
-        margin-bottom: 10px; /* Ensure some space between form fields */
+    @media (max-width: 768px) {
+        .table thead {
+            display: none; /* Hide the header on small screens */
+        }
+        .table, .table tbody, .table tr, .table td {
+            display: block; /* Make each row a block */
+            width: 100%; /* Full width */
+        }
+        .table tr {
+            margin-bottom: 15px; /* Space between rows */
+            border: 1px solid #dee2e6; /* Add a border */
+        }
+        .table td {
+            text-align: right; /* Right align text */
+            position: relative; /* Position relative for pseudo-elements */
+            padding-left: 50%; /* Add padding for the label */
+        }
+        .table td::before {
+            content: attr(data-label); /* Use data-label for each cell */
+            position: absolute; /* Position absolute for the label */
+            left: 0;
+            padding-left: 10px;
+            font-weight: bold;
+            text-align: left; /* Align to the left */
+        }
     }
-
-    /* Make the table more mobile-friendly */
-    .table thead {
-        display: none; /* Hide the table header on mobile */
-    }
-    .table,
-    .table tbody,
-    .table tr,
-    .table td {
-        display: block;
-        width: 100%;
-    }
-    .table tr {
-        margin-bottom: 10px;
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-    }
-    .table td {
-        position: relative;
-        padding-left: 50%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        font-weight: bold;
-        text-align: left;
-    }
-}
-
-/* Modify card headers and footers for mobile */
-@media (max-width: 576px) {
-    .card-header h3 {
-        font-size: 18px; /* Reduce the header size for smaller screens */
-    }
-    .card-tools {
-        font-size: 14px; /* Reduce the tools size */
-    }
-}
 </style>
 
 <div class="card card-outline card-primary">
@@ -82,7 +57,7 @@
 						<th>Avatar</th>
 						<th>Name</th>
 						<th>Email</th>
-						<th>User Type</th>
+						<th>User</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -98,8 +73,8 @@
 								<img src="<?php echo validate_image($row['avatar']) ?>" class="img-avatar img-thumbnail p-0 border-2" alt="user_avatar">
 							</td>
 							<td data-label="Name"><?php echo ucwords($row['name']) ?></td>
-							<td data-label="Email"><p class="m-0 truncate-1"><?php echo $row['email'] ?></p></td>
-							<td data-label="User Type"><p class="m-0"><?php echo ($row['type'] == 1 )? "Administrator" : "User" ?></p></td>
+							<td data-label="email"><p class="m-0 truncate-1"><?php echo $row['email'] ?></p></td>
+							<td data-label="User Type"><p class="m-0"><?php echo ($row['type'] == 1 )? "Administrator" : "" ?></p></td>
 							<td align="center" data-label="Action">
 								<button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
 									Action
@@ -130,7 +105,7 @@
 		});
 		$('.table td,.table th').addClass('py-1 px-2 align-middle');
 		$('.table').dataTable({
-			responsive: true
+			responsive: true // Ensure DataTable is responsive
 		});
 		$('.verify_user').click(function(){
 			_conf("Are you sure to verify <b>"+$(this).attr('data-name')+"<b/>?","verify_user",[$(this).attr('data-id')])

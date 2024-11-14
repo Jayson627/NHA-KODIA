@@ -1,10 +1,16 @@
 <?php
 session_start();
 
-include_once('connection.php'); 
+include_once('connection.php');
+
+// Define max login attempts and lockout time
+define('MAX_LOGIN_ATTEMPTS', 3);
+define('LOCKOUT_TIME', 60); // 60 seconds
+
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['create_account'])) {
+        // Account creation code (no changes here)
         $fullname = $_POST['fullname'];
         $dob = $_POST['dob'];
         $lot_no = $_POST['lot_no'];
@@ -14,36 +20,64 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing the password
         $role = $_POST['role']; // Use the selected role from form
     
-        // Prepare and bind
-        $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+       // Insert new user with default 'pending' status
+$stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+$stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+
     
         // Execute and check for success
         if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully!";
+            $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
         } else {
             $_SESSION['message'] = "Error creating account. Please try again.";
         }
         $stmt->close();
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
-    } if (isset($_POST['login'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
+    } // Handle login request
+    if (isset($_POST['login'])) {
+        // Check if the user is locked out
+        if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
+            // Check if lockout time has passed
+            if (isset($_SESSION['last_attempt_time']) && (time() - $_SESSION['last_attempt_time']) < LOCKOUT_TIME) {
+                $remaining_time = LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']);
+                $_SESSION['message'] = "Too many login attempts. Please try again in " . $remaining_time . " seconds.";
+                header("Location: " . $_SERVER['PHP_SELF']); 
+                exit();
+            } else {
+                // Reset the login attempts after lockout time has passed
+                $_SESSION['login_attempts'] = 0;
+            }
+        }
     
-        // Prepare and execute the statement to get the user and their role
-        $stmt = $conn->prepare("SELECT password, role FROM residents WHERE username = ?");
-        $stmt->bind_param("s", $username);
+        // Collect the email and password
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        
+        // Prepare and execute the statement to get the user, role, and status by email
+        $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-    
+        
         // Check if user exists
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($hashedPassword, $role);
+            $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
+    
+            // Check if the account status is 'approved'
+if ($status !== 'approved') {
+    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
     
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
+                // Reset login attempts on successful login
+                $_SESSION['login_attempts'] = 0;
+    
                 // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
     
@@ -56,10 +90,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     exit();
                 }
             } else {
-                $_SESSION['message'] = "Invalid username or password!";
+                // Increment the login attempts
+                if (!isset($_SESSION['login_attempts'])) {
+                    $_SESSION['login_attempts'] = 0;
+                }
+                $_SESSION['login_attempts']++;
+    
+                // Store the last attempt time
+                $_SESSION['last_attempt_time'] = time();
+    
+                $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
-            $_SESSION['message'] = "Invalid username or password!";
+            // Increment the login attempts
+            if (!isset($_SESSION['login_attempts'])) {
+                $_SESSION['login_attempts'] = 0;
+            }
+            $_SESSION['login_attempts']++;
+    
+            // Store the last attempt time
+            $_SESSION['last_attempt_time'] = time();
+    
+            $_SESSION['message'] = "Invalid email or password!";
         }
     
         $stmt->close();
@@ -69,6 +121,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $conn->close();
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -198,7 +252,7 @@ $conn->close();
     <form method="POST" onsubmit="return validateForm()">
         <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
         <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
-        <input type="text" name="lot_no" placeholder="Lot No" required pattern="^[A-Za-z0-9]{1,10}$" title="Lot number should be alphanumeric and up to 10 characters">
+        <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
         <input type="text" name="house_no" placeholder="House No" required pattern="^\d{1,4}$" title="House number should contain 1-4 digits">
         <input type="email" name="email" placeholder="Email" required>
         <input type="text" name="username" placeholder="Username" required pattern="^[A-Za-z0-9_]{5,20}$" title="Username should be alphanumeric, 5-20 characters, and may include underscores">
@@ -226,7 +280,7 @@ $conn->close();
 </div>
     <div class="form-container active" id="login">
         <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="email" required>
             
             <!-- Password input with show/hide toggle -->
             <div class="password-wrapper">
@@ -312,17 +366,48 @@ $conn->close();
         return true;
     }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            <?php if (isset($_SESSION['message'])): ?>
-                Swal.fire({
-                    icon: '<?php echo (strpos($_SESSION['message'], "Error") !== false || strpos($_SESSION['message'], "Invalid") !== false) ? "error" : "success"; ?>',
-                    title: '<?php echo (strpos($_SESSION['message'], "Error") !== false || strpos($_SESSION['message'], "Invalid") !== false) ? "Error" : "Success"; ?>',
-                    text: '<?php echo $_SESSION['message']; ?>',
-                    confirmButtonText: 'OK'
-                });
-                <?php unset($_SESSION['message']); ?>
-            <?php endif; ?>
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+    <?php if (isset($_SESSION['message'])): ?>
+        const message = '<?php echo $_SESSION['message']; ?>';
+        const isError = message.includes("Invalid") || message.includes("Error") || message.includes("not approved");
+
+        // If the user is locked out
+        if (message.includes('Too many login attempts')) {
+            const remainingTime = <?php echo isset($_SESSION['last_attempt_time']) ? LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']) : 0; ?>;
+
+            // Display SweetAlert with a countdown
+            Swal.fire({
+                icon: 'error',
+                title: 'Too many login attempts!',
+                html: `Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
+                showConfirmButton: false,
+                timer: remainingTime * 1000, // Set the timer duration in milliseconds
+                willOpen: () => {
+                    const countdownElement = document.getElementById('countdown');
+                    let countdown = remainingTime;
+                    const countdownInterval = setInterval(() => {
+                        countdown--;
+                        countdownElement.innerText = countdown;
+                        if (countdown <= 0) {
+                            clearInterval(countdownInterval);
+                        }
+                    }, 1000);
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: isError ? 'error' : 'success',
+                title: isError ? 'Error' : 'Success',
+                text: message,
+                confirmButtonText: 'OK'
+            });
+        }
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
+});
+
+
+
     </script>
 
 </body>

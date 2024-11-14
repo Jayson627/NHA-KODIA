@@ -145,6 +145,10 @@ $conn->close();
         .incident-form button:hover {
             background-color: #0056b3;
         }
+        .countdown {
+            font-weight: bold;
+            color: red;
+        }
         /* Close Button */
         .close-btn {
             position: absolute;
@@ -185,16 +189,14 @@ $conn->close();
             <thead>
                 <tr>
                     <th>Announcement</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
+                    <th>Time Left</th> <!-- New column for Countdown -->
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($announcements as $announcement): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($announcement['announcement']); ?></td>
-                        <td><?php echo htmlspecialchars($announcement['start_date']); ?></td>
-                        <td><?php echo htmlspecialchars($announcement['end_date']); ?></td>
+                        <td><span id="countdown-<?php echo $announcement['id']; ?>" class="countdown"></span></td> <!-- Countdown span -->
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -233,6 +235,34 @@ $conn->close();
 </div>
 
 <script>
+    // Countdown timer function
+    function countdownTimer(endDate, elementId) {
+        var countDownDate = new Date(endDate).getTime();
+
+        var x = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+
+            if (distance <= 0) {
+                clearInterval(x);
+                document.getElementById(elementId).innerHTML = "Expired";
+            } else {
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById(elementId).innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+            }
+        }, 1000);
+    }
+
+    // On DOM Content Loaded, initialize countdown timers for all announcements
+    document.addEventListener("DOMContentLoaded", function() {
+        <?php foreach ($announcements as $announcement): ?>
+            countdownTimer('<?php echo $announcement['end_date']; ?>', 'countdown-<?php echo $announcement['id']; ?>');
+        <?php endforeach; ?>
+    });
+
     function toggleAnnouncements() {
         var container = document.getElementById('announcementContainer');
         var welcomeText = document.getElementById('welcomeText');

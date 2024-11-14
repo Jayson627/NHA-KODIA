@@ -48,10 +48,13 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 						<input type="password" name="confirm_password" id="confirm-password" class="form-control" autocomplete="off" <?php echo isset($meta['id']) ? "" : 'required' ?>>
 						<small class="text-info"><i>Leave this blank if you don’t want to change the password.</i></small>
 					</div>
-					<div class="form-group col-12 col-md-6">
-						<label for="type">User</label>
-						<input type="text" class="form-control" value="Administrator" readonly>
-					</div>
+					<div class="form-group col-6">
+					<label for="type">User Type</label>
+					<select name="type" id="type" class="custom-select"  required>
+						<option value="1" <?php echo isset($meta['type']) && $meta['type'] == 1 ? 'selected': '' ?>>Administrator</option>
+						
+					</select>
+				</div>
 					<div class="form-group col-12 col-md-6">
 						<label for="" class="control-label">Avatar</label>
 						<div class="custom-file">

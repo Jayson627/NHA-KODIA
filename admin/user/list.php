@@ -68,18 +68,16 @@
 						while($row = $qry->fetch_assoc()):
 					?>
 						<tr>
-							<td class="text-center" data-label="#"><?php echo $i++; ?></td>
-							<td class="text-center" data-label="Avatar">
-								<img src="<?php echo validate_image($row['avatar']) ?>" class="img-avatar img-thumbnail p-0 border-2" alt="user_avatar">
-							</td>
-							<td data-label="Name"><?php echo ucwords($row['name']) ?></td>
-							<td data-label="email"><p class="m-0 truncate-1"><?php echo $row['email'] ?></p></td>
-							<td data-label="User Type"><p class="m-0"><?php echo ($row['type'] == 1 )? "Administrator" : "" ?></p></td>
-							<td align="center" data-label="Action">
-								<button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
-									Action
-									<span class="sr-only">Toggle Dropdown</span>
-								</button>
+						<td class="text-center"><?php echo $i++; ?></td>
+							<td class="text-center"><img src="<?php echo validate_image($row['avatar']) ?>" class="img-avatar img-thumbnail p-0 border-2" alt="user_avatar"></td>
+							<td><?php echo ucwords($row['name']) ?></td>
+							<td ><p class="m-0 truncate-1"><?php echo $row['username'] ?></p></td>
+							<td ><p class="m-0"><?php echo ($row['type'] == 1 )? "Adminstrator" : "Staff" ?></p></td>
+							<td align="center">
+								 <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
+				                  		Action
+				                    <span class="sr-only">Toggle Dropdown</span>
+				                  </button>
 								<div class="dropdown-menu" role="menu">
 									<a class="dropdown-item" href="?page=user/manage_user&id=<?php echo $row['id'] ?>"><span class="fa fa-edit text-primary"></span> Edit</a>
 									<div class="dropdown-divider"></div>

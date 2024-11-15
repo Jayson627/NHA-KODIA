@@ -5,7 +5,7 @@ include_once('connection.php');
 // Define constants
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
-define('RECAPTCHA_SECRET_KEY', 'YOUR_SECRET_KEY'); // Replace with your reCAPTCHA secret key
+define('RECAPTCHA_SECRET_KEY', '6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5'); // Replace with your reCAPTCHA secret key
 
 // Function to validate reCAPTCHA
 function validate_recaptcha($token) {

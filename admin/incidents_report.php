@@ -4,22 +4,20 @@ include_once('connection.php');
 // Initialize error message variable
 $error_message = "";
 
-
 // Handle incident resolution
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resolve_id'])) {
     $resolve_id = $_POST['resolve_id'];
     $resolution_notes = isset($_POST['resolution_notes']) ? $_POST['resolution_notes'] : '';
-    $assigned_to = isset($_POST['assigned_to']) ? $_POST['assigned_to'] : '';  // This will be the reporter's name or user who resolves it
 
     // SQL to update the incident status to resolved and add resolution notes
-    $resolve_query = "UPDATE incidents SET status = 'resolved', resolution_notes = ?, assigned_to = ? WHERE id = ?";
+    $resolve_query = "UPDATE incidents SET status = 'resolved', resolution_notes = ? WHERE id = ?";
 
     // Prepare and bind
     if ($stmt = $conn->prepare($resolve_query)) {
-        $stmt->bind_param("ssi", $resolution_notes, $assigned_to, $resolve_id);
+        $stmt->bind_param("si", $resolution_notes, $resolve_id);
 
         if ($stmt->execute()) {
-            echo "<div class='alert alert-success text-center'>Incident resolved, notes added, and assigned successfully.</div>";
+            echo "<div class='alert alert-success text-center'>Incident resolved and notes added successfully.</div>";
         } else {
             echo "<div class='alert alert-danger text-center'>Error resolving incident: " . $stmt->error . "</div>";
         }
@@ -114,7 +112,6 @@ $result = $conn->query($query);
                 <th>Description</th>
                 <th>Reported By</th>
                 <th>Status</th>
-                <th>Assigned To</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -138,14 +135,13 @@ $result = $conn->query($query);
                     }
 
                     echo "</td>
-                            <td>" . htmlspecialchars($row['reported_by']) . "</td>
                             <td>";
 
                     // Show Resolve button if the incident is pending
                     if ($row['status'] === 'pending') {
                         echo "
                         <form action='' method='post' class='incident-row'>
-                          
+                            <input type='hidden' name='resolve_id' value='" . htmlspecialchars($row['id']) . "'>
                             <textarea name='resolution_notes' class='form-control mb-2' placeholder='Enter resolution notes'></textarea>
                             <button type='submit' class='btn btn-success btn-sm'>Resolve</button>
                         </form>";
@@ -157,7 +153,7 @@ $result = $conn->query($query);
                         </tr>";
                 }
             } else {
-                echo "<tr><td colspan='8' class='text-center'>No incidents found</td></tr>";
+                echo "<tr><td colspan='7' class='text-center'>No incidents found</td></tr>";
             }
             $conn->close();
             ?>

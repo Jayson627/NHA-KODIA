@@ -95,7 +95,7 @@ function sendApprovalEmail($toEmail, $fullname) {
             padding: 20px;
         }
         h2 {
-            color: #5a67d8;
+            color: green;
             text-align: center;
         }
         table {

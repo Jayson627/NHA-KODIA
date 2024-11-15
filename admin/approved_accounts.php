@@ -111,7 +111,7 @@ function sendApprovalEmail($toEmail, $fullname) {
             text-align: left;
         }
         th {
-            background-color: green;
+            background-color: lightgreen;
             color: white;
         }
         tr:hover {

@@ -305,27 +305,42 @@
       });
 
       $('#login-frm').on('submit', function(e) {
-        const email = $('[name="email"]').val();
-        const emailPattern = /.+@gmail\.com$/;
-        const password = $('[name="password"]').val();
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const email = $('[name="email"]').val();
+    const emailPattern = /.+@gmail\.com$/;
+    const password = $('[name="password"]').val();
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        if (!emailPattern.test(email)) {
-          e.preventDefault(); 
-          Swal.fire({
+    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
+
+    // Validate email
+    if (!emailPattern.test(email)) {
+        e.preventDefault();
+        Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
             text: 'Please enter a valid Gmail address.',
-          });
-        } else if (!passwordPattern.test(password)) {
-          e.preventDefault(); 
-          Swal.fire({
+        });
+    } 
+    // Validate password
+    else if (!passwordPattern.test(password)) {
+        e.preventDefault();
+        Swal.fire({
             icon: 'error',
             title: 'Invalid Password',
             text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-          });
-        }
-      });
+        });
+    } 
+    // Check if reCAPTCHA is filled
+    else if (recaptchaResponse.length === 0) {
+        e.preventDefault(); // Prevent form submission
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
+        });
+    }
+});
+
 
       $('.open-menu-btn').click(function() {
         $('#push-menu').css('width', '250px'); 
@@ -340,6 +355,29 @@
       type(); 
     };
   </script>
+  <?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $recaptcha_secret = '6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5'; // Replace with your secret key
+    $recaptcha_response = $_POST['g-recaptcha-response'];
+
+    // Verify the reCAPTCHA response with Google
+    $verify_url = 'https://www.google.com/recaptcha/api/siteverify';
+    $response = file_get_contents($verify_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+    $response_keys = json_decode($response, true);
+
+    if(intval($response_keys["success"]) !== 1) {
+        // reCAPTCHA failed
+        echo 'Please complete the reCAPTCHA.';
+    } else {
+        // reCAPTCHA succeeded, proceed with login logic
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+
+        // Process login (you can add your login validation here)
+    }
+}
+?>
+
 </head>
 <body>
   <!-- Navbar -->

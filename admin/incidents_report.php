@@ -114,7 +114,7 @@ $result = $conn->query($query);
                 <th>Description</th>
                 <th>Reported By</th>
                 <th>Status</th>
-                <th>Assigned To</th>
+               
                 <th>Action</th>
             </tr>
             </thead>

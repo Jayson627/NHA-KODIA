@@ -16,6 +16,9 @@ if ($conn->connect_error) {
 // Initialize error message variable
 $error_message = "";
 ?>
+<!-- Font Awesome CDN -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 <style>
     .img-thumb-path {
         width: 100px;
@@ -77,6 +80,11 @@ $error_message = "";
             <button onclick="printTable()" class="btn btn-flat btn-sm" style="background-color: #28a745; color: white;">
                 <i class="fa fa-print"></i> Print
             </button>
+            <a href="backup_list.php" class="btn btn-sm btn-warning btn-flat">
+  <i class="fas fa-trash-alt"></i>
+</a>
+
+
         </div>
     </div>
     <div class="card-body">
@@ -168,96 +176,124 @@ $error_message = "";
 </div>
 <script>
     function printTable() {
-        const rows = document.querySelectorAll('#household-table tbody tr');
-        let printContent = '<table style="width: 100%; border-collapse: collapse;">';
-        printContent += `
-            <thead>
-                <tr>
-                    <th>Date Created</th>
-                    <th>House No.</th>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Spouse Name</th>
-                    <th>Spouse Age</th>
-                    <th>Block</th>
-                    <th>Lot</th>
-                    <th>Gender</th>
-                    <th>Contact No.</th>
-                    <th>Barangay</th>
-                    <th>Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-        `;
+    const rows = document.querySelectorAll('#household-table tbody tr');
+    let printContent = '<table style="width: 100%; border-collapse: collapse;">';
+    printContent += `
+        <thead>
+            <tr>
+                <th>Date Created</th>
+                <th>House No.</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Spouse Name</th>
+                <th>Spouse Age</th>
+                <th>Block</th>
+                <th>Lot</th>
+                <th>Gender</th>
+                <th>Contact No.</th>
+                <th>Barangay</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
 
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            printContent += '<tr>';
-            printContent += `<td>${cells[1].innerHTML}</td>`; // Date Created
-            printContent += `<td>${cells[2].innerHTML}</td>`; // House No.
-            printContent += `<td>${cells[3].innerHTML}</td>`; // Name
-            printContent += `<td>${cells[4].innerHTML}</td>`; // Age
-            printContent += `<td>${cells[5].innerHTML}</td>`; // Spouse Name
-            printContent += `<td>${cells[6].innerHTML}</td>`; // Spouse Age
-            printContent += `<td>${cells[7].innerHTML}</td>`; // Block
-            printContent += `<td>${cells[8].innerHTML}</td>`; // Lot
-            printContent += `<td>${cells[9].innerHTML}</td>`; // Gender
-            printContent += `<td>${cells[10].innerHTML}</td>`; // Contact No.
-            printContent += `<td>${cells[11].innerHTML}</td>`; // Barangay
-            printContent += `<td>${cells[12].innerHTML}</td>`; // Remarks
-            printContent += '</tr>';
-        });
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        printContent += '<tr>';
+        printContent += `<td>${cells[1].innerHTML}</td>`; // Date Created
+        printContent += `<td>${cells[2].innerHTML}</td>`; // House No.
+        printContent += `<td>${cells[3].innerHTML}</td>`; // Name
+        printContent += `<td>${cells[4].innerHTML}</td>`; // Age
+        printContent += `<td>${cells[5].innerHTML}</td>`; // Spouse Name
+        printContent += `<td>${cells[6].innerHTML}</td>`; // Spouse Age
+        printContent += `<td>${cells[7].innerHTML}</td>`; // Block
+        printContent += `<td>${cells[8].innerHTML}</td>`; // Lot
+        printContent += `<td>${cells[9].innerHTML}</td>`; // Gender
+        printContent += `<td>${cells[10].innerHTML}</td>`; // Contact No.
+        printContent += `<td>${cells[11].innerHTML}</td>`; // Barangay
+        printContent += `<td>${cells[12].innerHTML}</td>`; // Remarks
+        printContent += '</tr>';
+    });
 
-        printContent += '</tbody></table>';
+    printContent += '</tbody></table>';
 
-        const printWindow = window.open('', '', 'width=900,height=650');
-        printWindow.document.open();
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Print Household Information</title>
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            margin: 20px;
-                        }
-                        h3 {
-                            text-align: center;
-                            font-weight: bold;
-                            margin-bottom: 20px;
-                        }
-                        table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-bottom: 20px;
-                        }
-                        th, td {
-                            border: 1px solid #ddd;
-                            padding: 12px; /* Increased padding for print view */
-                            text-align: left;
-                        }
-                        th {
-                            background-color: #4CAF50;
-                            color: white;
-                        }
-                        tr:nth-child(even) {
-                            background-color: #f2f2f2;
-                        }
-                        tr:hover {
-                            background-color: #ddd;
-                        }
-                        td, th {
-                            font-size: 14px; /* Consistent font size for print */
-                        }
-                    </style>
-                </head>
-                <body>
-                    <h3>Household Information</h3>
-                    ${printContent}
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-    }
+    const printWindow = window.open('', '', 'width=900,height=650');
+    printWindow.document.open();
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Print Household Information</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                    }
+                    h3 {
+                        display: inline-block;
+                        font-weight: bold;
+                        margin-left: 20px;
+                        vertical-align: middle;
+                    }
+                   .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* This centers the content horizontally */
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px; /* Optional: Adds some spacing between the logo and the text */
+}
+
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 12px;
+                        text-align: left;
+                    }
+                    th {
+                        background-color: #4CAF50;
+                        color: white;
+                    }
+                    tr:nth-child(even) {
+                        background-color: #f2f2f2;
+                    }
+                    .footer {
+                        margin-top: 40px;
+                        text-align: center;
+                    }
+                    .signature-line {
+                        margin-top: 30px;
+                        font-size: 16px;
+                        font-weight: bold;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header-container">
+    <img src="lo.png" alt="Logo" class="logo">
+    <h3 style="text-align: center; flex-grow: 1;">Household Information  <br> Baranggay Kodia final list  Beneficiaries </br></h3>
+</div>
+
+                ${printContent}
+                <div class="footer">
+    <p  style="text-align: right; class="signature-line">__________________________</p>
+    <p style="text-align: right;">Captain: Jayson S. Alcantara</p>
+</div>
+
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
 </script>

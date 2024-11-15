@@ -11,135 +11,169 @@ if ($qry->num_rows > 0) {
 }
 
 ?>
+<?php
+// Database connection (already established at the top of your script)
+$household_id = isset($_GET['id']) ? $_GET['id'] : '';
+if (isset($_GET['delete_household']) && !empty($household_id)) {
+    // Begin transaction
+    $conn->begin_transaction();
+
+    try {
+        // First, back up the owner’s details
+        $backup_stmt = $conn->prepare("
+            INSERT INTO household_backup (firstname, middlename, lastname,  roll,  owner_age, owner_extension, gender, dob, contact, block_no, lot_no, present_address, permanent_address, spouse_fullname, spouse_age, spouse_dob, status)
+            SELECT firstname, middlename, lastname, roll,  owner_age, owner_extension, gender, dob, contact, block_no, lot_no, present_address, permanent_address, CONCAT(spouse_lastname, ', ', spouse_firstname, ' ', spouse_middlename) AS spouse_fullname, spouse_age, spouse_dob, status
+            FROM student_list WHERE id = ?");
+        $backup_stmt->bind_param("i", $household_id);
+        $backup_stmt->execute();
+        $backup_stmt->close();
+
+        // Delete children associated with the household
+        $stmt = $conn->prepare("DELETE FROM children WHERE child_id = ?");
+        $stmt->bind_param("i", $household_id);
+        $stmt->execute();
+        $stmt->close();
+
+        // Delete from the student_list (owner and household info)
+        $stmt = $conn->prepare("DELETE FROM student_list WHERE id = ?");
+        $stmt->bind_param("i", $household_id);
+        $stmt->execute();
+        $stmt->close();
+
+        // If everything is successful, commit the transaction
+        $conn->commit();
+
+        // Redirect back to the list page after deletion
+        header("Location: ./?page=students");
+        exit();
+    } catch (Exception $e) {
+        // If there was an error, rollback the transaction
+        $conn->rollback();
+        echo "Error deleting household: " . $e->getMessage();
+    }
+}
+
+?>
 <div class="content py-4">
     <div class="card card-outline card-navy shadow rounded-0">
         <div class="card-header">
             <h5 class="card-title">Household Details</h5>
             <div class="card-tools">
                 <a class="btn btn-sm btn-primary btn-flat" href="./?page=students/manage_student&id=<?= isset($id) ? $id : '' ?>"><i class="fa fa-edit"></i> Edit</a>
-                <button class="btn btn-sm btn-danger btn-flat" id="delete_student"><i class="fa fa-trash"></i> Delete</button>
+                <button class="btn btn-sm btn-danger btn-flat" type="button" id="delete_household"><i class="fa fa-trash"></i> Delete Household</button>
                 <button class="btn btn-sm btn-info bg-info btn-flat" type="button" id="update_status">Update Status</button>
                 <a href="./?page=students" class="btn btn-default border btn-sm btn-flat"><i class="fa fa-angle-left"></i> Back to List</a>
-                <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flatv"><i class="fa fa-plus"></i> Add Children</a>
+                <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flat"><i class="fa fa-plus"></i> Add Children</a>
                 
                 <!-- New Print Button -->
                 <button class="btn btn-sm btn-secondary btn-flat" onclick="printPage()"><i class="fa fa-print"></i> Print</button>
             </div>
-       
-                </style>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Household No.</label>
-                            <div class="pl-4"><?= isset($roll) ? $roll : 'N/A' ?></div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Status</label>
-                            <div class="pl-4">
-                                <?php 
-                                    switch ($status) {
-                                        case 0:
-                                            echo '<span class="rounded-pill badge badge-secondary bg-gradient-secondary px-3">Inactive</span>';
-                                            break;
-                                        case 1:
-                                            echo '<span class="rounded-pill badge badge-primary bg-gradient-primary px-3">Active</span>';
-                                            break;
-                                    }
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <fieldset class="border p-3 mb-3">
-                <legend class="w-auto">Owner Details</legend>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Name</label>
-                            <div class="pl-4"><?= isset($fullname) ? $fullname : 'N/A' ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Sex</label>
-                            <div class="pl-4"><?= isset($gender) ? $gender : 'N/A' ?></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Date of Birth</label>
-                            <div class="pl-4"><?= isset($dob) ? date("M d, Y", strtotime($dob)) : 'N/A' ?></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Age #</label>
-                            <div class="pl-4"><?= isset($owner_age) ? $owner_age : 'N/A' ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Contact #</label>
-                            <div class="pl-4"><?= isset($contact) ? $contact : 'N/A' ?></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Block #</label>
-                            <div class="pl-4"><?= isset($block_no) ? $block_no : 'N/A' ?></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Lot #</label>
-                            <div class="pl-4"><?= isset($lot_no) ? $lot_no : 'N/A' ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Remarks</label>
-                            <div class="pl-4"><?= isset($permanent_address) ? $permanent_address : 'N/A' ?></div>
-                        </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Spouse Name</label>
-                            <div class="pl-4"><?= isset($spouse_fullname) ? $spouse_fullname : 'N/A' ?></div>
-                        </div>
-                        <div class="row mb-3">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label text-muted">Spouse Age</label>
-                            <div class="pl-4"><?= isset($spouse_age) ? $spouse_age : 'N/A' ?></div>
-                        </div>
-                        <div class="row mb-3">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="control-label text-muted"> Spouse Date of Birth</label>
-                            <div class="pl-4"><?= isset($spouse_dob) ? $spouse_dob : 'N/A' ?></div>
-                        </div>
-                    </div>
-                </div>
-
-                    </div>
-                </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                
+                <div class="col-md-6">
+                    <table class="table table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th colspan="2">Owner Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Name</td>
+                                <td><?= isset($fullname) ? $fullname : 'N/A' ?></td>
+                            </tr>
+                            <tr>
+                                <td>Sex</td>
+                                <td><?= isset($gender) ? $gender : 'N/A' ?></td>
+                            </tr>
+                            <tr>
+                                <td>Date of Birth</td>
+                                <td><?= isset($dob) ? date("M d, Y", strtotime($dob)) : 'N/A' ?></td>
+                            </tr>
+                            <tr>
+                                <td>Age</td>
+                                <td><?= isset($owner_age) ? $owner_age : 'N/A' ?></td>
+                            </tr>
+                            <tr>
+                                <td>Contact</td>
+                                <td><?= isset($contact) ? $contact : 'N/A' ?></td>
+                            </tr>
+                            <tr>
+                                <td>Block No.</td>
+                                <td><?= isset($block_no) ? $block_no : 'N/A' ?></td>
+                            </tr>
+                            <tr>
+                                <td>Lot No.</td>
+                                <td><?= isset($lot_no) ? $lot_no : 'N/A' ?></td>
+                            </tr>
+                            <tr>
+                                <td>Barangay</td>
+                                <td><?= isset($present_address) ? $present_address : 'N/A' ?></td>
+                            </tr>
+                            <tr>
+                            <tr>
+                                <td>Household No.</td>
+                                <td><?= isset($roll) ? $roll : 'N/A' ?></td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td>
+                                    <?php 
+                                        switch ($status) {
+                                            case 0:
+                                                echo '<span class="badge badge-secondary">Inactive</span>';
+                                                break;
+                                            case 1:
+                                                echo '<span class="badge badge-primary">Active</span>';
+                                                break;
+                                        }
+                                    ?>
+                                </td>
+                            </tr>
+                                <td>Permanent Address</td>
+                                <td><?= isset($permanent_address) ? $permanent_address : 'N/A' ?></td>
+                            </tr>
+                       
+                        <tr>
+                            <td>Spouse Name</td>
+                            <td><?= isset($spouse_fullname) ? $spouse_fullname : 'N/A' ?></td>
+                        </tr>
+                        <tr>
+                            <td>Spouse Age</td>
+                            <td><?= isset($spouse_age) ? $spouse_age : 'N/A' ?></td>
+                        </tr>
+                        <tr>
+                            <td>Spouse Date of Birth</td>
+                            <td><?= isset($spouse_dob) ? $spouse_dob : 'N/A' ?></td>
+                        </tr>
+                    </tbody>
+                </table>
             </fieldset>
+        </div>
+    </div>
+</div>
 
-            </div>
             <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+// Database credentials
+$servername = "127.0.0.1:3306";
+$username = "u510162695_sis_db";
+$password = "1Sis_dbpassword";
+$dbname = "u510162695_sis_db";
 
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-include_once('connection.php'); // Include your database connection
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Initialize error message variable
+$error_message = "";
 
 // Pagination setup
 $limit = 10; // Number of records per page
@@ -195,57 +229,100 @@ $total_records = $conn->query("SELECT COUNT(*) AS total FROM children")->fetch_a
 $conn->close();
 ?>
 <div class="container mt-5">
-<h2>Children Information</h2>
+    <h2 class="text-center mb-4">Children Information</h2>
 
-<table class="table table-bordered">
-    <thead>
-    <tr>
-        <th>Full Name</th>
-        <th>Age</th>
-        <th>Gender</th>
-        <th>Status</th>
-        <th>Birthdate</th>
-        <th>Educational Attainment</th>
-        <th>Contact Number</th>
-        <th>Remarks</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php if (!empty($children)): ?>
-        <?php foreach ($children as $child): ?>
+    <table class="table table-striped table-hover table-bordered shadow-sm">
+        <thead class="table-primary">
             <tr>
-                <td>
-                    <?php 
-                    $fullName = htmlspecialchars($child['first_name']) . ' ' . 
-                                htmlspecialchars($child['middle_name']) . ' ' . 
-                                htmlspecialchars($child['last_name']);
-                    if (!empty($child['extension_name'])) {
-                        $fullName .= ' ' . htmlspecialchars($child['extension_name']);
-                    }
-                    echo $fullName; 
-                    ?>
-                </td>
-                <td><?php echo htmlspecialchars($child['age']); ?></td>
-                <td><?php echo htmlspecialchars($child['gender']); ?></td>
-                <td><?php echo htmlspecialchars($child['status']); ?></td>
-                <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
-                <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
-                <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
-                <td><?php echo htmlspecialchars($child['remark']); ?></td>
-                <td>
-                    <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
-                    <a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="8">No children found.</td>
+                <th>Full Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Status</th>
+                <th>Birthdate</th>
+                <th>Educational Attainment</th>
+                <th>Contact Number</th>
+                <th>Remarks</th>
+                <th>Actions</th>
             </tr>
-        <?php endif; ?>
+        </thead>
+        <tbody>
+            <?php if (!empty($children)): ?>
+                <?php foreach ($children as $child): ?>
+                    <tr>
+                        <td>
+                            <?php 
+                            $fullName = htmlspecialchars($child['first_name']) . ' ' . 
+                                        htmlspecialchars($child['middle_name']) . ' ' . 
+                                        htmlspecialchars($child['last_name']);
+                            if (!empty($child['extension_name'])) {
+                                $fullName .= ' ' . htmlspecialchars($child['extension_name']);
+                            }
+                            echo $fullName; 
+                            ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($child['age']); ?></td>
+                        <td><?php echo htmlspecialchars($child['gender']); ?></td>
+                        <td><?php echo htmlspecialchars($child['status']); ?></td>
+                        <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
+                        <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
+                        <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
+                        <td><?php echo htmlspecialchars($child['remark']); ?></td>
+                        <td>
+                            <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
+                            <a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="9" class="text-center">No children found.</td>
+                </tr>
+            <?php endif; ?>
         </tbody>
     </table>
+</div>
+
+<!-- Optional CSS Styles for Additional Customization -->
+<style>
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .table th {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .table td {
+        text-align: center;
+    }
+
+    .table-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .table-striped tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: ;
+    }
+
+    .btn {
+        margin: 0 5px;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+    }
+</style>
 
    
 <script>
@@ -341,9 +418,7 @@ $conn->close();
         $('.delete_academic').click(function(){
             _conf("Are you sure to delete this Student's Academic Record?", "delete_academic", [$(this).attr('data-id')]);
         });
-        $('#delete_student').click(function(){
-            _conf("Are you sure to delete this Student Information?", "delete_student", ['<?= isset($id) ? $id : '' ?>']);
-        });
+       
         $('.view_data').click(function(){
             uni_modal("Report Details", "students/view_report.php?id=" + $(this).attr('data-id'), "mid-large");
         });
@@ -357,9 +432,55 @@ $conn->close();
         });
     });
 
-
-
-
+    $(function() {
+    // Delete Household button click event
+    $('#delete_household').click(function(){
+        // SweetAlert2 confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action will permanently delete this household and all associated information. This cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with deletion
+                $.ajax({
+                    url: './?page=students/view_student&id=<?= isset($id) ? $id : "" ?>',
+                    method: 'GET',
+                    data: { delete_household: 1, id: <?= isset($id) ? $id : "''" ?> },
+                    success: function(response) {
+                        // Show success alert and redirect to student list
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'The household has been deleted successfully.',
+                            icon: 'success'
+                        }).then(function() {
+                            window.location.href = './?page=students'; // Redirect to the student list page after deletion
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Show error alert
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while deleting the household.',
+                            icon: 'error'
+                        });
+                    }
+                });
+            } else {
+                // If user cancels the action, show a cancel alert
+                Swal.fire({
+                    title: 'Cancelled',
+                    text: 'The household was not deleted.',
+                    icon: 'info'
+                });
+            }
+        });
+    });
+});
    
 
     function delete_academic($id){
@@ -386,26 +507,4 @@ $conn->close();
     }
     
 
-    function delete_student($id){
-        start_loader();
-        $.ajax({
-            url: _base_url_ + "classes/Master.php?f=delete_student",
-            method: "POST",
-            data: {id: $id},
-            dataType: "json",
-            error: err => {
-                console.log(err);
-                alert_toast("An error occurred.", 'error');
-                end_loader();
-            },
-            success: function(resp) {
-                if (typeof resp == 'object' && resp.status == 'success') {
-                    location.replace('./?page=students');
-                } else {
-                    alert_toast("An error occurred.", 'error');
-                    end_loader();
-                }
-            }
-        });
-    }
 </script> 

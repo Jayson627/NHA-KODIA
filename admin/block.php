@@ -109,7 +109,7 @@ $conn->close();
             margin-top: 50px;
         }
         .table th, .table td {
-            border: 1px solid green;
+            border: 1px solid #dee2e6;
         }
         .alert {
             text-align: center;
@@ -146,7 +146,7 @@ $conn->close();
 
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
-            <thead class="thead-dark">
+            <thead class="thead-green">
             <tr>
                 <th>Block No</th>
                 <th>Available Lots</th>

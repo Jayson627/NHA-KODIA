@@ -229,7 +229,6 @@ function sendApprovalEmail($toEmail, $fullname) {
             <th>Lot No</th>
             <th>House No</th>
             <th>Email</th>
-            <th>Username</th>
             <th>Created At</th>
             <th>Status</th>
             <th>Role</th> <!-- Added Role Column -->
@@ -247,7 +246,6 @@ function sendApprovalEmail($toEmail, $fullname) {
                         <td data-label='Lot No'>{$row['lot_no']}</td>
                         <td data-label='House No'>{$row['house_no']}</td>
                         <td data-label='Email'>{$row['email']}</td>
-                        <td data-label='Username'>{$row['username']}</td>
                         <td data-label='Created At'>{$row['created_at']}</td>
                         <td data-label='Status'>{$row['status']}</td>
                         <td data-label='Role'>{$row['role']}</td> <!-- Displaying the Role -->

@@ -1,16 +1,23 @@
 <?php
 session_start();
-
 include_once('connection.php');
 
-// Define max login attempts and lockout time
+// Define constants
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
+define('RECAPTCHA_SECRET_KEY', 'YOUR_SECRET_KEY'); // Replace with your reCAPTCHA secret key
+
+// Function to validate reCAPTCHA
+function validate_recaptcha($token) {
+    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . RECAPTCHA_SECRET_KEY . "&response=" . $token);
+    $result = json_decode($response, true);
+    return $result['success'] ?? false;
+}
 
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['create_account'])) {
-        // Account creation code (no changes here)
+        // Account creation code
         $fullname = $_POST['fullname'];
         $dob = $_POST['dob'];
         $lot_no = $_POST['lot_no'];
@@ -20,68 +27,68 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing the password
         $role = $_POST['role']; // Use the selected role from form
     
-       // Insert new user with default 'pending' status
-$stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-$stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
-
-    
-        // Execute and check for success
+        // Insert new user with default 'pending' status
+        $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+        
         if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
+            $_SESSION['message'] = "Account created successfully! Please wait for approval.";
         } else {
-            $_SESSION['message'] = "Error creating account. Please try again.";
+            $_SESSION['message'] = "Error creating account.";
         }
         $stmt->close();
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+        header("Location: " . $_SERVER['PHP_SELF']);
         exit();
-    } // Handle login request
+    }
+
     if (isset($_POST['login'])) {
-        // Check if the user is locked out
+        // Check if reCAPTCHA response is provided
+        if (isset($_POST['g-recaptcha-response'])) {
+            $recaptcha_valid = validate_recaptcha($_POST['g-recaptcha-response']);
+            if (!$recaptcha_valid) {
+                $_SESSION['message'] = "Please complete the reCAPTCHA verification.";
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
+        } else {
+            $_SESSION['message'] = "Please complete the reCAPTCHA verification.";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+
+        // Proceed with login attempt if reCAPTCHA passed
         if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
-            // Check if lockout time has passed
             if (isset($_SESSION['last_attempt_time']) && (time() - $_SESSION['last_attempt_time']) < LOCKOUT_TIME) {
                 $remaining_time = LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']);
                 $_SESSION['message'] = "Too many login attempts. Please try again in " . $remaining_time . " seconds.";
                 header("Location: " . $_SERVER['PHP_SELF']); 
                 exit();
             } else {
-                // Reset the login attempts after lockout time has passed
                 $_SESSION['login_attempts'] = 0;
             }
         }
     
-        // Collect the email and password
         $email = $_POST['email'];
         $password = $_POST['password'];
         
-        // Prepare and execute the statement to get the user, role, and status by email
         $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
         
-        // Check if user exists
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
     
-            // Check if the account status is 'approved'
-if ($status !== 'approved') {
-    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
-
+            if ($status !== 'approved') {
+                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
     
-            // Verify the password
             if (password_verify($password, $hashedPassword)) {
-                // Reset login attempts on successful login
                 $_SESSION['login_attempts'] = 0;
-    
-                // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
-    
-                // Check role and redirect accordingly
                 if ($role === 'president') {  
                     header("Location: dashboard.php"); 
                     exit();
@@ -90,33 +97,18 @@ if ($status !== 'approved') {
                     exit();
                 }
             } else {
-                // Increment the login attempts
-                if (!isset($_SESSION['login_attempts'])) {
-                    $_SESSION['login_attempts'] = 0;
-                }
                 $_SESSION['login_attempts']++;
-    
-                // Store the last attempt time
                 $_SESSION['last_attempt_time'] = time();
-    
                 $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
-            // Increment the login attempts
-            if (!isset($_SESSION['login_attempts'])) {
-                $_SESSION['login_attempts'] = 0;
-            }
             $_SESSION['login_attempts']++;
-    
-            // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
-    
             $_SESSION['message'] = "Invalid email or password!";
         }
     
         $stmt->close();
     }
-    
 }
 
 $conn->close();

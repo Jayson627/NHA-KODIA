@@ -49,7 +49,37 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
                 $_SESSION['login_attempts'] = 0;
             }
         }
-    
+    // Process login after form submission
+if (isset($_POST['login'])) {
+    $recaptchaResponse = $_POST['g-recaptcha-response'];
+    $recaptchaSecret = '6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5';  // Replace with your secret key
+
+    // If no reCAPTCHA response, show error
+    if (empty($recaptchaResponse)) {
+        $_SESSION['message'] = "Please verify that you are not a robot.";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
+
+    // Verify reCAPTCHA with Google
+    $recaptchaUrl = 'https://www.google.com/recaptcha/api/siteverify';
+    $recaptchaParams = [
+        'secret' => $recaptchaSecret,
+        'response' => $recaptchaResponse
+    ];
+    $recaptchaResponse = file_get_contents($recaptchaUrl . '?' . http_build_query($recaptchaParams));
+    $recaptchaResponse = json_decode($recaptchaResponse);
+
+    // If reCAPTCHA failed, return with error
+    if (!$recaptchaResponse->success) {
+        $_SESSION['message'] = "reCAPTCHA verification failed. Please try again.";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
+
+    // Continue with login validation...
+}
+
         // Collect the email and password
         $email = $_POST['email'];
         $password = $_POST['password'];

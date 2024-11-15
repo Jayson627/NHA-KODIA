@@ -114,7 +114,7 @@ $result = $conn->query($query);
                 <th>Description</th>
                 <th>Reported By</th>
                 <th>Status</th>
-               
+                <th>Assigned To</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -145,7 +145,7 @@ $result = $conn->query($query);
                     if ($row['status'] === 'pending') {
                         echo "
                         <form action='' method='post' class='incident-row'>
-                            <input type='hidden' name='resolve_id' value='" . htmlspecialchars($row['id']) . "'>
+                          
                             <textarea name='resolution_notes' class='form-control mb-2' placeholder='Enter resolution notes'></textarea>
                             <button type='submit' class='btn btn-success btn-sm'>Resolve</button>
                         </form>";

@@ -146,7 +146,7 @@ $conn->close();
 
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
-            <thead class="thead-green">
+            <thead class="thead-gray">
             <tr>
                 <th>Block No</th>
                 <th>Available Lots</th>

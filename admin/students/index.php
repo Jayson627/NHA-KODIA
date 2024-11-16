@@ -48,7 +48,6 @@ $error_message = "";
             font-size: 10px;
         }
     }
-    /* General table styles */
     table {
         width: 100%;
         border-collapse: collapse; /* Ensures borders are merged */
@@ -70,6 +69,7 @@ $error_message = "";
         background-color: #ddd; /* Highlight row on hover */
     }
 </style>
+
 <div class="card card-outline card-primary rounded-0 shadow">
     <div class="card-header">
         <h3 class="card-title">List of Household</h3>
@@ -81,14 +81,26 @@ $error_message = "";
                 <i class="fa fa-print"></i> Print
             </button>
             <a href="backup_list.php" class="btn btn-sm btn-warning btn-flat">
-  <i class="fas fa-trash-alt"></i>
-</a>
-
-
+                <i class="fas fa-trash-alt"></i>
+            </a>
         </div>
     </div>
     <div class="card-body">
         <div class="container-fluid">
+            <div class="mb-3">
+                <label for="search-input" class="form-label">Search:</label>
+                <input type="text" id="search-input" class="form-control" placeholder="Search by any field...">
+            </div>
+            <div class="mb-3">
+                <label for="entries-select" class="form-label">Show Entries:</label>
+                <select id="entries-select" class="form-control" style="width: auto; display: inline-block;">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-striped" id="household-table">
                     <colgroup>
@@ -138,17 +150,17 @@ $error_message = "";
                         <tr>
                             <td class="text-center"><?php echo $i++; ?></td>
                             <td><?php echo date("Y-m-d H:i", strtotime($row['date_created'])); ?></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['roll']; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['fullname']; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['owner_age']; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo !empty($row['spouse_fullname']) ? $row['spouse_fullname'] : 'N/A'; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['spouse_age']; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['block_no']; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['lot_no']; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['gender']; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['contact']; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['present_address']; ?></p></td>
-                            <td><p class="m-0 truncate-1"><?php echo $row['permanent_address']; ?></p></td>
+                            <td><?php echo $row['roll']; ?></td>
+                            <td><?php echo $row['fullname']; ?></td>
+                            <td><?php echo $row['owner_age']; ?></td>
+                            <td><?php echo !empty($row['spouse_fullname']) ? $row['spouse_fullname'] : 'N/A'; ?></td>
+                            <td><?php echo $row['spouse_age']; ?></td>
+                            <td><?php echo $row['block_no']; ?></td>
+                            <td><?php echo $row['lot_no']; ?></td>
+                            <td><?php echo $row['gender']; ?></td>
+                            <td><?php echo $row['contact']; ?></td>
+                            <td><?php echo $row['present_address']; ?></td>
+                            <td><?php echo $row['permanent_address']; ?></td>
                             <td class="text-center">
                                 <?php 
                                 switch ($row['status']) {
@@ -175,125 +187,20 @@ $error_message = "";
     </div>
 </div>
 <script>
-    function printTable() {
-    const rows = document.querySelectorAll('#household-table tbody tr');
-    let printContent = '<table style="width: 100%; border-collapse: collapse;">';
-    printContent += `
-        <thead>
-            <tr>
-                <th>Date Created</th>
-                <th>House No.</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Spouse Name</th>
-                <th>Spouse Age</th>
-                <th>Block</th>
-                <th>Lot</th>
-                <th>Gender</th>
-                <th>Contact No.</th>
-                <th>Barangay</th>
-                <th>Remarks</th>
-            </tr>
-        </thead>
-        <tbody>
-    `;
-
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        printContent += '<tr>';
-        printContent += `<td>${cells[1].innerHTML}</td>`; // Date Created
-        printContent += `<td>${cells[2].innerHTML}</td>`; // House No.
-        printContent += `<td>${cells[3].innerHTML}</td>`; // Name
-        printContent += `<td>${cells[4].innerHTML}</td>`; // Age
-        printContent += `<td>${cells[5].innerHTML}</td>`; // Spouse Name
-        printContent += `<td>${cells[6].innerHTML}</td>`; // Spouse Age
-        printContent += `<td>${cells[7].innerHTML}</td>`; // Block
-        printContent += `<td>${cells[8].innerHTML}</td>`; // Lot
-        printContent += `<td>${cells[9].innerHTML}</td>`; // Gender
-        printContent += `<td>${cells[10].innerHTML}</td>`; // Contact No.
-        printContent += `<td>${cells[11].innerHTML}</td>`; // Barangay
-        printContent += `<td>${cells[12].innerHTML}</td>`; // Remarks
-        printContent += '</tr>';
+    document.getElementById('search-input').addEventListener('input', function () {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#household-table tbody tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
     });
 
-    printContent += '</tbody></table>';
-
-    const printWindow = window.open('', '', 'width=900,height=650');
-    printWindow.document.open();
-    printWindow.document.write(`
-        <html>
-            <head>
-                <title>Print Household Information</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        margin: 20px;
-                    }
-                    h3 {
-                        display: inline-block;
-                        font-weight: bold;
-                        margin-left: 20px;
-                        vertical-align: middle;
-                    }
-                   .header-container {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* This centers the content horizontally */
-    margin-bottom: 20px;
-    width: 100%;
-}
-
-.logo {
-    width: 60px;
-    height: 60px;
-    margin-right: 10px; /* Optional: Adds some spacing between the logo and the text */
-}
-
-                    table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-bottom: 20px;
-                    }
-                    th, td {
-                        border: 1px solid #ddd;
-                        padding: 12px;
-                        text-align: left;
-                    }
-                    th {
-                        background-color: #4CAF50;
-                        color: white;
-                    }
-                    tr:nth-child(even) {
-                        background-color: #f2f2f2;
-                    }
-                    .footer {
-                        margin-top: 40px;
-                        text-align: center;
-                    }
-                    .signature-line {
-                        margin-top: 30px;
-                        font-size: 16px;
-                        font-weight: bold;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="header-container">
-    <img src="lo.png" alt="Logo" class="logo">
-    <h3 style="text-align: center; flex-grow: 1;">Household Information  <br> Baranggay Kodia final list  Beneficiaries </br></h3>
-</div>
-
-                ${printContent}
-                <div class="footer">
-    <p  style="text-align: right; class="signature-line">__________________________</p>
-    <p style="text-align: right;">Captain: Jayson S. Alcantara</p>
-</div>
-
-            </body>
-        </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-}
-
+    document.getElementById('entries-select').addEventListener('change', function () {
+        const value = parseInt(this.value);
+        const rows = document.querySelectorAll('#household-table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.display = index < value ? '' : 'none';
+        });
+    });
 </script>

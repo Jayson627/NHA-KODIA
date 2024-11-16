@@ -95,7 +95,6 @@
 		</div>
 	</div>
 </div>
-
 <script>
 	$(document).ready(function(){
 		$('.delete_data').click(function(){
@@ -103,7 +102,10 @@
 		});
 		$('.table td,.table th').addClass('py-1 px-2 align-middle');
 		$('.table').dataTable({
-			responsive: true // Ensure DataTable is responsive
+			responsive: true, // Ensure DataTable is responsive
+			searching: false, // Disable search box
+			lengthChange: false, // Disable "Show entries" dropdown
+			pageLength: 10, // Set default number of rows to display
 		});
 		$('.verify_user').click(function(){
 			_conf("Are you sure to verify <b>"+$(this).attr('data-name')+"<b/>?","verify_user",[$(this).attr('data-id')])
@@ -155,4 +157,4 @@
 			}
 		});
 	}
-</script>H
+</script>

@@ -4,15 +4,6 @@
 </script>
 <?php endif;?>
 
-<!-- Add the meta viewport tag for responsiveness -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Ensure jQuery and DataTables are loaded correctly (if not already included elsewhere) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
-
 <style>
     .img-avatar {
         width: 45px;
@@ -104,22 +95,18 @@
 		</div>
 	</div>
 </div>
-
 <script>
 	$(document).ready(function(){
-		// Initialize DataTable with responsive option
-		$('.table').DataTable({
+		$('.delete_data').click(function(){
+			_conf("Are you sure to delete this User permanently?","delete_user",[$(this).attr('data-id')])
+		});
+		$('.table td,.table th').addClass('py-1 px-2 align-middle');
+		$('.table').dataTable({
 			responsive: true, // Ensure DataTable is responsive
 			searching: false, // Disable search box
 			lengthChange: false, // Disable "Show entries" dropdown
 			pageLength: 10, // Set default number of rows to display
 		});
-
-		$('.delete_data').click(function(){
-			_conf("Are you sure to delete this User permanently?","delete_user",[$(this).attr('data-id')])
-		});
-		$('.table td,.table th').addClass('py-1 px-2 align-middle');
-
 		$('.verify_user').click(function(){
 			_conf("Are you sure to verify <b>"+$(this).attr('data-name')+"<b/>?","verify_user",[$(this).attr('data-id')])
 		});

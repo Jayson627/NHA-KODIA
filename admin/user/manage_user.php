@@ -49,7 +49,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 						<small class="text-info"><i>Leave this blank if you don’t want to change the password.</i></small>
 					</div>
 					<div class="form-group col-6">
-					<label for="type">User Type</label>
+					<label for="type">User </label>
 					<select name="type" id="type" class="custom-select"  required>
 						<option value="1" <?php echo isset($meta['type']) && $meta['type'] == 1 ? 'selected': '' ?>>Administrator</option>
 						

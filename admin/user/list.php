@@ -57,7 +57,7 @@
 						<th>Avatar</th>
 						<th>Name</th>
 						<th>Email</th>
-						<th>User</th>
+						<th>User </th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -74,10 +74,10 @@
 							<td ><p class="m-0 truncate-1"><?php echo $row['email'] ?></p></td>
 							<td ><p class="m-0"><?php echo ($row['type'] == 1 )? "Adminstrator" : "Staff" ?></p></td>
 							<td align="center">
-								 <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
-				                  		Action
-				                    <span class="sr-only">Toggle Dropdown</span>
-				                  </button>
+								<button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
+									Action
+									<span class="sr-only">Toggle Dropdown</span>
+								</button>
 								<div class="dropdown-menu" role="menu">
 									<a class="dropdown-item" href="?page=user/manage_user&id=<?php echo $row['id'] ?>"><span class="fa fa-edit text-primary"></span> Edit</a>
 									<div class="dropdown-divider"></div>

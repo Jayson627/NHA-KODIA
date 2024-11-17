@@ -146,10 +146,9 @@ $conn->close();
         height: 100vh;
     }
     header {
-    width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between; /* Default layout */
     padding: 10px 20px;
     background-color: #007BFF;
     color: white;
@@ -160,42 +159,36 @@ $conn->close();
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin-right: 10px;
 }
 
 header h1 {
-    font-size: 18px;
     margin: 0;
-    flex-grow: 1; /* Push "Home" to the right */
-    text-align: center; /* Center-align the title */
+    flex-grow: 1;
+    text-align: center;
+    font-size: 18px;
 }
 
 header a {
     color: white;
     text-decoration: none;
-    padding: 10px 15px;
-    background-color: transparent;
-    border-radius: 4px;
     font-size: 14px;
+    background-color: transparent;
+    padding: 10px 15px;
+    border-radius: 4px;
 }
 
-/* Adjust header layout for mobile view */
+/* Responsive adjustment for mobile view */
 @media (max-width: 768px) {
     header {
-        flex-direction: row;
+        justify-content: space-between; /* Adjust layout for small screens */
     }
 
-    .logo {
-        margin-right: 10px;
-    }
-
-    h1 {
-        text-align: center;
-        font-size: 16px;
-        flex-grow: 1; /* Push "Home" link to the right side */
+    header h1 {
+        display: none; /* Hide the title for a cleaner mobile layout */
     }
 
     header a {
+        margin-left: auto;
         font-size: 14px;
     }
 }

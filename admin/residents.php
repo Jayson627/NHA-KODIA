@@ -188,7 +188,7 @@ $conn->close();
         padding: 12px;
         margin: 8px 0;
         border: 1px solid #ccc;
-        border-radius: 14px;
+        border-radius: 2px;
         font-size: 14px;
     }
 

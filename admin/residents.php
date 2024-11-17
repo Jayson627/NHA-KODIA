@@ -183,7 +183,7 @@ $conn->close();
 input[type="email"],
 input[type="date"],
 input[type="password"] {
-    width: 80%; /* Make the fields narrower */
+    width: 100%; /* Make the fields narrower */
     max-width: 400px; /* Ensure it doesn't exceed 400px */
 }
 

@@ -185,7 +185,7 @@ $conn->close();
     input[type="date"],
     input[type="password"] {
         width: 100%;
-        padding: 12px;
+        padding: 20px;
         margin: 10px 0;
         border: 1px solid #ccc;
         border-radius: 4px;

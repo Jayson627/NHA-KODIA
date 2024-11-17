@@ -179,18 +179,15 @@ $conn->close();
         color: #5a67d8;
         margin-bottom: 20px;
     }
-
     input[type="text"],
-    input[type="email"],
-    input[type="date"],
-    input[type="password"] {
-        width: 100%;
-        padding: 12px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        font-size: 4px;
-    }
+input[type="email"],
+input[type="date"],
+input[type="password"] {
+    width: 80%; /* Make the fields narrower */
+    max-width: 400px; /* Ensure it doesn't exceed 400px */
+}
+
+    
 
     button {
         background-color: #5a67d8;

@@ -145,23 +145,61 @@ $conn->close();
         align-items: center;
         height: 100vh;
     }
-
     header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+header h1 {
+    font-size: 18px;
+    margin: 0;
+    flex-grow: 1; /* Push "Home" to the right */
+    text-align: center; /* Center-align the title */
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    background-color: transparent;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Adjust header layout for mobile view */
+@media (max-width: 768px) {
+    header {
+        flex-direction: row;
     }
 
     .logo {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
         margin-right: 10px;
     }
+
+    h1 {
+        text-align: center;
+        font-size: 16px;
+        flex-grow: 1; /* Push "Home" link to the right side */
+    }
+
+    header a {
+        font-size: 14px;
+    }
+}
+
 
     .container {
         background-color: white;

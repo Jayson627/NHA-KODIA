@@ -132,111 +132,166 @@ $conn->close();
     <title>Create Account / Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('houses.jpg'); /* Update the path as necessary */
-            background-size: cover; /* Ensure the image covers the entire area */
-            background-position: center; /* Center the image */
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column; /* Stack elements vertically */
-            align-items: center;
-            height: 100vh;
-        }
-        header {
-            width: 100%;
-            display: flex;
-            align-items: center; /* Align items vertically center */
-            padding: 10px 20px; /* Add some padding */
-            background-color: #007BFF; /* Blue background */
-            color: white; /* Text color for better contrast */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .logo {
-            width: 50px; /* Adjust the size as necessary */
-            height: 50px; /* Ensure height matches width for a perfect circle */
-            border-radius: 50%; /* Make the logo circular */
-            margin-right: 15px; /* Space between the logo and any following content */
-        }
-        
-        .container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 35px;
-            width: 350px;
-            transition: transform 0.3s ease;
-            margin-top: 100px; /* Add margin to push it down */
-        }
-        .container:hover {
-            transform: translateY(-5px);
-        }
-        h2 {
-            text-align: center;
-            color: #5a67d8;
-            margin-bottom: 20px;
-        }
-        input[type="text"],
-        input[type="email"],
-        input[type="date"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="date"]:focus,
-        input[type="password"]:focus {
-            border-color: #5a67d8;
-            outline: none;
-        }
-        button {
-            background-color: #5a67d8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 12px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #4c51bf;
-        }
-        .toggle-button {
-            text-align: center;
-            color: #5a67d8;
-            text-decoration: underline;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        .form-container {
-            display: none;
-        }
-        .form-container.active {
-            display: block;
-        }
-        .password-wrapper {
-            position: relative;
-            width: 100%;
-        }
+      
+      body {
+    font-family: Arial, sans-serif;
+    background-image: url('houses.jpg'); /* Update the path as necessary */
+    background-size: cover; /* Ensure the image covers the entire area */
+    background-position: center; /* Center the image */
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center;
+    height: 100vh;
+}
 
-        .eye-icon {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 20px;
-        }
+header {
+    width: 100%;
+    display: flex;
+    align-items: center; /* Align items vertically center */
+    padding: 10px 20px; /* Add some padding */
+    background-color: #007BFF; /* Blue background */
+    color: white; /* Text color for better contrast */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    width: 50px; /* Adjust the size as necessary */
+    height: 50px; /* Ensure height matches width for a perfect circle */
+    border-radius: 50%; /* Make the logo circular */
+    margin-right: 15px; /* Space between the logo and any following content */
+}
+
+.container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 35px;
+    width: 350px;
+    transition: transform 0.3s ease;
+    margin-top: 100px; /* Add margin to push it down */
+}
+
+.container:hover {
+    transform: translateY(-5px);
+}
+
+h2 {
+    text-align: center;
+    color: #5a67d8;
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+input[type="password"]:focus {
+    border-color: #5a67d8;
+    outline: none;
+}
+
+button {
+    background-color: #5a67d8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #4c51bf;
+}
+
+.toggle-button {
+    text-align: center;
+    color: #5a67d8;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.form-container {
+    display: none;
+}
+
+.form-container.active {
+    display: block;
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.eye-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        margin-top: 50px;
+        padding: 20px;
+    }
+
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="password"] {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .eye-icon {
+        font-size: 18px;
+    }
+}
     </style>
 </head>
 <body>

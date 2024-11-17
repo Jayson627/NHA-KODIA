@@ -132,37 +132,36 @@ $conn->close();
     <title>Create Account / Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-image: url('houses.jpg'); /* Update the path as necessary */
-        background-size: cover;
-        background-position: center;
-        color: #333;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
-    }
-
-    header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .logo {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('houses.jpg'); /* Update the path as necessary */
+            background-size: cover; /* Ensure the image covers the entire area */
+            background-position: center; /* Center the image */
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center;
+            height: 100vh;
+        }
+        header {
+            width: 100%;
+            display: flex;
+            align-items: center; /* Align items vertically center */
+            padding: 10px 20px; /* Add some padding */
+            background-color: #007BFF; /* Blue background */
+            color: white; /* Text color for better contrast */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 50px; /* Adjust the size as necessary */
+            height: 50px; /* Ensure height matches width for a perfect circle */
+            border-radius: 50%; /* Make the logo circular */
+            margin-right: 15px; /* Space between the logo and any following content */
+        }
+        
+        
     .container {
         background-color: white;
         border-radius: 8px;
@@ -294,8 +293,7 @@ $conn->close();
             font-size: 14px;
         }
     }
-</style>
-
+    </style>
 </head>
 <body>
 <header>

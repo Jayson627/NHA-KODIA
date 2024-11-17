@@ -189,7 +189,7 @@ $conn->close();
         margin: 8px 0;
         border: 1px solid #ccc;
         border-radius: 2px;
-        font-size: 14px;
+        font-size: 4px;
     }
 
     button {

@@ -145,54 +145,23 @@ $conn->close();
         align-items: center;
         height: 100vh;
     }
+
     header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Default layout */
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
-
-header h1 {
-    margin: 0;
-    flex-grow: 1;
-    text-align: center;
-    font-size: 18px;
-}
-
-header a {
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    background-color: transparent;
-    padding: 10px 15px;
-    border-radius: 4px;
-}
-
-/* Responsive adjustment for mobile view */
-@media (max-width: 768px) {
-    header {
-        justify-content: space-between; /* Adjust layout for small screens */
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
-    header h1 {
-        display: none; /* Hide the title for a cleaner mobile layout */
+    .logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
     }
-
-    header a {
-        margin-left: auto;
-        font-size: 14px;
-    }
-}
-
 
     .container {
         background-color: white;

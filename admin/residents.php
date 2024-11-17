@@ -146,22 +146,62 @@ $conn->close();
         height: 100vh;
     }
 
+   /* Default desktop header styles */
+header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Align items to edges */
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header .logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 18px;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    background-color: transparent;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Mobile view styles (applies when screen width is 768px or less) */
+@media (max-width: 768px) {
     header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center-align all items */
+        text-align: center;
+        padding: 10px; /* Adjust padding */
     }
 
-    .logo {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
+    header .logo {
+        margin-bottom: 10px; /* Add space below the logo */
     }
+
+    header h1 {
+        font-size: 16px; /* Smaller font size for title */
+    }
+
+    header a {
+        margin-top: 10px; /* Add spacing above the link */
+        font-size: 12px; /* Adjust font size for the link */
+        padding: 8px 12px; /* Adjust padding */
+    }
+}
+
 
     .container {
         background-color: white;

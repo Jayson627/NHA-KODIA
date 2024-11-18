@@ -1,7 +1,7 @@
 <?php
 // Start session for handling form responses
 session_start();
-
+// Database credentials
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";
 $password = "1Sis_dbpassword";
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         input[type="text"],
         input[type="date"],
         textarea {
-            width: 93%;
+            width: 100%;
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
@@ -115,56 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-top: 20px;
             color: #888;
             font-size: 12px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 15px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            input[type="text"],
-            input[type="date"],
-            textarea {
-                font-size: 16px;
-                padding: 12px;
-            }
-
-            button {
-                font-size: 18px;
-                padding: 12px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 20px;
-            }
-
-            label {
-                font-size: 14px;
-            }
-
-            input[type="text"],
-            input[type="date"],
-            textarea {
-                font-size: 14px;
-                padding: 12px;
-            }
-
-            button {
-                font-size: 16px;
-                padding: 15px;
-            }
-
-            footer {
-                font-size: 10px;
-            }
         }
     </style>
     <!-- Include SweetAlert2 JS -->

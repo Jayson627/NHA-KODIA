@@ -1,9 +1,9 @@
 <?php
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "sis_db";
+// Database credentials
+$servername = "127.0.0.1:3306";
+$username = "u510162695_sis_db";
+$password = "1Sis_dbpassword";
+$dbname = "u510162695_sis_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -18,7 +18,6 @@ $error_message = "";
 ?>
 <!-- Font Awesome CDN -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-<link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet"> <!-- DataTables CSS -->
 
 <style>
     .img-thumb-path {
@@ -71,7 +70,6 @@ $error_message = "";
         background-color: #ddd; /* Highlight row on hover */
     }
 </style>
-
 <div class="card card-outline card-primary rounded-0 shadow">
     <div class="card-header">
         <h3 class="card-title">List of Household</h3>
@@ -83,8 +81,10 @@ $error_message = "";
                 <i class="fa fa-print"></i> Print
             </button>
             <a href="backup_list.php" class="btn btn-sm btn-warning btn-flat">
-                <i class="fas fa-trash-alt"></i>
-            </a>
+  <i class="fas fa-trash-alt"></i>
+</a>
+
+
         </div>
     </div>
     <div class="card-body">
@@ -174,27 +174,8 @@ $error_message = "";
         </div>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script> <!-- DataTables JS -->
-
 <script>
-$(document).ready(function(){
-    // Initialize DataTables with search bar and pagination
-    $('#household-table').DataTable({
-        "paging": true,         // Enable pagination
-        "searching": true,      // Enable search bar
-        "ordering": true,       // Enable column sorting
-        "lengthMenu": [10, 25, 50, 100], // Allow user to select number of rows per page
-        "pageLength": 10,       // Set default number of rows per page
-        columnDefs: [
-            { orderable: false, targets: 13 } // Disable sorting on 'Action' column
-        ]
-    });
-});
-
-// Print table function
-function printTable() {
+    function printTable() {
     const rows = document.querySelectorAll('#household-table tbody tr');
     let printContent = '<table style="width: 100%; border-collapse: collapse;">';
     printContent += `
@@ -254,19 +235,19 @@ function printTable() {
                         margin-left: 20px;
                         vertical-align: middle;
                     }
-                    .header-container {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center; /* This centers the content horizontally */
-                        margin-bottom: 20px;
-                        width: 100%;
-                    }
+                   .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* This centers the content horizontally */
+    margin-bottom: 20px;
+    width: 100%;
+}
 
-                    .logo {
-                        width: 60px;
-                        height: 60px;
-                        margin-right: 10px;
-                    }
+.logo {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px; /* Optional: Adds some spacing between the logo and the text */
+}
 
                     table {
                         width: 100%;
@@ -298,18 +279,21 @@ function printTable() {
             </head>
             <body>
                 <div class="header-container">
-                    <img src="lo.png" alt="Logo" class="logo">
-                    <h3 style="text-align: center; flex-grow: 1;">Household Information  <br> Baranggay Kodia final list  Beneficiaries </h3>
-                </div>
+    <img src="lo.png" alt="Logo" class="logo">
+    <h3 style="text-align: center; flex-grow: 1;">Household Information  <br> Baranggay Kodia final list  Beneficiaries </br></h3>
+</div>
+
                 ${printContent}
                 <div class="footer">
-                    <p style="text-align: right;">__________________________</p>
-                    <p style="text-align: right;">Captain: Jayson S. Alcantara</p>
-                </div>
+    <p  style="text-align: right; class="signature-line">__________________________</p>
+    <p style="text-align: right;">Captain: Jayson S. Alcantara</p>
+</div>
+
             </body>
         </html>
     `);
     printWindow.document.close();
     printWindow.print();
 }
+
 </script>

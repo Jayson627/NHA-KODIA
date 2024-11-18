@@ -2,7 +2,7 @@
 // Start session for handling form responses
 session_start();
 
-<?php
+
 // Database credentials
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";
@@ -19,7 +19,6 @@ if ($conn->connect_error) {
 
 // Initialize error message variable
 $error_message = "";
-
 // Function to handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $incidentType = trim($_POST['incident_type']);
@@ -34,25 +33,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif (empty($incidentDate)) {
         $_SESSION['error'] = "Date of incident is required.";
     } else {
-        // Insert data into the database
-        try {
-            $stmt = $pdo->prepare("INSERT INTO incidents (incident_type, description, incident_date) VALUES (:incident_type, :description, :incident_date)");
-            $stmt->execute([
-                ':incident_type' => $incidentType,
-                ':description' => $description,
-                ':incident_date' => $incidentDate,
-            ]);
+        // Insert data into the database using mysqli
+        $stmt = $conn->prepare("INSERT INTO incidents (incident_type, description, incident_date) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $incidentType, $description, $incidentDate);
 
+        if ($stmt->execute()) {
             $_SESSION['success'] = "Incident successfully submitted.";
-        } catch (PDOException $e) {
-            $_SESSION['error'] = "Failed to submit incident: " . $e->getMessage();
+        } else {
+            $_SESSION['error'] = "Failed to submit incident: " . $stmt->error;
         }
+
+        $stmt->close();
     }
 
     // Redirect back to clear POST data
     header('Location: incident.php');
     exit;
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

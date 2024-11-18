@@ -3,8 +3,7 @@
 if (!headers_sent()) {
     ob_start();
 }
-
-
+ 
 // Database credentials
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";
@@ -18,16 +17,16 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-
-// Initialize error message variable
-$error_message = "";
 // Handle "Resolve" action
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resolve_id'])) {
     $resolveId = (int) $_POST['resolve_id'];
     try {
-        $stmt = $pdo->prepare("UPDATE incidents SET resolved = 1 WHERE id = :id");
-        $stmt->execute([':id' => $resolveId]);
-    } catch (PDOException $e) {
+        // Use MySQLi to update the incident status
+        $stmt = $conn->prepare("UPDATE incidents SET resolved = 1 WHERE id = ?");
+        $stmt->bind_param("i", $resolveId); // Bind the integer parameter
+        $stmt->execute();
+        $stmt->close();
+    } catch (Exception $e) {
         die("Failed to resolve incident: " . $e->getMessage());
     }
     // Ensure no output before header
@@ -39,9 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resolve_id'])) {
 
 // Fetch unresolved incidents from the database
 try {
-    $stmt = $pdo->query("SELECT id, incident_type, description, incident_date FROM incidents WHERE resolved = 0 ORDER BY incident_date DESC");
-    $incidents = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
+    // Use MySQLi to fetch unresolved incidents
+    $result = $conn->query("SELECT id, incident_type, description, incident_date FROM incidents WHERE resolved = 0 ORDER BY incident_date DESC");
+    $incidents = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $incidents[] = $row;
+        }
+    }
+} catch (Exception $e) {
     die("Failed to fetch incidents: " . $e->getMessage());
 }
 ?>

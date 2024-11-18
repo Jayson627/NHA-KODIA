@@ -3,13 +3,12 @@ session_start();
 include_once('connection.php');
 
 // Fetch announcements from the database
-$announcements = [];
-$result = $conn->query("SELECT * FROM announcements WHERE CURDATE() BETWEEN start_date AND end_date");
+$announcementQuery = "SELECT * FROM announcement ORDER BY created_at DESC";
+$announcementResult = $conn->query($announcementQuery);
 
-if ($result) {
-    $announcements = $result->fetch_all(MYSQLI_ASSOC);
-} else {
-    error_log("Database query failed: " . $conn->error);
+// Check if the query was successful
+if (!$announcementResult) {
+    die("Query failed: " . $conn->error); // Show the error if the query fails
 }
 
 // Close the database connection
@@ -21,10 +20,11 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Announcements & Incident Report</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
+        /* General Styles */
         body {
             font-family: Arial, sans-serif;
             background-image: url('houses.jpg');
@@ -48,27 +48,16 @@ $conn->close();
             margin: 0;
             color: #ffffff;
         }
-        .icons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .btn {
+        .icons a {
             color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
             text-decoration: none;
+            margin-left: 15px;
             font-size: 16px;
-            transition: background-color 0.3s ease;
-            display: flex;
-            align-items: center;
         }
-        .btn i {
-            margin-right: 8px;
+        .icons a:hover {
+            text-decoration: underline;
         }
-        .btn:hover {
-            background-color: blue;
-        }
+
         .welcome-text {
             position: absolute;
             top: 50%;
@@ -83,94 +72,83 @@ $conn->close();
             0% { opacity: 0; transform: translate(-50%, -60%); }
             100% { opacity: 1; transform: translate(-50%, -50%); }
         }
-        .announcement-container, .incident-form-container {
+
+        /* Announcements Table Styles */
+        .announcements-container {
             padding: 20px;
             color: white;
         }
-        table {
+        table.announcement-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
         }
-        th, td {
+        table.announcement-table th, table.announcement-table td {
             padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            color: black;
-        }
-        th {
-            background-color: #007BFF;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .incident-form {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            color: black;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        .incident-form h3 {
-            color: #007BFF;
-        }
-        .incident-form label {
-            font-weight: bold;
-            margin-top: 10px;
-            display: block;
-        }
-        .incident-form select, .incident-form input, .incident-form textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
+            text-align: left;
         }
-        .incident-form button {
-            margin-top: 15px;
-            padding: 10px 20px;
+        table.announcement-table th {
             background-color: #007BFF;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
         }
-        .incident-form button:hover {
-            background-color: #0056b3;
+
+        /* Sidebar Menu */
+        .sidebar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: rgba(0, 123, 255, 0.9);
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
-        .countdown {
-            font-weight: bold;
-            color: red;
-        }
-        /* Close Button */
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            background: none;
-            border: none;
+        .sidebar a {
             color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+        .menu-toggle {
+            display: none;
+            color: white;
+            font-size: 24px;
             cursor: pointer;
+        }
+
+        /* Media Query for Mobile View */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .header .icons {
+                display: none;
+            }
+            .sidebar {
+                display: none; /* Initially hidden */
+            }
+            .sidebar.show {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
+
 <div class="header">
     <h1>Dashboard</h1>
-    <div class="icons">
-        <a href="#" class="btn" onclick="toggleAnnouncements()">
-            <i class="fas fa-bell"></i> Announcements
-        </a>
-        <a href="#" class="btn" onclick="toggleIncidentForm()">
-            <i class="fas fa-exclamation-triangle"></i> Report Incident
+    <span class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </span>
+    <div class="icons" id="menuIcons">
+        <a href="incident.php" class="btn">
+            <i class="fas fa-exclamation-circle"></i> Report Incident
         </a>
         <a href="residents.php" class="btn">
             <i class="fas fa-sign-out-alt"></i> Logout
@@ -178,109 +156,52 @@ $conn->close();
     </div>
 </div>
 
-<div class="welcome-text" id="welcomeText">Welcome </div>
+<div class="sidebar" id="sidebarMenu">
+    <a href="incident.php"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
+    <a href="residents.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
 
-<!-- Announcements Section -->
-<div class="announcement-container" id="announcementContainer" style="display: none;">
-    <button class="close-btn" onclick="toggleAnnouncements()">×</button>
-    <h2>Current Announcements</h2>
-    <?php if (count($announcements) > 0): ?>
-        <table>
+<div class="welcome-text" id="welcomeText">Welcome</div>
+
+<!-- Display Announcements -->
+<div class="announcements-container">
+    <h2>Announcements</h2>
+    <?php if (isset($announcementResult) && $announcementResult->num_rows > 0): ?>
+        <table class="announcement-table">
             <thead>
                 <tr>
-                    <th>Announcement</th>
-                    <th>Time Left</th> <!-- New column for Countdown -->
+                    <th>Posted By</th>
+                    <th>Announcement Date</th>
+                    <th>Content</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($announcements as $announcement): ?>
+                <?php while ($row = $announcementResult->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($announcement['announcement']); ?></td>
-                        <td><span id="countdown-<?php echo $announcement['id']; ?>" class="countdown"></span></td> <!-- Countdown span -->
+                        <td><?= htmlspecialchars($row['user']) ?></td>
+                        <td><?= date('F j, Y', strtotime($row['created_at'])) ?></td>
+                        <td><?= htmlspecialchars($row['content']) ?></td>
                     </tr>
-                <?php endforeach; ?>
+                <?php endwhile; ?>
             </tbody>
         </table>
     <?php else: ?>
-        <p>No announcements available at the moment.</p>
+        <p>No announcements yet.</p>
     <?php endif; ?>
 </div>
-
-<!-- Incident Report Form -->
-<div class="incident-form-container" id="incidentFormContainer" style="display: none;">
-    <button class="close-btn" onclick="toggleIncidentForm()">×</button>
-    <form class="incident-form" action="submit_incident.php" method="POST">
-        <h3>Incident Report</h3>
-        
-        <label for="incidentType">Incident Type</label>
-        <select name="incidentType" id="incidentType" required>
-            <option value="Fire">Fire</option>
-            <option value="Accident">Accident</option>
-            <option value="Flood">Flood</option>
-            <option value="Theft">Theft</option>
-            <option value="Other">Other</option>
-        </select>
-        
-        <label for="reportBy">Report By</label>
-        <input type="text" name="reportBy" id="reportBy" placeholder="Your name" required>
-        
-        <label for="description">Description</label>
-        <textarea name="description" id="description" placeholder="Describe the incident" rows="4" required></textarea>
-        
-        <label for="date">Date</label>
-        <input type="date" name="date" id="date" required>
-        
-        <button type="submit">Submit Report</button>
-    </form>
-</div>
-
-<script>
-    // Countdown timer function
-    function countdownTimer(endDate, elementId) {
-        var countDownDate = new Date(endDate).getTime();
-
-        var x = setInterval(function() {
-            var now = new Date().getTime();
-            var distance = countDownDate - now;
-
-            if (distance <= 0) {
-                clearInterval(x);
-                document.getElementById(elementId).innerHTML = "Expired";
-            } else {
-                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById(elementId).innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-            }
-        }, 1000);
-    }
-
-    // On DOM Content Loaded, initialize countdown timers for all announcements
-    document.addEventListener("DOMContentLoaded", function() {
-        <?php foreach ($announcements as $announcement): ?>
-            countdownTimer('<?php echo $announcement['end_date']; ?>', 'countdown-<?php echo $announcement['id']; ?>');
-        <?php endforeach; ?>
-    });
-
-    function toggleAnnouncements() {
-        var container = document.getElementById('announcementContainer');
-        var welcomeText = document.getElementById('welcomeText');
-        container.style.display = (container.style.display === 'none') ? 'block' : 'none';
-        welcomeText.style.display = (container.style.display === 'block') ? 'none' : 'block'; // Hide welcome text
-    }
-
-    function toggleIncidentForm() {
-        var container = document.getElementById('incidentFormContainer');
-        var welcomeText = document.getElementById('welcomeText');
-        container.style.display = (container.style.display === 'none') ? 'block' : 'none';
-        welcomeText.style.display = (container.style.display === 'block') ? 'none' : 'block'; // Hide welcome text
-    }
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar toggle functionality
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebarMenu = document.getElementById('sidebarMenu');
+    
+    menuToggle.addEventListener('click', function() {
+        sidebarMenu.classList.toggle('show');
+    });
+
+    // Display Success Message
     <?php if (isset($_SESSION['message'])): ?>
         Swal.fire({
             icon: 'success',
@@ -294,4 +215,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 </body>
-</html>j
+</html>

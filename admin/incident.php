@@ -4,7 +4,7 @@ session_start();
 
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";
-$password = "";
+$password = "no";
 $dbname = "u510162695_sis_db";
 
 // Establish a database connection

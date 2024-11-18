@@ -1,16 +1,9 @@
 <?php
 include_once('connection.php'); 
+
 // Start output buffering to prevent header issues
 if (!headers_sent()) {
     ob_start();
-}
-
-// Establish a database connection
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
 }
 
 // Handle "Resolve" action

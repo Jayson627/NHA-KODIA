@@ -70,7 +70,42 @@ $error_message = "";
     tr:hover {
         background-color: #ddd; /* Highlight row on hover */
     }
+
+    /* Fix for overlapping pagination and show entries dropdown */
+    div.dataTables_length {
+        padding-right: 20px;
+        width: auto; /* Ensure enough width for the dropdown */
+    }
+
+    div.dataTables_info {
+        padding-left: 20px; /* Add space to avoid overlap */
+    }
+
+    div.dataTables_paginate {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .dataTables_length select {
+        font-size: 14px; /* Adjust font size to make it readable */
+        padding: 5px; /* Add padding to make it look better */
+        border-radius: 4px; /* Slight rounding to look nicer */
+    }
+
+    .dataTables_paginate {
+        padding: 5px; /* Ensure there's padding for pagination buttons */
+    }
+
+    .dataTables_paginate .paginate_button {
+        font-size: 14px;
+        padding: 5px 10px; /* Add some space for the buttons */
+    }
+
+    .dataTables_wrapper {
+        margin-top: 15px; /* Ensure enough margin on top */
+    }
 </style>
+
 
 <div class="card card-outline card-primary rounded-0 shadow">
     <div class="card-header">
@@ -179,18 +214,15 @@ $error_message = "";
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script> <!-- DataTables JS -->
 
 <script>
-$(document).ready(function(){
-    // Initialize DataTables with search bar and pagination
-    $('#household-table').DataTable({
-        "paging": true,         // Enable pagination
-        "searching": true,      // Enable search bar
-        "ordering": true,       // Enable column sorting
-        "lengthMenu": [10, 25, 50, 100], // Allow user to select number of rows per page
-        "pageLength": 10,       // Set default number of rows per page
-        columnDefs: [
-            { orderable: false, targets: 13 } // Disable sorting on 'Action' column
-        ]
-    });
+$('#household-table').DataTable({
+    "paging": true,         // Enable pagination
+    "searching": true,      // Enable search bar
+    "ordering": true,       // Enable column sorting
+    "lengthMenu": [10, 25, 50, 100], // Allow user to select number of rows per page
+    "pageLength": 10,       // Set default number of rows per page
+    columnDefs: [
+        { orderable: false, targets: 13 } // Disable sorting on 'Action' column
+    ]
 });
 
 // Print table function

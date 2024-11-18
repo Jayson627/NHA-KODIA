@@ -1,6 +1,4 @@
 <?php
-// Start session for handling form responses
-session_start();
 
 
 // Database credentials

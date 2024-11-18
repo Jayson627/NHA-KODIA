@@ -1,7 +1,8 @@
 <?php
+include_once('connection.php'); 
 // Start session for handling form responses
 session_start();
-include_once('connection.php'); 
+
 
 // Function to handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

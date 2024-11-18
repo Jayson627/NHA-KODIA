@@ -4,16 +4,8 @@ session_start();
 
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";
-$password = "no";
+$password = "1Sis_dbpassword";
 $dbname = "u510162695_sis_db";
-
-// Establish a database connection
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
-}
 
 // Function to handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

@@ -1,219 +1,225 @@
 <?php
-include_once('connection.php'); 
+// Start session for handling form responses
+session_start();
+$servername = "127.0.0.1:3306";
+$username = "u510162695_sis_db";
+$password = "1Sis_dbpassword";
+$dbname = "u510162695_sis_db";
 
 
-
-// Handle "Resolve" action
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resolve_id'])) {
-    $resolveId = (int) $_POST['resolve_id'];
-    try {
-        $stmt = $pdo->prepare("UPDATE incidents SET resolved = 1 WHERE id = :id");
-        $stmt->execute([':id' => $resolveId]);
-    } catch (PDOException $e) {
-        die("Failed to resolve incident: " . $e->getMessage());
-    }
-    // Ensure no output before header
-    if (!headers_sent()) {
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to avoid form resubmission
-        exit;
-    }
+// Establish a database connection
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
 }
 
-// Fetch unresolved incidents from the database
-try {
-    $stmt = $pdo->query("SELECT id, incident_type, description, incident_date FROM incidents WHERE resolved = 0 ORDER BY incident_date DESC");
-    $incidents = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Failed to fetch incidents: " . $e->getMessage());
+// Function to handle form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $incidentType = trim($_POST['incident_type']);
+    $description = trim($_POST['description']);
+    $incidentDate = $_POST['incident_date'];
+
+    // Basic validation
+    if (empty($incidentType)) {
+        $_SESSION['error'] = "Incident type is required.";
+    } elseif (empty($description)) {
+        $_SESSION['error'] = "Description is required.";
+    } elseif (empty($incidentDate)) {
+        $_SESSION['error'] = "Date of incident is required.";
+    } else {
+        // Insert data into the database
+        try {
+            $stmt = $pdo->prepare("INSERT INTO incidents (incident_type, description, incident_date) VALUES (:incident_type, :description, :incident_date)");
+            $stmt->execute([
+                ':incident_type' => $incidentType,
+                ':description' => $description,
+                ':incident_date' => $incidentDate,
+            ]);
+
+            $_SESSION['success'] = "Incident successfully submitted.";
+        } catch (PDOException $e) {
+            $_SESSION['error'] = "Failed to submit incident: " . $e->getMessage();
+        }
+    }
+
+    // Redirect back to clear POST data
+    header('Location: incident.php');
+    exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incidents Report</title>
+    <title>Incident Form</title>
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 600px;
             margin: 50px auto;
-            padding: 30px;
+            padding: 20px;
             background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 30px;
-            color: #4A90E2;
-            font-size: 32px;
-            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            overflow-x: auto;
+        label {
             display: block;
-        }
-
-        table th, table td {
-            padding: 15px;
-            text-align: left;
-            border: 1px solid #ddd;
-            font-size: 16px;
-        }
-
-        table th {
-            background-color: #007bff;
-            color: white;
             font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
         }
 
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        table tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .no-data {
-            text-align: center;
-            color: #888;
-            font-size: 18px;
-            margin-top: 20px;
-        }
-
-        .btn-resolve {
-            padding: 8px 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 93%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             font-size: 14px;
-            transition: background-color 0.3s ease;
-            width: 100%; /* Make the button fill the cell */
         }
 
-        .btn-resolve:hover {
-            background-color: #218838;
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
         }
 
         footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
             color: #888;
-            font-size: 14px;
+            font-size: 12px;
         }
 
-        /* Responsive Styles */
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
-                margin: 20px auto;
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 28px;
-            }
-
-            table th, table td {
-                padding: 12px;
-                font-size: 14px;
-            }
-
-            .btn-resolve {
-                padding: 6px 12px;
-                font-size: 12px;
-                width: auto; /* Resize button width */
-            }
-        }
-
-        @media (max-width: 480px) {
-            table th, table td {
-                padding: 10px;
-                font-size: 12px;
-            }
-
-            .btn-resolve {
-                padding: 5px 10px;
-                font-size: 10px;
-                width: auto;
+                margin: 20px;
+                padding: 15px;
             }
 
             h1 {
                 font-size: 24px;
             }
 
-            .container {
+            input[type="text"],
+            input[type="date"],
+            textarea {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            button {
+                font-size: 18px;
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            input[type="text"],
+            input[type="date"],
+            textarea {
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            button {
+                font-size: 16px;
                 padding: 15px;
             }
 
-            .btn-resolve {
-                padding: 5px 10px;
-                font-size: 12px;
-            }
-
-            /* Form in the table cell */
-            form {
-                width: 100%; /* Ensure form uses full width */
-                display: flex;
-                justify-content: center; /* Center the button */
+            footer {
+                font-size: 10px;
             }
         }
     </style>
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Incidents Report</h1>
-        <?php if (empty($incidents)): ?>
-            <div class="no-data">No incidents recorded yet.</div>
-        <?php else: ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Incident Type</th>
-                        <th>Description</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($incidents as $index => $incident): ?>
-                        <tr>
-                            <td><?= $index + 1; ?></td>
-                            <td><?= htmlspecialchars($incident['incident_type']); ?></td>
-                            <td><?= htmlspecialchars($incident['description']); ?></td>
-                            <td><?= htmlspecialchars($incident['incident_date']); ?></td>
-                            <td>
-                                <form method="POST" style="margin: 0;">
-                                    <input type="hidden" name="resolve_id" value="<?= $incident['id']; ?>">
-                                    <button type="submit" class="btn-resolve">Resolve</button>
-                                </form>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php endif; ?>
+        <h1>Create an Incident</h1>
+        <form action="incident.php" method="POST">
+            <div class="form-group">
+                <label for="incident_type">Incident Type</label>
+                <input type="text" id="incident_type" name="incident_type" placeholder="Enter the incident type" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="5" placeholder="Describe the incident" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="incident_date">Date of Incident</label>
+                <input type="date" id="incident_date" name="incident_date" required>
+            </div>
+            <button type="submit">Submit Incident</button>
+        </form>
     </div>
-    <footer>&copy; <?= date("Y"); ?> Incident Management System</footer>
+    <footer>&copy; <?php echo date("Y"); ?> Incident Management System</footer>
+
+    <script>
+        // Display success or error message using SweetAlert2
+        <?php if (isset($_SESSION['success'])): ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '<?php echo $_SESSION['success']; ?>',
+                confirmButtonText: 'OK',
+                timer: 3000
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '<?php echo $_SESSION['error']; ?>',
+                confirmButtonText: 'OK',
+                timer: 3000
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    </script>
 </body>
 </html>
-
-<?php
-ob_end_flush(); // End output buffering
-?>

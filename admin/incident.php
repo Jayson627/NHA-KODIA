@@ -1,22 +1,19 @@
 <?php
+// Start session for handling form responses
+session_start();
 
-
-// Database credentials
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";
 $password = "1Sis_dbpassword";
 $dbname = "u510162695_sis_db";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connections
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// Establish a database connection
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
 }
-
-// Initialize error message variable
-$error_message = "";
 
 // Function to handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

@@ -1,9 +1,6 @@
 <?php
 include_once('connection.php'); 
-// Start output buffering to prevent header issues
-if (!headers_sent()) {
-    ob_start();
-}
+
 
 
 // Handle "Resolve" action

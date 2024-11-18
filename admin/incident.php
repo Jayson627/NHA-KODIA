@@ -1,7 +1,7 @@
 <?php
 include_once('connection.php'); 
 // Start session for handling form responses
-session_start();
+
 
 
 // Function to handle form submission

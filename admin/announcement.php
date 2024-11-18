@@ -1,88 +1,93 @@
 <?php
 include_once('connection.php'); 
 
-// Initialize error message variable
-$error_message = "";
+// Handle the form submission (saving new announcement)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcement'])) {
+    $announcement = htmlspecialchars($_POST['announcement']); // Sanitize the content
+    $user = 'Admin'; // You can replace this with the logged-in user's name
 
-// Initialize variables
-$announcement = '';
-$startDate = '';
-$duration = '';
-$editAnnouncement = null;
-$message = '';
-$messageType = '';
-// Handle form submission for creating or updating announcements
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve values with defaults to avoid undefined index notices
-    $announcement = $_POST['announcement'] ?? '';
-    $startDate = $_POST['start_date'] ?? '';
-    $duration = $_POST['duration'] ?? '';
+    // Insert the new announcement into the database with the current timestamp
+    $stmt = $conn->prepare("INSERT INTO announcement (user, content, created_at) VALUES (?, ?, NOW())");
+    $stmt->bind_param("ss", $user, $announcement);
 
-    if (isset($_POST['id']) && $_POST['id'] != '') {
-        // Update existing announcement
-        $id = $_POST['id'];
-        $endDate = date('Y-m-d', strtotime($startDate . " + $duration days"));
-
-        // Fetch the current announcement details to compare if any changes were made
-        $stmt = $conn->prepare("SELECT * FROM announcements WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $existingAnnouncement = $result->fetch_assoc();
-        $stmt->close();
-
-        // Only update if the new data is different from the existing data
-        if ($existingAnnouncement['announcement'] !== $announcement || $existingAnnouncement['start_date'] !== $startDate || $existingAnnouncement['end_date'] !== $endDate) {
-            $stmt = $conn->prepare("UPDATE announcements SET announcement = ?, start_date = ?, end_date = ? WHERE id = ?");
-            $stmt->bind_param("sssi", $announcement, $startDate, $endDate, $id);
-            
-            if ($stmt->execute()) {
-                $message = 'Announcement updated successfully!';
-                $messageType = 'success';
-            } else {
-                $message = 'Error: ' . $stmt->error;
-                $messageType = 'error';
-            }
-            $stmt->close();
-        } else {
-            // If no changes were made, show an informational message
-            $message = 'No changes were made to the announcement.';
-            $messageType = 'info';
-        }
+    if ($stmt->execute()) {
+        $successMessage = "Announcement posted successfully!";
     } else {
-        // Create new announcement
-        $endDate = date('Y-m-d', strtotime($startDate . " + $duration days"));
-        $stmt = $conn->prepare("INSERT INTO announcements (announcement, start_date, end_date) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $announcement, $startDate, $endDate);
-        
-        if ($stmt->execute()) {
-            $message = 'Announcement created successfully!';
-            $messageType = 'success';
-        } else {
-            $message = 'Error: ' . $stmt->error;
-            $messageType = 'error';
-        }
-        $stmt->close();
+        $errorMessage = "Error: " . $stmt->error;
     }
+
+    $stmt->close(); // Close the prepared statement
 }
 
+// Automatically delete announcements older than 2 days
+$currentDate = date('Y-m-d H:i:s');
+$deleteQuery = "DELETE FROM announcement WHERE created_at < DATE_SUB(?, INTERVAL 2 DAY)";
+$stmt = $conn->prepare($deleteQuery);
+$stmt->bind_param("s", $currentDate);
+$stmt->execute();
+$stmt->close();
 
-// Fetch announcements (with check to ensure it doesn't break if there are no results)
-$result = $conn->query("SELECT * FROM announcements WHERE CURDATE() BETWEEN start_date AND end_date");
-$announcements = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];  // Default to empty array if no results
+// Handle deletion of an announcement by user
+if (isset($_GET['delete'])) {
+    $announcementId = (int)$_GET['delete']; // Ensure it's an integer
+    $deleteQuery = "DELETE FROM announcement WHERE id = ?";
+    $stmt = $conn->prepare($deleteQuery);
+    $stmt->bind_param("i", $announcementId);
 
-// Handle editing an announcement
-if (isset($_POST['edit_id'])) {
-    $id = $_POST['edit_id'];
-    $stmt = $conn->prepare("SELECT * FROM announcements WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $editAnnouncement = $result->fetch_assoc();
+    if ($stmt->execute()) {
+        $successMessage = "Announcement deleted successfully!";
+    } else {
+        $errorMessage = "Error: " . $stmt->error;
+    }
     $stmt->close();
 }
 
-$conn->close();
+// Handle editing of an announcement
+if (isset($_GET['edit'])) {
+    $announcementId = (int)$_GET['edit']; // Ensure it's an integer
+
+    // Fetch the announcement to be edited
+    $sql = "SELECT * FROM announcement WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $announcementId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Check if the announcement exists
+    if ($result->num_rows > 0) {
+        $announcement = $result->fetch_assoc();
+    } else {
+        $errorMessage = "Announcement not found.";
+        exit;  // Exit if the announcement is not found
+    }
+    $stmt->close();
+}
+
+// Handle the form submission for updating an announcement
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updated_announcement'])) {
+    $updatedAnnouncement = htmlspecialchars($_POST['updated_announcement']);
+    $announcementId = (int)$_GET['edit'];
+
+    // Update the announcement in the database
+    $updateQuery = "UPDATE announcement SET content = ? WHERE id = ?";
+    $stmt = $conn->prepare($updateQuery);
+    $stmt->bind_param("si", $updatedAnnouncement, $announcementId);
+
+    if ($stmt->execute()) {
+        $successMessage = "Announcement updated successfully!";
+        // Redirect to avoid resubmitting the form on refresh
+        header("Location: announcement.php");
+        exit;
+    } else {
+        $errorMessage = "Error: " . $stmt->error;
+    }
+    $stmt->close();
+}
+
+// Fetch all announcements (those that are less than 2 days old)
+$sql = "SELECT * FROM announcement ORDER BY created_at DESC";
+$result = $conn->query($sql);
+
 ?>
 
 <!DOCTYPE html>
@@ -90,158 +95,206 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Announcement</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <title>Announcement Page</title>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
+        /* General styles for the page */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
         }
-        h1, h2 {
-            color: #333;
-        }
-        form {
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
             background-color: #fff;
             padding: 20px;
-            border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        header {
+            text-align: center;
             margin-bottom: 20px;
         }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
+
+        h1 {
+            font-size: 24px;
+            color: #333;
         }
-        textarea, input[type="date"], input[type="number"], input[type="submit"] {
+
+        h2 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        /* Announcement Form Styles */
+        .announcement-form {
+            margin-bottom: 30px;
+        }
+
+        textarea {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        input[type="submit"] {
-            background-color: #5cb85c;
-            color: white;
-            border: none;
-            cursor: pointer;
             font-size: 16px;
-        }
-        input[type="submit"]:hover {
-            background-color: #4cae4c;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-        }
-        th, td {
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            resize: vertical;
         }
-        th {
-            background-color: #f2f2f2;
+
+        button {
+            background-color: #1877f2;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        .countdown {
+
+        button:hover {
+            background-color: #165eab;
+        }
+
+        /* Announcement Display Section */
+        .announcements {
+            margin-top: 20px;
+        }
+
+        .announcement {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .announcement:last-child {
+            border-bottom: none;
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .user {
             font-weight: bold;
-            color: red;
+        }
+
+        .date {
+            font-style: italic;
+        }
+
+        .announcement-content p {
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Edit and Delete button styles */
+        .delete-btn, .edit-btn {
+            background-color: #f44336; /* Red for delete */
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .edit-btn {
+            background-color: #4caf50; /* Green for edit */
+        }
+
+        .edit-btn:hover {
+            background-color: #388e3c;
         }
     </style>
 </head>
 <body>
 
-    <h1>Create Announcement</h1>
-    <form method="post" action="">
-    <input type="hidden" name="id" value="<?php echo $editAnnouncement['id'] ?? ''; ?>">
-    <label for="announcement">Announcement:</label>
-    <textarea id="announcement" name="announcement" required><?php echo htmlspecialchars($editAnnouncement['announcement'] ?? ''); ?></textarea>
+<div class="container">
+    <!-- Header Section -->
+    <header>
+        <h1>Site Announcements</h1>
+    </header>
 
-    <label for="start_date">Start Date:</label>
-    <input type="date" id="start_date" name="start_date" required value="<?php echo htmlspecialchars($editAnnouncement['start_date'] ?? ''); ?>">
+    <!-- Announcement Form Section -->
+    <section class="announcement-form">
+        <h2>Create a New Announcement</h2>
+        <form action="announcement.php" method="POST">
+            <textarea name="announcement" rows="4" placeholder="Write your announcement here..." required></textarea>
+            <button type="submit">Post Announcement</button>
+        </form>
+    </section>
 
-    <label for="duration">Duration (in days):</label>
-    <input type="number" id="duration" name="duration" required min="1" value="<?php echo htmlspecialchars((isset($editAnnouncement) && $editAnnouncement['start_date'] && $editAnnouncement['end_date']) ? (strtotime($editAnnouncement['end_date']) - strtotime($editAnnouncement['start_date'])) / (60 * 60 * 24) : ''); ?>">
+    <!-- Announcement Edit Section (Only show if in edit mode) -->
+    <?php if (isset($announcement) && is_array($announcement)) : ?>
+        <section class="announcement-form">
+            <h2>Edit Announcement</h2>
+            <form action="announcement.php?edit=<?= $announcement['id'] ?>" method="POST">
+                <textarea name="updated_announcement" rows="4" required><?= htmlspecialchars($announcement['content']) ?></textarea>
+                <button type="submit">Update Announcement</button>
+            </form>
+        </section>
+    <?php endif; ?>
 
-    <input type="submit" value="<?php echo $editAnnouncement ? 'Update Announcement' : 'Create Announcement'; ?>">
-</form>
+    <!-- Display All Announcements -->
+    <section class="announcements">
+        <h2>All Announcements</h2>
+        <?php if ($result->num_rows > 0) : ?>
+            <?php while ($row = $result->fetch_assoc()) : ?>
+                <div class="announcement">
+                    <div class="announcement-header">
+                        <span class="user"><?= $row['user'] ?></span>
+                        <span class="date"><?= date('F j, Y', strtotime($row['created_at'])) ?></span>
+                    </div>
+                    <div class="announcement-content">
+                        <p><?= $row['content'] ?></p>
+                    </div>
+                    <!-- Edit and Delete Buttons -->
+                    <div>
+                        <a href="announcement.php?edit=<?= $row['id'] ?>" class="edit-btn">Edit</a>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p>No announcements yet.</p>
+        <?php endif; ?>
+    </section>
+</div>
 
-
-    <h2>Current Announcements</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Announcement</th>
-               
-                <th>Time Left</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($announcements)): ?>
-                <?php foreach ($announcements as $announcement): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($announcement['announcement']); ?></td>
-                       
-                        <td>
-                            <span class="countdown" id="countdown-<?php echo $announcement['id']; ?>"></span>
-                        </td>
-                        <td>
-                            <form method="post" action="">
-                                <input type="hidden" name="edit_id" value="<?php echo $announcement['id']; ?>">
-                                <input type="submit" name="edit" value="Edit">
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="5">No announcements available.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-
-    <script>
-        // Countdown timer function
-        function countdownTimer(endDate, elementId) {
-            var countDownDate = new Date(endDate).getTime();
-            
-            var x = setInterval(function() {
-                var now = new Date().getTime();
-                var distance = countDownDate - now;
-
-                if (distance <= 0) {
-                    clearInterval(x);
-                    document.getElementById(elementId).innerHTML = "Expired";
-                } else {
-                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    document.getElementById(elementId).innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-                }
-            }, 1000);
-        }
-
-        <?php foreach ($announcements as $announcement): ?>
-            countdownTimer('<?php echo $announcement['end_date']; ?>', 'countdown-<?php echo $announcement['id']; ?>');
-        <?php endforeach; ?>
-    </script>
-
+<!-- SweetAlert2 success or error messages -->
 <script>
-    // Show SweetAlert messages based on PHP variables
-    <?php if ($message): ?>
-        swal({
-            title: "<?php echo $messageType === 'success' ? 'Success!' : ($messageType === 'info' ? 'Info' : 'Error!'); ?>",
-            text: "<?php echo $message; ?>",
-            type: "<?php echo $messageType; ?>",
-            timer: 3000,
-            showConfirmButton: false
+    <?php if (isset($successMessage)) : ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '<?= $successMessage ?>',
+            confirmButtonText: 'OK'
+        });
+    <?php elseif (isset($errorMessage)) : ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '<?= $errorMessage ?>',
+            confirmButtonText: 'OK'
         });
     <?php endif; ?>
 </script>
+
 </body>
 </html>
+
+<?php
+// Close the connection
+$conn->close();
+?>

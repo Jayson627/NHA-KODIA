@@ -43,7 +43,7 @@ if (isset($_POST['add_block'])) {
             }
 
             // Redirect to avoid resubmission
-            header("Location: block.php");
+            header("Location: block");
             exit();
         }
         $stmt->close();
@@ -58,7 +58,7 @@ if (isset($_GET['delete'])) {
     $stmt->execute();
     $stmt->close();
     // Redirect to avoid resubmission
-    header("Location: block.php");
+    header("Location: block");
     exit();
 }
 

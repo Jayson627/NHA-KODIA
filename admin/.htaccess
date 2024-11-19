@@ -1,17 +1,20 @@
-# remove .php; use THE_REQUEST to prevent infinite loops
-RewriteCond %{HTTP_HOST} ^www\.example\.com
-RewriteCond %{THE_REQUEST} ^GET\ (.*)\.php\ HTTP
-RewriteRule (.*)\.php$ $1 [R=301]
+Options -Indexes # disable directory listing
 
-# remove index
-RewriteRule (.*)index$ $1 [R=301]
+<IfModule mod_rewrite.c>
+RewriteEngine On
 
-# remove slash if not directory
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# RewriteCond %{HTTPS} !^mccsscvoting\.com$ [NC]
+# RewriteRule ^(.*)$ https://mccsscvoting.com/$1 [R=301,L]
+
+
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} /$
-RewriteRule (.*)/ $1 [R=301]
+RewriteCond %{REQUEST_FILENAME}\.php -f 
+RewriteRule ^(.*)$ $1.php [L]
 
-# add .php to access file, but don't redirect
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteCond %{REQUEST_URI} !/$
-RewriteRule (.*) $1\.php [L]
+
+RewriteCond %{THE_REQUEST} ^GET\ /(.+)\.php\ HTTP
+RewriteRule ^(.+)\.php$ /$1 [R=301,L]
+</IfModule>

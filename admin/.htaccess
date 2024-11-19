@@ -1,4 +1,4 @@
-Options -Indexes # disable directory listing
+ # disable directory listing
 
 
 RewriteEngine On

@@ -45,7 +45,7 @@ if (isset($_POST['add_lot'])) {
             $stmt->bind_param("s", $lot_no);
             $stmt->execute();
             // Redirect to avoid resubmission
-            header("Location: lot.php");
+            header("Location: lot");
             exit();
         }
         $stmt->close();
@@ -137,7 +137,7 @@ $conn->close();
     <?php endif; ?>
 
     <!-- Form to add a new block -->
-    <form method="POST" action="lot.php" class="form-inline mb-3 justify-content-center">
+    <form method="POST" action="lot" class="form-inline mb-3 justify-content-center">
         <div class="form-group">
             <label for="lot_no" class="sr-only">Lot No</label>
             <input type="number" class="form-control" id="lot_no" name="lot_no" placeholder="Enter lot no" min="1" required>

@@ -83,10 +83,10 @@ if ($status !== 'approved') {
     
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
-                    header("Location: dashboard.php"); 
+                    header("Location: dashboard"); 
                     exit();
                 } else if ($role === 'residents') { 
-                    header("Location: people_dashboard.php");
+                    header("Location: people_dashboard");
                     exit();
                 }
             } else {

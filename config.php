@@ -4,9 +4,9 @@ ini_set('date.timezone','Asia/Manila');
 date_default_timezone_set('Asia/Manila');
 session_start();
 
-require_once __DIR__ . '/initialize';
-require_once __DIR__ . '/classes/DBConnection';
-require_once __DIR__ . '/classes/SystemSettings';
+require_once __DIR__ . '/initialize.php';
+require_once __DIR__ . '/classes/DBConnection.php';
+require_once __DIR__ . '/classes/SystemSettings.php';
 
 $db = new DBConnection();
 $conn = $db->conn;

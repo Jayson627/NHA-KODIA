@@ -3,11 +3,6 @@ Options -Indexes # disable directory listing
 
 RewriteEngine On
 
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
-
-# RewriteCond %{HTTPS} !^mccsscvoting\.com$ [NC]
-# RewriteRule ^(.*)$ https://mccsscvoting.com/$1 [R=301,L]
 
 
 RewriteCond %{REQUEST_FILENAME} !-d

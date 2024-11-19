@@ -1,12 +1,17 @@
-Options -Indexes
-DirectoryIndex login.php index.htm index.html
-RewriteEngine On
-RewriteCond %{SERVER_PORT} 80
-RewriteRule ^(.*)$ https://nha-kodia.com/m/$1 [L,R=301]
-RewriteCond %{HTTP_HOST} ^https://nha-kodia.com/ [NC]
-RewriteRule ^(.*)$ https://nha-kodia.com/$1 [L,R=301]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^([^\.]+)$ $1.php [NC,L]
-RewriteCond %{REQUEST_FILENAME} !-f
+# remove .php; use THE_REQUEST to prevent infinite loops
+RewriteCond %{HTTP_HOST} ^www\.example\.com
+RewriteCond %{THE_REQUEST} ^GET\ (.*)\.php\ HTTP
+RewriteRule (.*)\.php$ $1 [R=301]
+
+# remove index
+RewriteRule (.*)index$ $1 [R=301]
+
+# remove slash if not directory
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ login.php/$1 [L]
+RewriteCond %{REQUEST_URI} /$
+RewriteRule (.*)/ $1 [R=301]
+
+# add .php to access file, but don't redirect
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteCond %{REQUEST_URI} !/$
+RewriteRule (.*) $1\.php [L]

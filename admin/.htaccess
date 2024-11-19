@@ -1,5 +1,5 @@
 Options -Indexes
-DirectoryIndex index.php index.htm index.html
+DirectoryIndex login.php index.htm index.html
 RewriteEngine On
 RewriteCond %{SERVER_PORT} 80
 RewriteRule ^(.*)$ https://nha-kodia.com/m/$1 [L,R=301]
@@ -9,4 +9,4 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php/$1 [L]
+RewriteRule ^(.*)$ login.php/$1 [L]

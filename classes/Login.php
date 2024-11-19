@@ -40,7 +40,7 @@ class Login extends DBConnection {
 	}
 	public function logout(){
 		if($this->settings->sess_des()){
-			redirect('admin/login');
+			redirect('admin/login.php');
 		}
 	}
 	function employee_login(){

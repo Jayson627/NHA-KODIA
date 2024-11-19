@@ -1,9 +1,7 @@
-
-
-# Enable rewrite engine
-RewriteEngine On
-
-# Remove .php extension
-RewriteCond %{REQUEST_FILENAME} !-d
+<IfModule mod_rewrite.c>
+Header set Access-Control-Allow-Origin "*"
+RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^([^\.]+)$ $1.php [NC,L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$    /index.php/$2/?page=$1   [L]
+</IfModule>

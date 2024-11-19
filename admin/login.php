@@ -287,7 +287,7 @@
 
         const role = $(this).attr('id').replace('login-as-', '');
         $('#role').val(role);
-        $('#login-frm').attr('action', role + '_login.php');
+        $('#login-frm').attr('action', role + '_login');
       });
 
       $('#togglePassword').on('click', function() {

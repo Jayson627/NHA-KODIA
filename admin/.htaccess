@@ -1,8 +1,20 @@
-# Turn on the rewrite engine
-RewriteEngine  on
-# If the request doesn't end in .php (Case insensitive) continue processing rules
-RewriteCond %{REQUEST_URI} !\.php$ [NC]
-# If the request doesn't end in a slash continue processing the rules
-RewriteCond %{REQUEST_URI} [^/]$
-# Rewrite the request with a .php extension. L means this is the 'Last' rule
+Options -Indexes # disable directory listing
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# RewriteCond %{HTTPS} !^mccsscvoting\.com$ [NC]
+# RewriteRule ^(.*)$ https://mccsscvoting.com/$1 [R=301,L]
+
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f 
 RewriteRule ^(.*)$ $1.php [L]
+
+
+RewriteCond %{THE_REQUEST} ^GET\ /(.+)\.php\ HTTP
+RewriteRule ^(.+)\.php$ /$1 [R=301,L]
+</IfModule>

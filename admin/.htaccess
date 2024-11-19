@@ -1,6 +1,6 @@
 Options -Indexes # disable directory listing
 
-<IfModule mod_rewrite.c>
+
 RewriteEngine On
 
 # RewriteCond %{HTTPS} off

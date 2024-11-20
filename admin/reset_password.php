@@ -74,7 +74,7 @@
 <body>
 <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/function.php" method="POST">
+        <form action="../admin/funtion.php" method="POST">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
             </div>

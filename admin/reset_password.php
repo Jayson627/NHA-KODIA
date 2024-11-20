@@ -72,21 +72,32 @@
   </style>
 </head>
 <body>
-<div class="reset-password-box">
-        <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/funtion.php" method="POST">
-            <div class="form-group has-feedback">
-                <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
+  <div class="container d-flex justify-content-center align-items-center h-100">
+    <div class="card">
+      <div class="card-header">Reset Password</div>
+      <div class="card-body">
+        <form action="" method="post">
+          <!-- OTP Code Input -->
+          <div class="form-group mb-3">
+            <label for="code" class="form-label">OTP Code:</label>
+            <input type="text" class="form-control" name="code" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
+          </div>
+
+          <!-- New Password Input with Show/Hide Eye and Autofill -->
+          <div class="form-group mb-3">
+            <label for="new_password" class="form-label">New Password:</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter new password" autocomplete="new-password" required>
+              <span class="input-group-text" id="togglePassword">
+                <i class="bi bi-eye-fill" id="eyeIcon"></i>
+              </span>
             </div>
-            <div class="form-group has-feedback">
-                <input type="password" class="form-control" placeholder="Set new password" name="password" required>
-            </div>
-            <div class="form-group has-feedback">
-                <input type="text" class="form-control" placeholder="OTP Code" name="otp" required>
-            </div>
-            <button type="submit" name="btn-new-password">Set Password</button>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary">Reset Password</button>
         </form>
-    </div>
+      </div>
     </div>
   </div>
 

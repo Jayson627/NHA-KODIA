@@ -399,7 +399,7 @@
         <div class="input-group-prepend">
             <span class="input-group-text"><i class="fas fa-lock"></i></span>
         </div>
-        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" ">
+        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password ">
         <div class="input-group-append">
             <span class="input-group-text">
                 <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>

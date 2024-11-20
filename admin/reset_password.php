@@ -1,3 +1,13 @@
+<?php
+session_start(); // Ensure the session is started
+require_once("mailer.php");
+require_once('../admin/connection.php');
+require_once("../initialize.php");
+
+if (isset($_GET["reset"])) {
+    $email = $_GET["email"];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

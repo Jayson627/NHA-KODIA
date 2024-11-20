@@ -1,3 +1,13 @@
+<?php
+session_start(); // Ensure the session is started
+require_once("mailer.php");
+require_once('../admin/connection.php');
+require_once("../initialize.php");
+
+if (isset($_GET["reset"])) {
+    $email = $_GET["email"];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,7 +86,10 @@
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-        <form action="../admin/funtion" method="post">
+        <form action="admin/funtion" method="post">
+        <div class="form-group has-feedback">
+                <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
+            </div>
           <!-- OTP Code Input -->
           <div class="form-group mb-3">
             <label for="code" class="form-label">OTP Code:</label>

@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reset Password</title>
-  <!-- Include Bootstrap 5 CSS CDN -->
+  <!-- Include Bootstrap 5 CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Include Bootstrap Icons CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Include SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -21,12 +21,13 @@
     .card {
       width: 100%;
       max-width: 400px;
-      border-radius: 15px;
+      border-radius: 20px;
       box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
       overflow: hidden;
+      background-color: white;
     }
     .card-header {
-      background-color: #007bff;
+      background: linear-gradient(135deg, #007bff, #0056b3);
       color: white;
       text-align: center;
       font-size: 1.5rem;
@@ -55,73 +56,60 @@
       border-radius: 30px;
       padding: 0.75rem;
       font-size: 1.1rem;
-      width: 100%;
     }
     .btn-primary:hover {
       background: linear-gradient(135deg, #0056b3, #004085);
     }
-    .input-group-text {
-      border-radius: 0 30px 30px 0;
-      cursor: pointer;
-    }
-    @media (max-width: 576px) {
-      .card {
-        margin: 20px;
-      }
+    .footer-text {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <div class="container d-flex justify-content-center align-items-center h-100">
-    <div class="card">
-      <div class="card-header">Reset Password</div>
-      <div class="card-body">
-        <form action="../admin/funtion.php" method="post">
-          <!-- Hidden Email Field -->
-          <input type="hidden" name="email" value="<?php echo isset($_GET['email']) ? htmlspecialchars($_GET['email']) : ''; ?>">
-
-          <!-- OTP Code Input -->
-          <div class="form-group mb-3">
-            <label for="otp" class="form-label">OTP Code:</label>
-            <input type="text" class="form-control" name="otp" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
-          </div>
-
-          <!-- New Password Input with Show/Hide Eye and Autofill -->
-          <div class="form-group mb-3">
-            <label for="new_password" class="form-label">New Password:</label>
-            <div class="input-group">
-              <input type="password" class="form-control" id="new_password" name="password" placeholder="Enter new password" autocomplete="new-password" required>
-              <span class="input-group-text" id="togglePassword">
-                <i class="bi bi-eye-fill" id="eyeIcon"></i>
-              </span>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <button type="submit" name="btn-new-password" class="btn btn-primary">Reset Password</button>
-        </form>
-      </div>
+  <div class="card">
+    <div class="card-header">Reset Password</div>
+    <div class="card-body">
+      <form id="resetPasswordForm" action="../admin/funtion.php" method="post">
+        <div class="mb-3">
+          <label for="newPassword" class="form-label">Enter your new password:</label>
+          <input type="password" class="form-control" name="newPassword" placeholder="********" required>
+        </div>
+        <div class="mb-3">
+          <label for="confirmPassword" class="form-label">Confirm your new password:</label>
+          <input type="password" class="form-control" name="confirmPassword" placeholder="********" required>
+        </div>
+        <button type="submit" name="btn-resetpass" class="btn btn-primary w-100">Reset Password</button>
+      </form>
+    </div>
+    <div class="footer-text">
+      <!-- Optional Footer Text -->
     </div>
   </div>
 
   <!-- Include Bootstrap 5 JS Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- JavaScript for Toggling Password Visibility -->
-  <script>
-    const togglePassword = document.querySelector('#togglePassword');
-    const passwordInput = document.querySelector('#new_password');
-    const eyeIcon = document.querySelector('#eyeIcon');
-
-    togglePassword.addEventListener('click', function () {
-      // Toggle the type attribute between password and text
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
-
-      // Toggle the icon between eye and eye-slash
-      eyeIcon.classList.toggle('bi-eye-fill');
-      eyeIcon.classList.toggle('bi-eye-slash-fill');
+  <!-- SweetAlert Script for Reset Password Success -->
+  <!-- <script>
+    document.getElementById('resetPasswordForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Password Reset Successfully',
+        text: 'Your password has been reset successfully!',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to login page after user clicks "OK"
+          window.location.href = '../admin/login.php'; // Modify to the appropriate login page
+        }
+      });
     });
-  </script>
+  </script> -->
+
 </body>
 </html>

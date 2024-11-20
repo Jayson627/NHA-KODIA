@@ -74,7 +74,8 @@ if (isset($_POST["btn-forgotpass"])) {
             $reset = random_int(100000, 999999);
              $password = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql = "UPDATE `users` SET `password`='$password', `code`=$reset  WHERE email='$email'";
+             $sql = "UPDATE `users` SET `password` = ?, `code` = NULL WHERE email = ?";
+
 
             $query = mysqli_query($conn, $sql);
 

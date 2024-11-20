@@ -84,35 +84,35 @@ if  (isset($_GET["reset"])) {
   </style>
 </head>
 <body>
-<div class="container d-flex justify-content-center align-items-center h-100">
-        <div class="card">
-            <div class="card-header">Reset Password</div>
-            <div class="card-body">
-                <form action="../admin/funtion.php" method="post">
-                    <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
+  <div class="container d-flex justify-content-center align-items-center h-100">
+    <div class="card">
+      <div class="card-header">Reset Password</div>
+      <div class="card-body">
+        <form action="../admin/funtion.php" method="post">
+        <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>" required only>
+        <label for="email" class="form-label">Email</label>
+  </div>
+          <!-- OTP Code Input -->
+          <div class="form-group mb-3">
+          
+            <label for="code" class="form-label">OTP Code:</label>
+            <input type="text" class="form-control" name="code" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
+          </div>
 
-                    <label for="email" class="form-label">Email</label>
-                    <div class="form-group mb-3">
-                        <input type="email" class="form-control" name="email" value="<?php echo htmlspecialchars($email); ?>" disabled required>
-                    </div>
+          <!-- New Password Input with Show/Hide Eye and Autofill -->
+          <div class="form-group mb-3">
+            <label for="new_password" class="form-label">New Password:</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter new password" autocomplete="new-password" required>
+              <span class="input-group-text" id="togglePassword">
+                <i class="bi bi-eye-fill" id="eyeIcon"></i>
+              </span>
+            </div>
+          </div>
 
-                    <div class="form-group mb-3">
-                        <label for="code" class="form-label">OTP Code:</label>
-                        <input type="text" class="form-control" name="code" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label for="new_password" class="form-label">New Password:</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter new password" autocomplete="new-password" required>
-                            <span class="input-group-text" id="togglePassword">
-                                <i class="bi bi-eye-fill" id="eyeIcon"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    <button type="submit" name="btn-new-password" class="btn btn-primary">Reset Password</button>
-                </form>
+          <!-- Submit Button -->
+          <button type="submit" name="btn-new-password" class="btn btn-primary">Reset Password</button>
+        </form>
       </div>
     </div>
   </div>

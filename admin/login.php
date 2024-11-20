@@ -243,10 +243,7 @@
         font-size: 1.1rem;
       }
     }
-    .recaptcha-container .g-recaptcha {
-        transform: scale(0.7); /* Adjust the scale as needed */
-        transform-origin: 0 0; /* Ensure it scales from the top-left corner */
-    }
+   
   </style>
 
   <!-- jQuery -->
@@ -330,16 +327,7 @@
             text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
         });
     } 
-    // Check if reCAPTCHA is filled
-    else if (recaptchaResponse.length === 0) {
-        e.preventDefault(); // Prevent form submission
-        Swal.fire({
-            icon: 'error',
-            title: 'reCAPTCHA Required',
-            text: 'Please complete the reCAPTCHA to continue.',
-        });
-    }
-});
+   
 
 
       $('.open-menu-btn').click(function() {

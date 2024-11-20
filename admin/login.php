@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <!-- Google Fonts - Roboto -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  
   <style>
     /* General Styles */
     body {
@@ -172,6 +173,24 @@
       border-color: #007bff;
     }
 
+    /* Animated Text */
+    .animated-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: #ffffff;
+      white-space: nowrap;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     /* Media Queries */
     @media (max-width: 768px) {
       .navbar-brand h4 {
@@ -216,10 +235,15 @@
     }
 
     @media (max-width: 480px) {
+      .animated-text {
+        font-size: 2rem; /* Adjust animated text size for very small screens */
+      }
+
       .card-header h4 {
         font-size: 1.1rem;
       }
     }
+    
   </style>
 
   <!-- jQuery -->
@@ -230,6 +254,25 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
 
   <script>
+    let typingInterval;
+    const text = "Welcome to NHA Kodia Information System";
+    const speed = 150; 
+    let index = 0;
+
+    function type() {
+      if (index < text.length) {
+        document.getElementById("animated-text").innerHTML += text.charAt(index);
+        index++;
+        typingInterval = setTimeout(type, speed); 
+      } else {
+        setTimeout(() => {
+          document.getElementById("animated-text").innerHTML = "";
+          index = 0; 
+          type();
+        }, 2000); 
+      }
+    }
+
     $(document).ready(function() {
       $('#login').hide();
       $('#animated-text').show();
@@ -257,8 +300,59 @@
           icon.removeClass('fa-eye-slash').addClass('fa-eye');
         }
       });
+
+      $('#login-frm').on('submit', function(e) {
+    const email = $('[name="email"]').val();
+    const emailPattern = /.+@gmail\.com$/;
+    const password = $('[name="password"]').val();
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
+
+    // Validate email
+    if (!emailPattern.test(email)) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Email',
+            text: 'Please enter a valid Gmail address.',
+        });
+    } 
+    // Validate password
+    else if (!passwordPattern.test(password)) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Password',
+            text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
+        });
+    } 
+    // Check if reCAPTCHA is filled
+    else if (recaptchaResponse.length === 0) {
+        e.preventDefault(); // Prevent form submission
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
+        });
+    }
+});
+
+
+      $('.open-menu-btn').click(function() {
+        $('#push-menu').css('width', '250px'); 
+      });
+
+      $('.close-btn').click(function() {
+        $('#push-menu').css('width', '0'); 
+      });
     });
+
+    window.onload = function() {
+      type(); 
+    };
   </script>
+  
 </head>
 <body>
   <!-- Navbar -->
@@ -287,31 +381,45 @@
 
   <div id="login">
     <div class="card">
-      <!-- Login Form -->
-      <form id="login-frm" method="POST">
-        <div class="card-header">
-          <h4>Login</h4>
+      <div class="card-header">
+        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
+      </div>
+      <div class="card-body">
+        <form id="login-frm" action="" method="post">
+    <input type="hidden" name="role" id="role" value="">
+    <div class="form-group input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
         </div>
-        <div class="card-body">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <div class="input-group">
-              <input type="password" class="form-control" id="password" name="password" required>
-              <div class="input-group-append">
-                <button class="btn btn-secondary" type="button" id="togglePassword">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
+               pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
+    </div>
+
+    <div class="form-group input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
         </div>
-      </form>
+        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required
+               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" 
+               title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
+        <div class="input-group-append">
+            <span class="input-group-text">
+                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+            </span>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+    </div>
+    <div class="form-group text-center">
+        <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
+    </div>
+    
+</form>
+
+      </div>
     </div>
   </div>
 </body>
 </html>
+

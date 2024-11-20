@@ -1,6 +1,5 @@
 <?php
-session_start(); // Ensure the session is started
-require_once("mailer.php");
+session_start(); 
 require_once('../admin/connection.php');
 require_once("../initialize.php");
 

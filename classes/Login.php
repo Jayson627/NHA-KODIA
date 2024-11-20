@@ -1,41 +1,4 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $hcaptcha_response = $_POST['h-captcha-response'];
-    $secret_key = 'your-secret-key';
-
-    // Verify the hCaptcha response
-    $verify_url = 'https://hcaptcha.com/siteverify';
-    $data = [
-        'secret' => $secret_key,
-        'response' => $hcaptcha_response,
-        'remoteip' => $_SERVER['REMOTE_ADDR'] // Include the user's IP address for added security
-    ];
-
-    $options = [
-        'http' => [
-            'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
-            'method'  => 'POST',
-            'content' => http_build_query($data)
-        ]
-    ];
-
-    $context  = stream_context_create($options);
-    $result = file_get_contents($verify_url, false, $context);
-    $response_data = json_decode($result);
-
-    if ($response_data->success) {
-        // hCaptcha was successfully solved
-        echo "hCaptcha verified successfully.";
-        // Proceed with form submission logic
-    } else {
-        // hCaptcha failed
-        echo "hCaptcha verification failed.";
-        exit;
-    }
-}
-?>
-
-<?php
 require_once '../config.php';
 class Login extends DBConnection {
 	private $settings;

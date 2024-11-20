@@ -91,7 +91,7 @@ if  (isset($_GET["reset"])) {
         <form action="../admin/funtion.php" method="post">
           <!-- OTP Code Input -->
           <div class="form-group mb-3">
-            <input type="" name="email" value="<?php echo htmlspecialchars($email); ?>" required only>
+            <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>" required only>
             <label for="code" class="form-label">OTP Code:</label>
             <input type="text" class="form-control" name="code" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
           </div>

@@ -10,7 +10,7 @@ if (isset($_POST["btn-forgotpass"])) {
     if ($email !== $allowed_gmail) {
         // If the email doesn't match, show a message or redirect
         $_SESSION["notify"] = "Email not found! Please contact the administrator to reset a password.";
-        header("Location: ../admin/forgot_password.php");
+        header("Location: ../admin/login.php");
         exit();
     }
 
@@ -38,11 +38,11 @@ if (isset($_POST["btn-forgotpass"])) {
         }
 
         // Redirect to the forgot password page
-        header("Location: ../admin/forgot_password.php");
+        header("Location: ../admin/login.php");
         exit();
     } else {
         $_SESSION["notify"] = "Failed to update the reset code. Please try again.";
-        header("Location: ../admin/forgot_password.php");
+        header("Location: ../admin/login.php");
         exit();
     }
 }
@@ -74,11 +74,11 @@ if (isset($_POST["btn-new-password"])) {
             } else {
                 $_SESSION["notify"] = "Failed to update password. Please try again.";
             }
-            header("Location: ../admin/fotgot_password.php");
+            header("Location: ../admin/login.php");
             exit();
         } else {
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-            header("Location: ../admin/forgot_password.php");
+            header("Location: ../admin/login.php");
             exit();
         }
     } else {

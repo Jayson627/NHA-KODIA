@@ -87,7 +87,7 @@ if (isset($_POST["btn-new-password"])) {
         }
     } else {
         $_SESSION["notify"] = "Email not found.";
-        header("Location: ../admin/forgot_password.php");  // Redirect to the forgot password page
+        header("Location: ../admin/lot.php");  // Redirect to the forgot password page
         exit();
     }
 }

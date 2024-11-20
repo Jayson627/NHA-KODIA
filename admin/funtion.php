@@ -80,14 +80,14 @@ if (isset($_POST["btn-forgotpass"])) {
 
             $_SESSION["notify"] = "success";
 
-            header("location: ../admin/forgot_password.php");
+            header("location: ../admin/login");
  
  
         }else {
 
             $_SESSION["notify"] = "invalid";
 
-            header("location: ../admin/forgot_password.php");
+            header("location: ../admin/login");
  
 
         }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - Kodi NHA Information System</title>
+    <title>Terms of Service - Kodia NHA Information System</title>
     <style>
         body {
             display: flex;
@@ -80,12 +80,12 @@
             localStorage.setItem('formData', JSON.stringify(formData));
 
             // Redirect to the Create Account section in residents.php
-            window.location.href = "../admin/residents.php";  // Correct redirection in JS
+            window.location.href = "../admin/residents";  // Correct redirection in JS
         }
 
         function handleDecline() {
             // If declined, just redirect to the residents.php page
-            window.location.href = "../residents.php";  // Correct redirection in JS
+            window.location.href = "../residents";  // Correct redirection in JS
         }
 
         // Load the form data from localStorage if available

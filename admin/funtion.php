@@ -28,7 +28,7 @@ if (isset($_POST["btn-forgotpass"])) {
         $mail->AddAddress($email);
         $mail->Subject = "Reset Password OTP";
         $mail->Body = "Use this OTP Code to reset your password: " . $reset_code . "<br/>".
-                      "Click the link to reset password: http://nha-kodia.com/admin/reset_password?reset&email=$email";
+                      "Click the link to reset password: http://localhost/sis/admin/reset_password.php?reset&email=$email";
         
         if (!$mail->send()) {
             $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
@@ -46,48 +46,57 @@ if (isset($_POST["btn-forgotpass"])) {
 }
 
 // Handle Password Reset
-// Handle password reset
 if (isset($_POST["btn-new-password"])) {
+    // New Password Reset Handler
     $email = $_POST["email"];
     $password = $_POST["password"];
     $otp = $_POST["otp"];
 
-    // Check the OTP against the stored code in the database
+    // Prepare the SQL statement to avoid SQL injection
     $stmt = $conn->prepare("SELECT `code` FROM `users` WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
+        // Fetch the OTP from the database
         $res = $result->fetch_assoc();
-        $get_code = $res["code"];
+        $stored_otp = $res["code"]; // OTP from the database
 
-        if ($otp === $get_code) {
-            // If OTP matches, hash the new password
-            $new_password = password_hash($password, PASSWORD_DEFAULT);
-            $reset_code = random_int(100000, 999999);
+        // Debugging: print both OTP values to compare
+        error_log("Entered OTP: " . $otp);
+        error_log("Stored OTP: " . $stored_otp);
+
+        // Compare the OTP entered by the user with the stored OTP
+        if (trim($otp) === trim($stored_otp)) {
+            // OTP is correct, update the password
+            $new_password = password_hash($password, PASSWORD_DEFAULT);  // Hash the password
+            $reset_code = random_int(100000, 999999); // New reset code for security
 
             // Update the user's password and reset code in the database
             $update_stmt = $conn->prepare("UPDATE `users` SET `password` = ?, `code` = ? WHERE email = ?");
             $update_stmt->bind_param("sis", $new_password, $reset_code, $email);
-
+            
             if ($update_stmt->execute()) {
                 $_SESSION["notify"] = "Your password has been reset successfully.";
-                header("Location: ../admin/login.php");  // Redirect to login page after success
+                // Redirect to login page
+                header("Location: ../admin/login.php");
                 exit();
             } else {
-                $_SESSION["notify"] = "Failed to update password. Please try again.";
-                header("Location: ../admin/about.php");  // Redirect back if failed
+                $_SESSION["notify"] = "Failed to update the password. Please try again.";
+                header("Location: ../admin/reset_password.php?email=$email");
                 exit();
             }
         } else {
+            // OTP is incorrect
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-            header("Location: ../admin/block.php");  // Redirect back if OTP doesn't match
+            header("Location: ../admin/reset_password.php?email=$email");
             exit();
         }
     } else {
+        // Email not found
         $_SESSION["notify"] = "Email not found.";
-        header("Location: ../admin/lot.php");  // Redirect to the forgot password page
+        header("Location: ../admin/forgot_password.php");
         exit();
     }
 }

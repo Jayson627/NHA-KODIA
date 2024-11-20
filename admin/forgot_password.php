@@ -157,7 +157,7 @@ session_start();
         </div>
         <div class="right-section">
             <h2>Forgot Password</h2>
-            <form action="admin/funtion.php" method="post">
+            <form action="../admin/funtion.php" method="post">
                 <label for="email">Enter your email:</label>
                 <input type="email" id="email" name="email" placeholder="example@gmail.com" required>
                 <button type="submit" name="btn-forgotpass">Send Reset Link</button>

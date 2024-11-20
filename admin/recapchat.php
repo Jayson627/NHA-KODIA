@@ -1,74 +1,34 @@
 <?php
-session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $hcaptcha_response = $_POST['h-captcha-response'];
+    $secret_key = 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88';
 
-
-// Your Google reCAPTCHA secret key
-$secretKey = '6LceIn0qAAAAAMmeLWO8Ie2w0pFZLnUSrUDn-iYa'; 
-// Function to verify the CAPTCHA response with Google
-function verifyCaptcha($response) {
-    global $secretKey;
-    $url = 'https://www.google.com/recaptcha/api/siteverify';
+    // Verify the hCaptcha response
+    $verify_url = 'https://hcaptcha.com/siteverify';
     $data = [
-        'secret' => $secretKey,
-        'response' => $response
+        'secret' => $secret_key,
+        'response' => $hcaptcha_response
     ];
+
     $options = [
         'http' => [
-            'method' => 'POST',
-            'header' => 'Content-type: application/x-www-form-urlencoded',
+            'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
             'content' => http_build_query($data)
         ]
     ];
-    $context = stream_context_create($options);
-    $verify = file_get_contents($url, false, $context);
-    $captchaSuccess = json_decode($verify);
-    return $captchaSuccess->success;
-}
 
-// Account Creation Logic
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_account'])) {
-    // Verify CAPTCHA
-    $captchaResponse = $_POST['g-recaptcha-response'];
-    if (empty($captchaResponse) || !verifyCaptcha($captchaResponse)) {
-        $_SESSION['message'] = "CAPTCHA verification failed. Please try again.";
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
+    $context  = stream_context_create($options);
+    $result = file_get_contents($verify_url, false, $context);
+    $response_data = json_decode($result);
+
+    if ($response_data->success) {
+        // hCaptcha was successfully solved
+        echo "hCaptcha verification successful.";
+        // Proceed with form processing
+    } else {
+        // hCaptcha verification failed
+        echo "hCaptcha verification failed. Please try again.";
     }
-
-    // Add your logic for account creation here (e.g., validate form fields, insert into DB, etc.)
-    // E.g.:
-    // $fullname = $_POST['fullname'];
-    // $dob = $_POST['dob'];
-    // $email = $_POST['email'];
-    // $username = $_POST['username'];
-    // $password = $_POST['password'];
-    // etc.
-    $_SESSION['message'] = "Account created successfully!";
-    header("Location: login.php");
-    exit();
-}
-
-// Login Logic
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
-    // Verify CAPTCHA
-    $captchaResponse = $_POST['g-recaptcha-response'];
-    if (empty($captchaResponse) || !verifyCaptcha($captchaResponse)) {
-        $_SESSION['message'] = "CAPTCHA verification failed. Please try again.";
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
-    }
-
-    // Add your login logic here (validate user credentials, etc.)
-    // E.g.:
-    // $email = $_POST['email'];
-    // $password = $_POST['password'];
-    // Check credentials in DB
-    $_SESSION['message'] = "Login successful!";
-    header("Location: dashboard.php");
-    exit();
 }
 ?>
-
-
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-

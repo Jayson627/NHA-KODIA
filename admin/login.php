@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <!-- Google Fonts - Roboto -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
   <style>
     /* General Styles */
     body {
@@ -355,28 +355,7 @@
       type(); 
     };
   </script>
-  <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $recaptcha_secret = '6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5'; // Replace with your secret key
-    $recaptcha_response = $_POST['g-recaptcha-response'];
-
-    // Verify the reCAPTCHA response with Google
-    $verify_url = 'https://www.google.com/recaptcha/api/siteverify';
-    $response = file_get_contents($verify_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
-    $response_keys = json_decode($response, true);
-
-    if(intval($response_keys["success"]) !== 1) {
-        // reCAPTCHA failed
-        echo 'Please complete the reCAPTCHA.';
-    } else {
-        // reCAPTCHA succeeded, proceed with login logic
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
-        // Process login (you can add your login validation here)
-    }
-}
-?>
+  
 
 </head>
 <body>
@@ -439,9 +418,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="form-group text-center">
         <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
     </div>
-    <div class="recaptcha-container">
-        <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
-    </div>
+    <div class="h-captcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
 </form>
 
       </div>

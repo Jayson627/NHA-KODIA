@@ -87,7 +87,7 @@ switch ($action) {
 		break;
 	case 'logout':
 		echo $auth->logout();
-		break;
+		break;ako na
 	case 'elogin':
 		echo $auth->employee_login();
 		break;

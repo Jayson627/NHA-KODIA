@@ -76,7 +76,7 @@
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-      <form action="../admin/function.php" method="POST">
+      <form action="../admin/funtion.php" method="POST">
       <div class="form-group mb-3">
                 <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
             </div>

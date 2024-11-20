@@ -189,7 +189,7 @@ $result = $conn->query($sql);
         <button class="announcement-btn" onclick="toggleAnnouncements()">Announcements</button>
         <button class="report-btn" onclick="openIncidentModal()">Report</button>
         <button class="message-btn" onclick="openMessageModal()">Message</button>
-        <a href="logout.php" class="logout-btn">
+        <a href="logout" class="logout-btn">
             <i class="fas fa-sign-out-alt"></i> Logout
         </a>
     </div>

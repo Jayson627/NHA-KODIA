@@ -56,7 +56,8 @@
                   <div class="dropdown-menu" role="menu">
                     <a class="dropdown-item" href="<?php echo base_url.'admin/?page=user' ?>"><span class="fa fa-user"></span> My Account</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="<?php echo base_url.'/classes/Login.php?f=logout' ?>"><span class="fas fa-sign-out-alt"></span> Logout</a>
+                    <a href="javascript:void(0);" onclick="confirmLogout()" class="btn btn-danger">Logout</a>
+
                   </div>
               </div>
           </li>
@@ -71,3 +72,22 @@
         </ul>
       </nav>
       <!-- /.navbar -->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You are about to log out!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, log me out!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Redirect to logout
+            window.location.href = '?f=logout';
+        }
+    });
+}
+</script>

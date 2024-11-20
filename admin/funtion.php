@@ -46,12 +46,7 @@ if (isset($_POST["btn-forgotpass"])) {
     }
  
  }
- // new password 
- if (isset($_POST["btn-new-password"])) {
-
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $otp = $_POST["otp"];
+ 
 
 
 
@@ -72,7 +67,7 @@ if (isset($_POST["btn-forgotpass"])) {
            
 
             $reset = random_int(100000, 999999);
-             $password = password_hash($password, PASSWORD_DEFAULT);
+            
 
             $sql = "UPDATE `users` SET  `code`=$reset  WHERE email='$email'";
 

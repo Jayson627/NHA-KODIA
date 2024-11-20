@@ -314,12 +314,7 @@
         }
       });
 
-      $('#login-frm').on('submit', function(e) {
-    const email = $('[name="email"]').val();
-    const emailPattern = /.+@gmail\.com$/;
-    const password = $('[name="password"]').val();
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
+      
     const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
 
     // Validate email

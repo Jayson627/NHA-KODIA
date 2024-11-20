@@ -1,111 +1,193 @@
+<?php
+session_start(); 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forgot Password</title>
-  <!-- Include Bootstrap 5 CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Include SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .card {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 20px;
-      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-      background-color: white;
-    }
-    .card-header {
-      background: linear-gradient(135deg, #007bff, #0056b3);
-      color: white;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      padding: 1rem;
-    }
-    .card-body {
-      padding: 2rem;
-    }
-    .form-label {
-      font-weight: 500;
-      color: #555;
-    }
-    .form-control {
-      border-radius: 30px;
-      padding: 0.75rem;
-      border: 1px solid #ced4da;
-    }
-    .form-control:focus {
-      box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
-      border-color: #007bff;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #007bff, #0056b3);
-      border: none;
-      border-radius: 30px;
-      padding: 0.75rem;
-      font-size: 1.1rem;
-    }
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #0056b3, #004085);
-    }
-    .footer-text {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #555;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <title>Forgot Password</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('images/color4.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 700px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .container .left-section {
+            background-color: #d32f2f;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 35%;
+        }
+
+        .container .left-section img {
+            max-width: 80%;
+            height: auto;
+        }
+
+        .container .right-section {
+            padding: 60px 40px;
+            width: 65%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+            color: #333;
+            text-align: left;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #d32f2f;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #b71c1c;
+        }
+
+        .container p {
+            margin-top: 15px;
+            color: #666;
+            text-align: center;
+        }
+
+        /* Responsive styling */
+        @media (max-width: 768px) {
+            .container {
+                width: 700px; /* Fixed width for tablets */
+            }
+
+            .container .left-section {
+                padding: 20px;
+            }
+
+            .container .right-section {
+                padding: 40px 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            input[type="email"], button {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 500px; /* Fixed width for mobile */
+            }
+
+            .container .right-section {
+                padding: 30px 15px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            input[type="email"], button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            button {
+                padding: 10px;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <div class="card">
-    <div class="card-header">Forgot Password</div>
-    <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/funtion.php" method="post">
-        <div class="mb-3">
-          <label for="email" class="form-label">Enter your email address:</label>
-          <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
+    <div class="container">
+        <div class="left-section">
+            <img src="images/logo-170x172.png" alt="Logo"> <!-- Ensure to use your logo here -->
         </div>
-        <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
-      </form>
+        <div class="right-section">
+            <h2>Forgot Password</h2>
+            <form action="admin/funtion.php" method="post">
+                <label for="email">Enter your email:</label>
+                <input type="email" id="email" name="email" placeholder="example@gmail.com" required>
+                <button type="submit" name="btn-forgotpass">Send Reset Link</button>
+            </form>
+            <p>We'll send a link to reset your password.</p>
+        </div>
     </div>
-    <div class="footer-text">
-     
-    </div>
-  </div>
-
-  <!-- Include Bootstrap 5 JS Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- SweetAlert Script for OTP Success and Redirect -->
-  <!-- <script>
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent form submission
-      
-      Swal.fire({
-        icon: 'success',
-        title: 'OTP Sent',
-        text: 'An OTP code has been sent to your email address!',
-        confirmButtonText: 'OK'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Redirect to about.php after user clicks "OK" on SweetAlert
-          window.location.href = '../admin/funtion.php';
+    <script>
+    <?php
+    // Check if there's a session message to display
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']);
+        if (strpos($message, 'A reset link has been sent to your email') !== false) {
+            echo "Swal.fire({
+                title: 'Success',
+                text: '$message',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });";
+        } else {
+            echo "Swal.fire({
+                title: 'Error',
+                text: '$message',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });";
         }
-      });
-    });
-  </script> -->
-
+        unset($_SESSION['notify']);
+    }
+    ?>
+</script>
 </body>
 </html>

@@ -66,7 +66,7 @@ if (isset($_POST["btn-new-password"])) {
             }
         } else {
             $_SESSION["notify"] = "invalid";
-            header("location: ../admin/forgot_password.php");
+            header("location: ../admin/lot.php");
         }
     }
 }

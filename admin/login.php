@@ -304,8 +304,8 @@
       $('#login-frm').on('submit', function(e) {
     const email = $('[name="email"]').val();
     const emailPattern = /.+@gmail\.com$/;
-    const password = $('[name="password"]').val();
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    // const password = $('[name="password"]').val();
+    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
 
@@ -319,13 +319,13 @@
         });
     } 
     // Validate password
-    else if (!passwordPattern.test(password)) {
-        e.preventDefault();
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Password',
-            text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-        });
+    // else if (!passwordPattern.test(password)) {
+    //     e.preventDefault();
+    //     Swal.fire({
+    //         icon: 'error',
+    //         title: 'Invalid Password',
+    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
+    //     });
     } 
     // Check if reCAPTCHA is filled
     else if (recaptchaResponse.length === 0) {

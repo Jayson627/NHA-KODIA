@@ -1,7 +1,8 @@
 <?php
 session_start();
 include "mailer.php";
-include "includes/conn.php";
+require_once('../admin/connection.php');
+require_once("../initialize.php");
 if (isset($_POST["btn-forgotpass"])) {
     $email = $_POST["email"];
     

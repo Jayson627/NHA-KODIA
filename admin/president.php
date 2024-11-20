@@ -165,9 +165,9 @@ $conn->close();
         <a href="#" class="btn" onclick="toggleHouseholdResidents()">
             <i class="fas fa-users"></i> Household Residents
         </a>
-        <a href="residents.php" class="btn">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
+        <a href="#" class="btn" id="logoutBtn">
+    <i class="fas fa-sign-out-alt"></i> Logout
+</a>
         <button class="announcement-button" id="announcementButton">View Announcements</button>
     </div>
 </div>
@@ -267,7 +267,25 @@ $conn->close();
             window.location.href = window.location.pathname;
         }
     }
+    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default link behavior
 
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You will be logged out of your account.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, log me out',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Redirect to logout URL
+            window.location.href = 'residents.php'; // Replace with your logout URL
+        }
+    });
+});
 
 
 document.addEventListener('DOMContentLoaded', function() {

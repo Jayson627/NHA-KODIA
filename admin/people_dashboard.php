@@ -150,9 +150,9 @@ $conn->close();
         <a href="incident.php" class="btn">
             <i class="fas fa-exclamation-circle"></i> Report Incident
         </a>
-        <a href="residents.php" class="btn">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
+        <a href="#" class="btn" id="logoutBtn">
+    <i class="fas fa-sign-out-alt"></i> Logout
+</a>
     </div>
 </div>
 
@@ -192,6 +192,26 @@ $conn->close();
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
+document.getElementById('logoutBtn').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default link behavior
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You will be logged out of your account.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, log me out',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Redirect to logout URL
+            window.location.href = 'residents.php'; // Replace with your logout URL
+        }
+    });
+});
 document.addEventListener('DOMContentLoaded', function() {
     // Sidebar toggle functionality
     const menuToggle = document.getElementById('menuToggle');

@@ -273,32 +273,19 @@
       }
     }
 
-    <script>
-  $(document).ready(function() {
-    // Show/Hide password functionality
-    $('#togglePassword').on('click', function() {
-      const passwordField = $('#password');
-      const passwordFieldType = passwordField.attr('type');
-      const icon = $(this);
+    $(document).ready(function() {
+      $('#login').hide();
+      $('#animated-text').show();
 
-      if (passwordFieldType === 'password') {
-        passwordField.attr('type', 'text');
-        icon.removeClass('fa-eye').addClass('fa-eye-slash');
-      } else {
-        passwordField.attr('type', 'password');
-        icon.removeClass('fa-eye-slash').addClass('fa-eye');
-      }
-    });
+      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+        e.preventDefault();
+        $('#login').fadeIn();
+        $('#animated-text').hide();
 
-    // Role Selection
-    $('#login-as-admin, #login-as-resident').on('click', function(e) {
-      e.preventDefault();
-      const role = $(this).attr('id').replace('login-as-', '');
-      $('#role').val(role);
-      $('#login-frm').attr('action', role + '_login');
-    });
-  });
-</script>
+        const role = $(this).attr('id').replace('login-as-', '');
+        $('#role').val(role);
+        $('#login-frm').attr('action', role + '_login');
+      });
 
       $('#togglePassword').on('click', function() {
         const passwordField = $('#password');
@@ -393,31 +380,32 @@
         <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
       </div>
       <div class="card-body">
-  <form id="login-frm" action="" method="post">
+        <form id="login-frm" action="" method="post">
     <input type="hidden" name="role" id="role" value="">
     <div class="form-group input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text"><i class="fas fa-user"></i></span>
-      </div>
-      <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required>
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+        </div>
+        <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
+               pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
     </div>
 
     <div class="form-group input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text"><i class="fas fa-lock"></i></span>
-      </div>
-      <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
-      <div class="input-group-append">
-        <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
-          <i class="fas fa-eye"></i>
-        </span>
-      </div>
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+        </div>
+        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required
+               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" 
+               title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
+        <div class="input-group-append">
+            <span class="input-group-text">
+                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+            </span>
+        </div>
     </div>
-
-    <button class="btn btn-primary btn-block" type="submit">Login</button>
-  </form>
-</div>
-
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+    </div>
     <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
     <div class="form-group text-center">
         <a href="forgot_password.php" class="text-primary">Forgot Password?</a>

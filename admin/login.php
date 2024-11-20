@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <!-- Google Fonts - Roboto -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-  
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
   <style>
     /* General Styles */
     body {
@@ -411,6 +411,7 @@
     <div class="form-group">
         <button type="submit" class="btn btn-primary btn-block">Sign In</button>
     </div>
+    <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
     <div class="form-group text-center">
         <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
     </div>

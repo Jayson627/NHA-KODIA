@@ -76,7 +76,7 @@
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-        <form action="" method="post">
+        <form action="../admin/funtion.php" method="post">
           <!-- OTP Code Input -->
           <div class="form-group mb-3">
             <label for="code" class="form-label">OTP Code:</label>
@@ -95,7 +95,7 @@
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" class="btn btn-primary">Reset Password</button>
+          <button type="submit" name="btn-new-password" class="btn btn-primary">Reset Password</button>
         </form>
       </div>
     </div>

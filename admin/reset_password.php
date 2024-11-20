@@ -1,137 +1,171 @@
-<?php
-session_start(); // Ensure the session is started
-require_once("mailer.php");
-require_once('../admin/connection.php');
-require_once("../initialize.php");
+<!-- Trigger/Open The Modal -->
+<button id="forgotPasswordBtn">Forgot Password?</button>
 
-if (isset($_GET["reset"])) {
-    $email = $_GET["email"];
-}
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reset Password</title>
-  <!-- Include Bootstrap 5 CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Include Bootstrap Icons CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .card {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 15px;
-      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-    }
-    .card-header {
-      background-color: #007bff;
-      color: white;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      padding: 1rem;
-    }
-    .card-body {
-      padding: 2rem;
-    }
-    .form-label {
-      font-weight: 500;
-      color: #555;
-    }
-    .form-control {
-      border-radius: 30px;
-      padding: 0.75rem;
-      border: 1px solid #ced4da;
-    }
-    .form-control:focus {
-      box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
-      border-color: #007bff;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #007bff, #0056b3);
-      border: none;
-      border-radius: 30px;
-      padding: 0.75rem;
-      font-size: 1.1rem;
-      width: 100%;
-    }
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #0056b3, #004085);
-    }
-    .input-group-text {
-      border-radius: 0 30px 30px 0;
-      cursor: pointer;
-    }
-    @media (max-width: 576px) {
-      .card {
-        margin: 20px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container d-flex justify-content-center align-items-center h-100">
-    <div class="card">
-      <div class="card-header">Reset Password</div>
-      <div class="card-body">
-        <form action="../admin/funtion.php" method="post">
-        <div class="form-group has-feedback">
-                <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
-            </div>
-          <!-- OTP Code Input -->
-          <div class="form-group mb-3">
-            <label for="code" class="form-label">OTP Code:</label>
-            <input type="text" class="form-control" name="otp" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
-          </div>
+<!-- The Modal -->
+<div id="resetPasswordModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Reset Password</h2>
 
-          <!-- New Password Input with Show/Hide Eye and Autofill -->
-          <div class="form-group mb-3">
-            <label for="new_password" class="form-label">New Password:</label>
-            <div class="input-group">
-              <input type="password" class="form-control" id="new_password" name="password" placeholder="Enter new password" autocomplete="new-password" required>
-              <span class="input-group-text" id="togglePassword">
-                <i class="bi bi-eye-fill" id="eyeIcon"></i>
-              </span>
-            </div>
-          </div>
+        <!-- Form for Email -->
+        <div id="emailForm">
+            <form method="POST" action="path-to-your-php-script.php" id="forgotPasswordForm">
+                <input type="email" name="email" id="email" placeholder="Enter your email" required>
+                <button type="submit" name="btn-forgotpass">Send OTP</button>
+            </form>
+        </div>
 
-          <!-- Submit Button -->
-          <button type="submit" name="btn-new-password" >Reset Password</button>
-        </form>
-      </div>
+        <!-- Form for OTP and New Password -->
+        <div id="otpForm" style="display:none;">
+            <form method="POST" action="path-to-your-php-script.php" id="resetPasswordForm">
+                <input type="email" name="email" id="otpEmail" placeholder="Enter your email" hidden>
+                <input type="text" name="otp" id="otp" placeholder="Enter OTP" required>
+                <input type="password" name="password" id="newPassword" placeholder="Enter new password" required>
+                <button type="submit" name="btn-new-password">Reset Password</button>
+            </form>
+        </div>
     </div>
-  </div>
+</div>
 
-  <!-- Include Bootstrap 5 JS Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JavaScript for Modal -->
+<script>
+    // Get modal element
+    var modal = document.getElementById("resetPasswordModal");
+    var btn = document.getElementById("forgotPasswordBtn");
+    var span = document.getElementsByClassName("close")[0];
 
-  <!-- JavaScript for Toggling Password Visibility -->
-  <script>
-    const togglePassword = document.querySelector('#togglePassword');
-    const passwordInput = document.querySelector('#new_password');
-    const eyeIcon = document.querySelector('#eyeIcon');
+    // Open modal when button is clicked
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
 
-    togglePassword.addEventListener('click', function () {
-      // Toggle the type attribute between password and text
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
+    // Close modal when the user clicks on <span> (x)
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
 
-      // Toggle the icon between eye and eye-slash
-      eyeIcon.classList.toggle('bi-eye-fill');
-      eyeIcon.classList.toggle('bi-eye-slash-fill');
-    });
-  </script>
-</body>
-</html>
+    // Close modal if the user clicks anywhere outside of the modal
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Handle OTP and password reset form visibility
+    document.getElementById("forgotPasswordForm").onsubmit = function(e) {
+        e.preventDefault();
+
+        var email = document.getElementById("email").value;
+        
+        // Send email to backend (your PHP script) to send OTP
+        var formData = new FormData();
+        formData.append('email', email);
+        formData.append('btn-forgotpass', 'Send OTP');
+        
+        // Send email request via AJAX
+        fetch('path-to-your-php-script.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            // If OTP was sent successfully, show OTP form
+            document.getElementById("emailForm").style.display = "none";
+            document.getElementById("otpForm").style.display = "block";
+            document.getElementById("otpEmail").value = email; // Pass email to OTP form
+        })
+        .catch(error => alert('Error sending OTP: ' + error));
+    };
+
+    document.getElementById("resetPasswordForm").onsubmit = function(e) {
+        e.preventDefault();
+
+        var email = document.getElementById("otpEmail").value;
+        var otp = document.getElementById("otp").value;
+        var newPassword = document.getElementById("newPassword").value;
+
+        var formData = new FormData();
+        formData.append('email', email);
+        formData.append('otp', otp);
+        formData.append('password', newPassword);
+        formData.append('btn-new-password', 'Reset Password');
+
+        // Send reset password request via AJAX
+        fetch('path-to-your-php-script.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data); // Display success or error message
+            modal.style.display = "none"; // Close the modal after processing
+        })
+        .catch(error => alert('Error resetting password: ' + error));
+    };
+</script>
+
+<!-- CSS for Modal -->
+<style>
+    /* Modal styles */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgb(0,0,0); 
+        background-color: rgba(0,0,0,0.4); 
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 400px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+</style>
+c

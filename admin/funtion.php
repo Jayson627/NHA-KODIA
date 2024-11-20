@@ -77,12 +77,12 @@ if (isset($_POST["btn-new-password"])) {
                 exit();
             } else {
                 $_SESSION["notify"] = "Failed to update password. Please try again.";
-                header("Location: ../admin/reset_password.php");  // Redirect back if failed
+                header("Location: ../admin/about.php");  // Redirect back if failed
                 exit();
             }
         } else {
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-            header("Location: ../admin/reset_password.php");  // Redirect back if OTP doesn't match
+            header("Location: ../admin/block.php");  // Redirect back if OTP doesn't match
             exit();
         }
     } else {

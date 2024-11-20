@@ -1,5 +1,5 @@
 <?php
-session_start(); // Ensure the session is started
+session_start(); // Ensure the session is startedss
 require_once('../admin/connection.php');
 require_once("../initialize.php");
 

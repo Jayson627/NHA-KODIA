@@ -106,7 +106,7 @@ if (isset($_GET["reset"])) {
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" name="mo-send-kana"class="btn btn-primary">Reset Password</button>
+          <button type="submit" name="btn-new-password"class="btn btn-primary">Reset Password</button>
         </form>
       </div>
     </div>

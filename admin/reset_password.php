@@ -1,6 +1,7 @@
 <?php
 session_start(); // Ensure the session is started
-include 'includes/conn.php';
+require_once('../admin/connection.php');
+require_once("../initialize.php");
 
 if (isset($_GET["reset"])) {
     $email = $_GET["email"];

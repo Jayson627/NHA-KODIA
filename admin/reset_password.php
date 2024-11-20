@@ -1,3 +1,15 @@
+<?php
+require_once('../admin/connection.php');
+require_once("../initialize.php");
+
+if  (isset($_GET["reset"])) {
+
+  $email = $_GET["email"];
+}
+
+ 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,6 +91,7 @@
         <form action="../admin/funtion.php" method="post">
           <!-- OTP Code Input -->
           <div class="form-group mb-3">
+            <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>" required only>
             <label for="code" class="form-label">OTP Code:</label>
             <input type="text" class="form-control" name="code" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
           </div>

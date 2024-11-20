@@ -22,7 +22,7 @@ class Login extends DBConnection {
 		$stmt->bind_param('ss',$email,$pw);
 		$stmt->execute();
 		$qry = $stmt->get_result();
-		if($qry->num_rows > 0){zzz
+		if($qry->num_rows > 0){
 			$res = $qry->fetch_array();
 			if($res['status'] != 1){
 				return json_encode(array('status'=>'notverified'));
@@ -40,7 +40,7 @@ class Login extends DBConnection {
 	}
 	public function logout(){
 		if($this->settings->sess_des()){
-			redirect('admin/login');
+			redirect('admin/login.php');
 		}
 	}
 	function employee_login(){
@@ -75,7 +75,7 @@ class Login extends DBConnection {
 	}
 	public function employee_logout(){
 		if($this->settings->sess_des()){
-			redirect('./login');
+			redirect('./login.php');
 		}
 	}
 }

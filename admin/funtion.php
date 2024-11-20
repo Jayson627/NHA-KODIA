@@ -15,12 +15,12 @@ if (isset($_POST["btn-forgotpass"])) {
  
     if ($query) {
         
-        //Set Params 
+        //Set Paramss oki na pre
         $mail->SetFrom("alcantarajayson118@gmail.com");
         $mail->AddAddress("$email");
         $mail->Subject = "Reset Password OTP";
         $mail->Body = "Use this OTP Code to reset your password: ".$reset_code."<br/>".
-        "Click the link to reset password: http://nha-kodia.com/admin/reset_password.php?reset&email=$reset_code"  //pulihan $reset_coede
+        "Click the link to reset password: http://nha-kodia.com/admin/reset_password.php?reset&email=$reset_code" 
         ;
 
 
@@ -46,7 +46,12 @@ if (isset($_POST["btn-forgotpass"])) {
     }
  
  }
- 
+ // new password 
+ if (isset($_POST["btn-new-password"])) {
+
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+    $otp = $_POST["otp"];
 
 
 
@@ -67,9 +72,9 @@ if (isset($_POST["btn-forgotpass"])) {
            
 
             $reset = random_int(100000, 999999);
-            
+             $password = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql = "UPDATE `users` SET  `code`=$reset  WHERE email='$email'";
+            $sql = "UPDATE `users` SET `password`='$password', `code`=$reset  WHERE email='$email'";
 
             $query = mysqli_query($conn, $sql);
 

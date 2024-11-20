@@ -89,9 +89,12 @@ if  (isset($_GET["reset"])) {
       <div class="card-header">Reset Password</div>
       <div class="card-body">
         <form action="../admin/funtion.php" method="post">
+        <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>" required only>
+        <label for="email" class="form-label">Email</label>
+  </div>
           <!-- OTP Code Input -->
           <div class="form-group mb-3">
-            <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>" required only>
+          
             <label for="code" class="form-label">OTP Code:</label>
             <input type="text" class="form-control" name="code" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
           </div>

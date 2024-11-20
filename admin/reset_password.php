@@ -76,7 +76,7 @@
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-        <form action="" method="post">
+        <form action="../admin/funtion" method="post">
           <!-- OTP Code Input -->
           <div class="form-group mb-3">
             <label for="code" class="form-label">OTP Code:</label>

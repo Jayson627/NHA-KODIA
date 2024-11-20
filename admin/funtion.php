@@ -57,12 +57,12 @@ if (isset($_POST["btn-new-password"])) {
                     mysqli_stmt_bind_param($stmt, "ss", $hashed_password, $email);
                     if (mysqli_stmt_execute($stmt)) {
                         $_SESSION["notify"] = "success";
-                        header("location: ../admin/forgot_password.php");
+                        header("location: ../admin/login.php");
                     }
                 }
             } else {
                 $_SESSION["notify"] = "invalid";
-                header("location: ../admin/forgot_password.php");
+                header("location: ../admin/block.php");
             }
         } else {
             $_SESSION["notify"] = "invalid";

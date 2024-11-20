@@ -304,29 +304,12 @@
       $('#login-frm').on('submit', function(e) {
     const email = $('[name="email"]').val();
     const emailPattern = /.+@gmail\.com$/;
-    // const password = $('[name="password"]').val();
-    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const password = $('[name="password"]').val();
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
 
-    // Validate email
-    if (!emailPattern.test(email)) {
-        e.preventDefault();
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Email',
-            text: 'Please enter a valid Gmail address.',
-        });
-    } 
-    // Validate password
-    // else if (!passwordPattern.test(password)) {
-    //     e.preventDefault();
-    //     Swal.fire({
-    //         icon: 'error',
-    //         title: 'Invalid Password',
-    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-    //     });
-    } 
+    
     // Check if reCAPTCHA is filled
     else if (recaptchaResponse.length === 0) {
         e.preventDefault(); // Prevent form submission
@@ -392,7 +375,7 @@
             <span class="input-group-text"><i class="fas fa-user"></i></span>
         </div>
         <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
-               pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
+               
     </div>
 
     <div class="form-group input-group">
@@ -400,7 +383,7 @@
             <span class="input-group-text"><i class="fas fa-lock"></i></span>
         </div>
         <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required
-               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" 
+              
                title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
         <div class="input-group-append">
             <span class="input-group-text">

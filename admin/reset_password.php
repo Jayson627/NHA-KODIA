@@ -86,7 +86,7 @@ if (isset($_GET["reset"])) {
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-        <form action="admin/funtion" method="post">
+        <form action="admin/funtion.php" method="post">
         <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
             </div>

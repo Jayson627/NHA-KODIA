@@ -22,7 +22,7 @@ class Login extends DBConnection {
 		$stmt->bind_param('ss',$email,$pw);
 		$stmt->execute();
 		$qry = $stmt->get_result();
-		if($qry->num_rows > 0){
+		if($qry->num_rows > 0){zzz
 			$res = $qry->fetch_array();
 			if($res['status'] != 1){
 				return json_encode(array('status'=>'notverified'));

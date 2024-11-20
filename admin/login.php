@@ -304,10 +304,10 @@
       $('#login-frm').on('submit', function(e) {
     const email = $('[name="email"]').val();
     const emailPattern = /.+@gmail\.com$/;
-    // const password = $('[name="password"]').val();
-    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const password = $('[name="password"]').val();
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    // const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
+    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
 
     // Validate email
     if (!emailPattern.test(email)) {
@@ -317,25 +317,25 @@
             title: 'Invalid Email',
             text: 'Please enter a valid Gmail address.',
         });
-    // } 
-    // // Validate password
-    // else if (!passwordPattern.test(password)) {
-    //     e.preventDefault();
-    //     Swal.fire({
-    //         icon: 'error',
-    //         title: 'Invalid Password',
-    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-    //     });
     } 
-    // // Check if reCAPTCHA is filled
-    // else if (recaptchaResponse.length === 0) {
-    //     e.preventDefault(); // Prevent form submission
-    //     Swal.fire({
-    //         icon: 'error',
-    //         title: 'reCAPTCHA Required',
-    //         text: 'Please complete the reCAPTCHA to continue.',
-    //     });
-    // }
+    // Validate password
+    else if (!passwordPattern.test(password)) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Password',
+            text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
+        });
+    } 
+    // Check if reCAPTCHA is filled
+    else if (recaptchaResponse.length === 0) {
+        e.preventDefault(); // Prevent form submission
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
+        });
+    }
 });
 
 
@@ -399,7 +399,9 @@
         <div class="input-group-prepend">
             <span class="input-group-text"><i class="fas fa-lock"></i></span>
         </div>
-        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password ">
+        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required
+               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}" 
+               title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
         <div class="input-group-append">
             <span class="input-group-text">
                 <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
@@ -409,7 +411,7 @@
     <div class="form-group">
         <button type="submit" class="btn btn-primary btn-block">Sign In</button>
     </div>
-    <!-- <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div> -->
+    <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
     <div class="form-group text-center">
         <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
     </div>

@@ -9,7 +9,7 @@ if (isset($_POST["btn-forgotpass"])) {
     if ($email !== $allowed_gmail) {
         // If the email doesn't match, show a message or redirect
         $_SESSION["notify"] = "Email not found! Please contact the administrator to reset a password.";
-        header("location: ../forgetpass.php");
+        header("Location: ../admin/fotgot_password.php");
         exit();
     }
 

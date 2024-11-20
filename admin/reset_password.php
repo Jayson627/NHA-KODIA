@@ -39,7 +39,7 @@
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" class="btn btn-primary">Reset Password</button>
+          <button type="submit" name="btn-new-password" class="btn btn-primary">Reset Password</button>
         </form>
       </div>
     </div>

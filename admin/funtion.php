@@ -46,12 +46,13 @@ if (isset($_POST["btn-forgotpass"])) {
 }
 
 // Handle Password Reset
+// Handle password reset
 if (isset($_POST["btn-new-password"])) {
     $email = $_POST["email"];
     $password = $_POST["password"];
     $otp = $_POST["otp"];
 
-    // Validate OTP
+    // Check the OTP against the stored code in the database
     $stmt = $conn->prepare("SELECT `code` FROM `users` WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -62,29 +63,31 @@ if (isset($_POST["btn-new-password"])) {
         $get_code = $res["code"];
 
         if ($otp === $get_code) {
+            // If OTP matches, hash the new password
             $new_password = password_hash($password, PASSWORD_DEFAULT);
             $reset_code = random_int(100000, 999999);
 
-            // Update Password and Reset Code
+            // Update the user's password and reset code in the database
             $update_stmt = $conn->prepare("UPDATE `users` SET `password` = ?, `code` = ? WHERE email = ?");
             $update_stmt->bind_param("sis", $new_password, $reset_code, $email);
 
             if ($update_stmt->execute()) {
                 $_SESSION["notify"] = "Your password has been reset successfully.";
+                header("Location: ../admin/login.php");  // Redirect to login page after success
+                exit();
             } else {
                 $_SESSION["notify"] = "Failed to update password. Please try again.";
+                header("Location: ../admin/reset_password.php");  // Redirect back if failed
+                exit();
             }
-
-            header("Location: ../admin/login.php");
-            exit();
         } else {
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-            header("Location: ../admin/login.php");
+            header("Location: ../admin/reset_password.php");  // Redirect back if OTP doesn't match
             exit();
         }
     } else {
         $_SESSION["notify"] = "Email not found.";
-        header("Location: ../admin/forgot_password.php");
+        header("Location: ../admin/forgot_password.php");  // Redirect to the forgot password page
         exit();
     }
 }

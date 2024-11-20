@@ -69,18 +69,28 @@
   </style>
 </head>
 <body>
-  <div class="card">
+<div class="card">
     <div class="card-header">Reset Password</div>
     <div class="card-body">
-      <form id="resetPasswordForm" action="../admin/funtion.php" method="post">
+      <form id="resetPasswordForm" action="reset_password.php" method="post">
+        <!-- Hidden email input -->
+        <input type="hidden" name="email" value="<?php echo $_GET['email']; ?>">
+
+        <div class="mb-3">
+          <label for="otp" class="form-label">Enter OTP Code:</label>
+          <input type="text" class="form-control" name="otp" placeholder="Enter OTP" required>
+        </div>
+
         <div class="mb-3">
           <label for="newPassword" class="form-label">Enter your new password:</label>
           <input type="password" class="form-control" name="newPassword" placeholder="********" required>
         </div>
+
         <div class="mb-3">
           <label for="confirmPassword" class="form-label">Confirm your new password:</label>
           <input type="password" class="form-control" name="confirmPassword" placeholder="********" required>
         </div>
+
         <button type="submit" name="btn-resetpass" class="btn btn-primary w-100">Reset Password</button>
       </form>
     </div>

@@ -17,7 +17,7 @@
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-        <form action="" method="post">
+        <form action="../admin/funtion.php" method="post">
           <!-- Hidden Email Field -->
           <input type="hidden" name="email" value="<?php echo isset($_GET['email']) ? htmlspecialchars($_GET['email']) : ''; ?>">
 

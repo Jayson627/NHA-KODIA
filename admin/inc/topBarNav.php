@@ -86,7 +86,7 @@ function confirmLogout() {
     }).then((result) => {
         if (result.isConfirmed) {
             // Redirect to logout
-            window.location.href = 'login.php';
+            window.location.href = 'login';
         }
     });
 }

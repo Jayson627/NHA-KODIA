@@ -132,18 +132,19 @@ if (isset($_GET["reset"])) {
   <!-- JavaScript for Toggling Password Visibility -->
   <script>
     const togglePassword = document.querySelector('#togglePassword');
-    const passwordInput = document.querySelector('#new_password');
-    const eyeIcon = document.querySelector('#eyeIcon');
+const passwordInput = document.querySelector('#password'); // Fixed selector
+const eyeIcon = document.querySelector('#eyeIcon');
 
-    togglePassword.addEventListener('click', function () {
-      // Toggle the type attribute between password and text
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
+togglePassword.addEventListener('click', function () {
+  // Toggle the type attribute between password and text
+  const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordInput.setAttribute('type', type);
 
-      // Toggle the icon between eye and eye-slash
-      eyeIcon.classList.toggle('bi-eye-fill');
-      eyeIcon.classList.toggle('bi-eye-slash-fill');
-    });
+  // Toggle the icon between eye and eye-slash
+  eyeIcon.classList.toggle('bi-eye-fill');
+  eyeIcon.classList.toggle('bi-eye-slash-fill');
+});
+
   </script>
 </body>
 </html>

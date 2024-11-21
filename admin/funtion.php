@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once("mailer.php");
 require_once('../admin/connection.php');
 require_once("../initialize.php");
@@ -15,12 +16,12 @@ if (isset($_POST["btn-forgotpass"])) {
  
     if ($query) {
         
-        //Set Paramss oki na pre
+        //Set Params 
         $mail->SetFrom("alcantarajayson118@gmail.com");
         $mail->AddAddress("$email");
         $mail->Subject = "Reset Password OTP";
         $mail->Body = "Use this OTP Code to reset your password: ".$reset_code."<br/>".
-        "Click the link to reset password: http://nha-kodia.com/admin/reset_password.php?reset&email=$reset_code" 
+        "Click the link to reset password: http://localhost/sis/admin/reset_password.php?reset&email=$email"  //pulihan $reset_coede
         ;
 
 
@@ -53,55 +54,34 @@ if (isset($_POST["btn-forgotpass"])) {
     $password = $_POST["password"];
     $otp = $_POST["otp"];
 
-
-
     $sql = "SELECT `code` FROM `users` WHERE email='$email'";
-
     $query = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($query) > 0) {
 
         while ($res = mysqli_fetch_assoc($query)) {
-
             $get_code = $res["code"];
-
         }
 
         if ($otp === $get_code) {
 
-           
-
             $reset = random_int(100000, 999999);
-             $password = password_hash($password, PASSWORD_DEFAULT);
+            $password = md5($password);
 
-            $sql = "UPDATE `users` SET `password`='$password', `code`=$reset  WHERE email='$email'";
-
+            $sql = "UPDATE `users` SET `password`='$password', `code`=$reset WHERE email='$email'";
             $query = mysqli_query($conn, $sql);
 
             $_SESSION["notify"] = "success";
+            header("location: ../admin/login.php");
 
-            header("location: ../admin/forgot_password.php");
- 
- 
-        }else {
-
+        } else {
             $_SESSION["notify"] = "invalid";
-
-            header("location: ../admin/forgot_password.php");
- 
-
+            header("location: ../admin/login.php");
         }
 
-    }else {
-
-            $_SESSION["notify"] = "invalid";
-
-            header("location: ../admin/forgot_password.php");
- 
- 
-
+    } else {
+        $_SESSION["notify"] = "invalid";
+        header("location: ../admin/login.php");
     }
 }
-
-
 ?>

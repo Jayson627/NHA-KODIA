@@ -1,3 +1,14 @@
+<?php
+session_start(); 
+require_once('../admin/connection.php');
+require_once("../initialize.php");
+
+
+if (isset($_GET["reset"])) {
+    $email = $_GET["email"];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,26 +87,40 @@
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-        <form action="" method="post">
+        <?php
+          // Check if the email is passed via the URL
+          if (isset($_GET['email'])) {
+            $email = $_GET['email'];
+          } else {
+            // If email is not passed, redirect or display an error
+            echo '<div class="alert alert-danger">Email is missing. Please try again.</div>';
+            exit();
+          }
+        ?>
+        
+        <form action="../admin/funtion.php" method="post">
           <!-- OTP Code Input -->
           <div class="form-group mb-3">
-            <label for="code" class="form-label">OTP Code:</label>
-            <input type="text" class="form-control" name="code" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
+            <label for="otp" class="form-label">OTP Code:</label>
+            <input type="text" class="form-control" name="otp" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
           </div>
 
           <!-- New Password Input with Show/Hide Eye and Autofill -->
           <div class="form-group mb-3">
             <label for="new_password" class="form-label">New Password:</label>
             <div class="input-group">
-              <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter new password" autocomplete="new-password" required>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password" autocomplete="new-password" required>
               <span class="input-group-text" id="togglePassword">
                 <i class="bi bi-eye-fill" id="eyeIcon"></i>
               </span>
             </div>
           </div>
 
+          <!-- Hidden Email Field -->
+          <input type="hidden" name="email" value="<?php echo $email; ?>">
+
           <!-- Submit Button -->
-          <button type="submit" class="btn btn-primary">Reset Password</button>
+          <button type="submit" class="btn-new-password" name="btn-new-password">Reset Password</button>
         </form>
       </div>
     </div>

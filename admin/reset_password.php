@@ -120,7 +120,7 @@ if (isset($_GET["reset"])) {
           <input type="hidden" name="email" value="<?php echo $email; ?>">
 
           <!-- Submit Button -->
-          <button type="submit" class="btn-new-password" name="btn-new-password">Reset Password</button>
+          <button type="submit" class="btn-new-password" class="btn btn-primary" name="btn-new-password">Reset Password</button>
         </form>
       </div>
     </div>

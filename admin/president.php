@@ -159,7 +159,7 @@ $conn->close();
         <i class="fas fa-bars"></i>
     </span>
     <div class="icons" id="menuIcons">
-        <a href="incident.php" class="btn">
+        <a href="incident" class="btn">
             <i class="fas fa-exclamation-circle"></i> Report Incident
         </a>
         <a href="#" class="btn" onclick="toggleHouseholdResidents()">
@@ -272,7 +272,7 @@ $conn->close();
 
     Swal.fire({
         title: 'Are you sure?',
-        text: "You will be logged out of your account.",
+        text: "You will be logged out of your account.", sa xamp anay pre ang e open 
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',

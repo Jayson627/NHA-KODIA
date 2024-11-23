@@ -68,7 +68,7 @@ class Login extends DBConnection {
 				}
 			}else{
 				$resp['status'] = 'failed';
-				$resp['msg'] = "Invalid email or passwordssssss.";
+				$resp['msg'] = "Invalid email or password.";
 			}
 		}
 		return json_encode($resp);

@@ -13,7 +13,7 @@ $mail->Host = "smtp.gmail.com";
 $mail->SMTPDebug = 1; 
 $mail->Port = 465 ; //465 or 587
 
-$mail->SMTPSecure = 'ssl';  
+$mail->SMTPSecure = 'tls';  pre kadali lang
 $mail->SMTPAuth = true; 
 $mail->IsHTML(true);
 

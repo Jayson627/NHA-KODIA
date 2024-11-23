@@ -6,7 +6,7 @@ require("PHPMailer/src/SMTP.php");
 require("PHPMailer/src/Exception.php");
 
 $mail = new PHPMailer\PHPMailer\PHPMailer();
-$mail->IsSMTP(); 
+$mail->IsSMTP(); c
 
 $mail->CharSet="UTF-8";
 $mail->Host = "smtp.gmail.com";
@@ -18,7 +18,7 @@ $mail->SMTPAuth = true;
 $mail->IsHTML(true);
 
 $mail->Username = "alcantarajayson118@gmail.com";
-$mail->Password = "xbzybthzvcrfmqmy";
+$mail->Password = "fbjt mdjz cimm dfeg";
 
 
 ?>

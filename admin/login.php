@@ -315,7 +315,7 @@
         Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
-            text: 'Please enter a valid Gmail address.',
+            text: 'Please enter a valid Gmail address.', pre diin nimo ge butang ang code sa hcapctha
         });
     } 
     // Validate password
@@ -404,7 +404,7 @@
                title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
         <div class="input-group-append">
             <span class="input-group-text">
-                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i> hahaha pre hain man imo backend sa login ang function sang username ug password kay dito may ipuno ako 
             </span>
         </div>
     </div>

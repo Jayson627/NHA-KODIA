@@ -8,8 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
         'secret' => $secret_key,
         'response' => $hcaptcha_response
-    ];
-
+    ]; /
     $options = [
         'http' => [
             'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",

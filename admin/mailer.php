@@ -13,7 +13,7 @@ $mail->Host = "smtp.gmail.com";
 $mail->SMTPDebug = 1; 
 $mail->Port = 465 ; //465 or 587
 
-$mail->SMTPSecure = 'tls';  pre kadali lang dul ong kupa akun ate ikw anay pre  cge pre
+$mail->SMTPSecure = 'tls';  
 $mail->SMTPAuth = true; 
 $mail->IsHTML(true);
 

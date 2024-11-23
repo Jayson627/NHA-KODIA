@@ -18,7 +18,7 @@ $mail->SMTPAuth = true;
 $mail->IsHTML(true);
 
 $mail->Username = "alcantarajayson118@gmail.com";
-$mail->Password = "xbzybthzvcrfmqmy";
+$mail->Password = "xbdldpzpvsdhicxd";
 
 
 ?>

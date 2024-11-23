@@ -304,8 +304,8 @@
       $('#login-frm').on('submit', function(e) {
     const email = $('[name="email"]').val();
     const emailPattern = /.+@gmail\.com$/;
-    const password = $('[name="password"]').val();
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    // const password = $('[name="password"]').val();
+    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
 
@@ -315,18 +315,18 @@
         Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
-            text: 'Please enter a valid Gmail address.', pre diin nimo ge butang ang code sa hcapctha
+            text: 'Please enter a valid Gmail address.',
         });
     } 
     // Validate password
-    else if (!passwordPattern.test(password)) {
-        e.preventDefault();
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Password',
-            text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-        });
-    } 
+    // else if (!passwordPattern.test(password)) {
+    //     e.preventDefault();
+    //     Swal.fire({
+    //         icon: 'error',
+    //         title: 'Invalid Password',
+    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
+    //     });
+    // } 
     // Check if reCAPTCHA is filled
     else if (recaptchaResponse.length === 0) {
         e.preventDefault(); // Prevent form submission
@@ -404,7 +404,7 @@
                title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.">
         <div class="input-group-append">
             <span class="input-group-text">
-                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i> hahaha pre hain man imo backend sa login ang function sang username ug password kay dito may ipuno ako 
+                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
             </span>
         </div>
     </div>

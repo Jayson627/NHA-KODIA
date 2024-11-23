@@ -52,7 +52,7 @@ function sendApprovalEmail($toEmail, $fullname) {
         $mail->Host = 'smtp.gmail.com'; // Set the SMTP server to Gmail
         $mail->SMTPAuth = true;
         $mail->Username = 'alcantarajayson118@gmail.com'; // Your Gmail address
-        $mail->Password = 'xbzybthzvcrfmqmy'; // Your Gmail app password (if 2FA enabled)
+        $mail->Password = 'xbdldpzpvsdhicxd'; // Your Gmail app password (if 2FA enabled)
         $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;  // Use TLS encryption
         $mail->Port = 587;  // Port for TLS
 

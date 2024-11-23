@@ -180,7 +180,7 @@ try {
         <?php else: ?>
             <table>
                 <thead>
-                    <tr>ang sa live pre
+                    <tr>
                         <th>#</th>
                         <th>Incident Type</th>
                         <th>Description</th>

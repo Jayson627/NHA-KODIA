@@ -13,7 +13,7 @@ $mail->Host = "smtp.gmail.com";
 $mail->SMTPDebug = 1; 
 $mail->Port = 465 ; //465 or 587
 
-$mail->SMTPSecure = 'tls';  
+$mail->SMTPSecure = 'ssl';  
 $mail->SMTPAuth = true; 
 $mail->IsHTML(true);
 

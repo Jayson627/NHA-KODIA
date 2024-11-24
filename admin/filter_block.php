@@ -66,12 +66,12 @@ if ($conn->connect_error) {
                             <th>House No.</th>
                             <th>Full Name</th>
                             <th>Age</th>
-                            <th>Spouse Name</th>
-                            <th>Spouse Age</th>
                             <th>Block</th>
                             <th>Lot</th>
                             <th>Gender</th>
                             <th>Contact Number</th>
+                            <th>Spouse Name</th>
+                            <th>Spouse Age</th>
                             <th>Address</th>
                             <th>Status</th>
                         </tr>
@@ -82,12 +82,12 @@ if ($conn->connect_error) {
                         <td>{$row['roll']}</td>
                         <td>{$row['fullname']}</td>
                         <td>{$row['owner_age']}</td>
-                        <td>" . (!empty($row['spouse_fullname']) ? $row['spouse_fullname'] : 'N/A') . "</td>
-                        <td>{$row['spouse_age']}</td>
                         <td>{$row['block_no']}</td>
                         <td>{$row['lot_no']}</td>
                         <td>{$row['gender']}</td>
                         <td>{$row['contact']}</td>
+                         <td>" . (!empty($row['spouse_fullname']) ? $row['spouse_fullname'] : 'N/A') . "</td>
+                        <td>{$row['spouse_age']}</td>
                         <td>{$row['present_address']}</td>
                         <td>" . ($row['status'] == 1 ? 'Active' : 'Inactive') . "</td>
                     </tr>";

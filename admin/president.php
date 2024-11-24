@@ -153,16 +153,15 @@ $conn->close();
         <a href="filter_block" class="btn">
             <i class="fas fa-exclamation-circle"></i> resident
         </a>
-        <a href="#" class="btn" id="logoutBtn">
-    <i class="fas fa-sign-out-alt"></i> Logout
-</a>
+        <a class="dropdown-item" id="logout-link" href="#"><span class="fas fa-sign-out-alt"></span> Logout</a>
+       
     </div>
 </div>
 
 <div class="sidebar" id="sidebarMenu">
     <a href="filter_block"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
     <a href="incident"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
-    <a href="residents"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a class="dropdown-item" id="logout-link" href="#"><span class="fas fa-sign-out-alt"></span> Logout</a>
 </div>
 
 <div class="welcome-text" id="welcomeText">Welcome</div>
@@ -236,6 +235,28 @@ document.addEventListener('DOMContentLoaded', function() {
         <?php unset($_SESSION['message']); ?>
     <?php endif; ?>
 });
+</script>
+
+<!-- SweetAlert Script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.getElementById('logout-link').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default link behavior
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You are about to log out!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, log me out!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Redirect to the logout URL
+        window.location.href = "<?php echo base_url . '/classes/Login?f=logout' ?>";
+      }
+    });
+  });
 </script>
 
 </body>

@@ -58,8 +58,7 @@ if ($conn->connect_error) {
             echo "<table class='table table-bordered table-striped mt-4'>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Date Created</th>
+                           
                             <th>House No.</th>
                             <th>Full Name</th>
                             <th>Age</th>
@@ -76,8 +75,7 @@ if ($conn->connect_error) {
                     <tbody>";
             while ($row = $list_result->fetch_assoc()) {
                 echo "<tr>
-                        <td>{$row['id']}</td>
-                        <td>" . date("Y-m-d H:i", strtotime($row['date_created'])) . "</td>
+                        
                         <td>{$row['roll']}</td>
                         <td>{$row['fullname']}</td>
                         <td>{$row['owner_age']}</td>

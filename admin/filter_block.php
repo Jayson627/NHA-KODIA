@@ -80,7 +80,7 @@ if ($conn->connect_error) {
                         <td>" . date("Y-m-d H:i", strtotime($row['date_created'])) . "</td>
                         <td>{$row['roll']}</td>
                         <td>{$row['fullname']}</td>
-                        <td>{$row['age']}</td>
+                        <td>{$row['owner_age']}</td>
                         <td>{$row['spouse_name']}</td>
                         <td>{$row['spouse_age']}</td>
                         <td>{$row['block_no']}</td>

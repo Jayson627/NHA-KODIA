@@ -60,23 +60,24 @@ if ($conn->connect_error) {
         $list_result = $conn->query($list_query);
 
         if ($list_result->num_rows > 0) {
-            echo "<table class='table table-bordered table-striped mt-4'>
-                    <thead>
-                        <tr>
-                            <th>House No.</th>
-                            <th>Full Name</th>
-                            <th>Age</th>
-                            <th>Block</th>
-                            <th>Lot</th>
-                            <th>Gender</th>
-                            <th>Contact Number</th>
-                            <th>Spouse Name</th>
-                            <th>Spouse Age</th>
-                            <th>Address</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>";
+            echo "<div class='table-responsive'>
+                    <table class='table table-bordered table-striped mt-4'>
+                        <thead>
+                            <tr>
+                                <th>House No.</th>
+                                <th>Full Name</th>
+                                <th>Age</th>
+                                <th>Block</th>
+                                <th>Lot</th>
+                                <th>Gender</th>
+                                <th>Contact Number</th>
+                                <th>Spouse Name</th>
+                                <th>Spouse Age</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>";
             while ($row = $list_result->fetch_assoc()) {
                 echo "<tr>
                         <td>{$row['roll']}</td>
@@ -92,7 +93,8 @@ if ($conn->connect_error) {
                         <td>" . ($row['status'] == 1 ? 'Active' : 'Inactive') . "</td>
                     </tr>";
             }
-            echo "</tbody></table>";
+            echo "</tbody></table>
+                  </div>";
         } else {
             echo "<p class='text-center text-danger mt-4'>No records found for Block $block_no.</p>";
         }

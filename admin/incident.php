@@ -54,10 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Redirect back to clear POST data
-    header('Location: incident.php');
+    header('Location: incident');
     exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

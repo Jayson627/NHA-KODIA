@@ -64,9 +64,9 @@ if (isset($_GET['delete_household']) && !empty($household_id)) {
                 <button class="btn btn-sm btn-info bg-info btn-flat" type="button" id="update_status">Update Status</button>
                 <a href="./?page=students" class="btn btn-default border btn-sm btn-flat"><i class="fa fa-angle-left"></i> Back to List</a>
                 <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flat"><i class="fa fa-plus"></i> Add Children</a>
-                
-                <!-- New Print Button -->
-                <button class="btn btn-sm btn-secondary btn-flat" onclick="printPage()"><i class="fa fa-print"></i> Print</button>
+                <button class="btn btn-sm btn-success btn-flat" type="button" id="print_household"><i class="fa fa-print"></i> Print Household</button>
+
+               
             </div>
         </div>
         <div class="card-body">
@@ -158,6 +158,7 @@ if (isset($_GET['delete_household']) && !empty($household_id)) {
             <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
 // Database credentials
 $servername = "127.0.0.1:3306";
 $username = "u510162695_sis_db";
@@ -167,7 +168,7 @@ $dbname = "u510162695_sis_db";
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
+// Check connections
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -242,7 +243,7 @@ $conn->close();
                 <th>Educational Attainment</th>
                 <th>Contact Number</th>
                 <th>Remarks</th>
-                <th>Actions</th>
+                <th class="hide-print">Actions</th> <!-- Add the hide-print class here -->
             </tr>
         </thead>
         <tbody>
@@ -267,7 +268,7 @@ $conn->close();
                         <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
                         <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
                         <td><?php echo htmlspecialchars($child['remark']); ?></td>
-                        <td>
+                        <td class="hide-print"> <!-- Add the hide-print class to actions column -->
                             <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
                             <a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
                         </td>
@@ -281,6 +282,7 @@ $conn->close();
         </tbody>
     </table>
 </div>
+
 
 <!-- Optional CSS Styles for Additional Customization -->
 <style>
@@ -322,88 +324,11 @@ $conn->close();
         font-family: 'Arial', sans-serif;
         color: #333;
     }
+
+    
 </style>
 
    
-<script>
-    function printPage() {
-        var originalContent = document.body.innerHTML;
-        var printContent = `
-            <html>
-            <head>
-                <title>Print</title>
-                <style>
-                    @media print {
-                        .no-print { display: none; }
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>Household Details</h1>
-                <div>
-                    <p><strong>Name:</strong> <?= isset($fullname) ? $fullname : 'N/A' ?></p>
-                    <p><strong>Contact No.:</strong> <?= isset($roll) ? $roll : 'N/A' ?></p>
-                    <p><strong>Status:</strong> 
-                        <?php 
-                            switch ($status) {
-                                case 0:
-                                    echo 'Inactive';
-                                    break;
-                                case 1:
-                                    echo 'Active';
-                                    break;
-                            }
-                        ?>
-                    </p>
-                    <!-- Add more fields as needed -->
-                </div>
-                <h2>Children Information</h2>
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Age</th>
-                            <th>Gender</th>
-                            <th>Status</th>
-                            <th>Birthdate</th>
-                            <th>Educational Attainment</th>
-                            <th>Contact Number</th>
-                             <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($children)): ?>
-                            <?php foreach ($children as $child): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($child['name']); ?></td>
-                                    <td><?php echo htmlspecialchars($child['age']); ?></td>
-                                    <td><?php echo htmlspecialchars($child['gender']); ?></td>
-                                    <td><?php echo htmlspecialchars($child['status']); ?></td>
-                                    <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
-                                    <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
-                                    <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
-                                    <td><?php echo htmlspecialchars($child['remark']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="7">No children found.</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </body>
-            </html>
-        `;
-        
-        var newWindow = window.open('', '', 'height=600,width=800');
-        newWindow.document.write(printContent);
-        newWindow.document.close();
-        newWindow.focus();
-        newWindow.print();
-    }
-</script>
-
 <script>
     $(function() {
         $('#update_status').click(function(){
@@ -505,6 +430,55 @@ $conn->close();
             }
         });
     }
-    
+    $(function() {
+    $('#print_household').click(function(){
+        printHouseholdDetails();
+    });
+
+    function printHouseholdDetails() {
+        // Get the HTML content of the household details and children section
+        var householdDetails = $(".card-body").html();  // Grab the content of the household details
+        var childrenTable = $(".container.mt-5").html(); // Grab the children table content
+        
+        // Create a new window to print the content
+        var printWindow = window.open('', '', 'height=600,width=800');
+
+        printWindow.document.write('<html><head><title>Household and Children Details</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('body { font-family: Arial, sans-serif; font-size: 14px; color: #333; }');
+        printWindow.document.write('h2 { text-align: center; font-size: 18px; margin-bottom: 20px; }');
+        printWindow.document.write('.table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }');
+        printWindow.document.write('.table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: left; }');
+        printWindow.document.write('.table th { background-color: #f2f2f2; font-weight: bold; }');
+        printWindow.document.write('.table td { font-size: 14px; }');
+        printWindow.document.write('.table-striped tbody tr:nth-child(odd) { background-color: #f9f9f9; }');
+        printWindow.document.write('.table-striped tbody tr:hover { background-color: #f1f1f1; }');
+        
+        // Hide the Actions column during print
+        printWindow.document.write('@media print {');
+        printWindow.document.write('.hide-print { display: none; }'); // Hide the Actions column
+        printWindow.document.write('.container { margin: 20px; }');
+        printWindow.document.write('body { font-size: 16px; line-height: 1.6; }');
+        printWindow.document.write('}');
+
+        printWindow.document.write('</style>');
+        printWindow.document.write('</head><body>');
+        
+        // Print the household details and children table
+        printWindow.document.write('<h2>Household Details</h2>');
+        printWindow.document.write(householdDetails);  // Append the household details HTML
+        printWindow.document.write('');
+        printWindow.document.write(childrenTable);  // Append the children table HTML
+        
+        printWindow.document.write('</body></html>');
+        
+        // Trigger the print dialog
+        printWindow.document.close();
+        printWindow.print();
+    }
+});
+
+
+
 
 </script> 

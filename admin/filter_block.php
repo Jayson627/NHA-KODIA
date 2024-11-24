@@ -49,6 +49,8 @@ if ($conn->connect_error) {
     // Display the list based on the selected block
     if (isset($_GET['block_no']) && !empty($_GET['block_no'])) {
         $block_no = $conn->real_escape_string($_GET['block_no']);
+        
+        // Query to get all columns from student_list based on selected block
         $list_query = "SELECT * FROM student_list WHERE block_no = '$block_no'";
         $list_result = $conn->query($list_query);
 
@@ -57,22 +59,36 @@ if ($conn->connect_error) {
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Date Created</th>
+                            <th>House No.</th>
                             <th>Full Name</th>
+                            <th>Age</th>
+                            <th>Spouse Name</th>
+                            <th>Spouse Age</th>
                             <th>Block</th>
                             <th>Lot</th>
+                            <th>Gender</th>
                             <th>Contact Number</th>
                             <th>Address</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>";
             while ($row = $list_result->fetch_assoc()) {
                 echo "<tr>
                         <td>{$row['id']}</td>
-                        <td>{$row['full_name']}</td>
+                        <td>" . date("Y-m-d H:i", strtotime($row['date_created'])) . "</td>
+                        <td>{$row['house_no']}</td>
+                        <td>{$row['fullname']}</td>
+                        <td>{$row['age']}</td>
+                        <td>{$row['spouse_name']}</td>
+                        <td>{$row['spouse_age']}</td>
                         <td>{$row['block_no']}</td>
                         <td>{$row['lot_no']}</td>
+                        <td>{$row['gender']}</td>
                         <td>{$row['contact_number']}</td>
                         <td>{$row['address']}</td>
+                        <td>" . ($row['status'] == 1 ? 'Active' : 'Inactive') . "</td>
                     </tr>";
             }
             echo "</tbody></table>";

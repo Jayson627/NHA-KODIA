@@ -8,27 +8,7 @@ $announcementResult = $conn->query($announcementQuery);
 
 // Check if the query was successful
 if (!$announcementResult) {
-    die("Query failed: " . $conn->error);
-}
-
-// Default query to fetch all households
-$sql = "SELECT *,
-                CONCAT(lastname, ', ', firstname, ' ', middlename, ' ', owner_extension) AS fullname,
-                CONCAT(spouse_lastname, ', ', spouse_firstname, ' ', spouse_middlename, ' ', spouse_extension) AS spouse_fullname
-        FROM student_list";
-
-// Check if a block number is selected and update the query accordingly
-if (isset($_GET['block_no']) && !empty($_GET['block_no'])) {
-    $block_no = intval($_GET['block_no']);
-    $sql .= " WHERE block_no = $block_no";
-}
-
-// Execute the query
-$qry = $conn->query($sql);
-
-// Check if the query execution was successful
-if (!$qry) {
-    die("Query failed: " . $conn->error);
+    die("Query failed: " . $conn->error); // Show the error if the query fails
 }
 
 // Close the database connection
@@ -77,22 +57,26 @@ $conn->close();
         .icons a:hover {
             text-decoration: underline;
         }
-        .announcement-button {
-            background-color: #007bff;
+
+        .welcome-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
             color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 3s ease-in-out infinite alternate;
         }
-        .announcement-button:hover {
-            background-color: #0056b3;
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translate(-50%, -60%); }
+            100% { opacity: 1; transform: translate(-50%, -50%); }
         }
+
+        /* Announcements Table Styles */
         .announcements-container {
             padding: 20px;
             color: white;
-            display: none;
         }
         table.announcement-table {
             width: 100%;
@@ -107,6 +91,8 @@ $conn->close();
             background-color: #007BFF;
             color: white;
         }
+
+        /* Sidebar Menu */
         .sidebar {
             display: none;
             position: fixed;
@@ -135,6 +121,8 @@ $conn->close();
             font-size: 24px;
             cursor: pointer;
         }
+
+        /* Media Query for Mobile View */
         @media (max-width: 768px) {
             .menu-toggle {
                 display: block;
@@ -143,7 +131,7 @@ $conn->close();
                 display: none;
             }
             .sidebar {
-                display: none;
+                display: none; /* Initially hidden */
             }
             .sidebar.show {
                 display: block;
@@ -159,66 +147,14 @@ $conn->close();
         <i class="fas fa-bars"></i>
     </span>
     <div class="icons" id="menuIcons">
-        <a href="incident" class="btn">
+        <a href="incident.php" class="btn">
             <i class="fas fa-exclamation-circle"></i> Report Incident
-        </a>
-        <a href="#" class="btn" onclick="toggleHouseholdResidents()">
-            <i class="fas fa-users"></i> Household Residents
         </a>
         <a href="#" class="btn" id="logoutBtn">
     <i class="fas fa-sign-out-alt"></i> Logout
 </a>
-        <button class="announcement-button" id="announcementButton">View Announcements</button>
     </div>
 </div>
-
-<div id="blockSelectContainer" style="margin-top: 20px; text-align: center;">
-    <label for="blockSelect" style="font-size: 1.2em; font-weight: bold;">Select Block Number:</label>
-    <select id="blockSelect" onchange="filterHouseholdsByBlock()" style="
-        font-size: 1.1em;
-        padding: 12px;
-        margin-top: 10px;
-        width: 200px;
-        border: 2px solid white;
-        border-radius: 8px;
-        background-color: white;
-        color: black;
-        text-align: center;
-        cursor: pointer;">
-        <option value="">Select Block</option>
-        <?php for ($i = 1; $i <= 28; $i++): ?>
-            <option value="<?php echo $i; ?>"><?php echo "Block " . $i; ?></option>
-        <?php endfor; ?>
-    </select>
-</div>
-
-<table class="table table-bordered table-hover table-striped" id="household-table">
-    <thead>
-        <tr class="bg-gradient-dark text-light">
-            <th>#</th>
-            <th>Name</th>
-            <th>Spouse Name</th>
-            <th>Block</th>
-            <th>Lot</th>
-            <th>Contact No.</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php 
-        $i = 1;
-        while ($row = $qry->fetch_assoc()):
-        ?>
-        <tr>
-            <td class="text-center"><?php echo $i++; ?></td>
-            <td><p class="m-0 truncate-1"><?php echo $row['fullname']; ?></p></td>
-            <td><p class="m-0 truncate-1"><?php echo !empty($row['spouse_fullname']) ? $row['spouse_fullname'] : 'N/A'; ?></p></td>
-            <td><p class="m-0 truncate-1"><?php echo $row['block_no']; ?></p></td>
-            <td><p class="m-0 truncate-1"><?php echo $row['lot_no']; ?></p></td>
-            <td><p class="m-0 truncate-1"><?php echo $row['contact']; ?></p></td>
-        </tr>
-        <?php endwhile; ?>
-    </tbody>
-</table>
 
 <div class="sidebar" id="sidebarMenu">
     <a href="incident.php"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
@@ -227,7 +163,8 @@ $conn->close();
 
 <div class="welcome-text" id="welcomeText">Welcome</div>
 
-<div class="announcements-container" id="announcementsContainer">
+<!-- Display Announcements -->
+<div class="announcements-container">
     <h2>Announcements</h2>
     <?php if (isset($announcementResult) && $announcementResult->num_rows > 0): ?>
         <table class="announcement-table">
@@ -255,24 +192,13 @@ $conn->close();
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function filterHouseholdsByBlock() {
-        var blockSelect = document.getElementById('blockSelect');
-        var blockNo = blockSelect.value;
 
-        // If a block is selected, reload the page with the block number as a query parameter
-        if (blockNo) {
-            window.location.href = "?block_no=" + blockNo;
-        } else {
-            // If no block is selected, reload the page without a block filter
-            window.location.href = window.location.pathname;
-        }
-    }
-    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+document.getElementById('logoutBtn').addEventListener('click', function(e) {
     e.preventDefault(); // Prevent default link behavior
 
     Swal.fire({
         title: 'Are you sure?',
-        text: "You will be logged out of your account.", sa xamp anay pre ang e open 
+        text: "You will be logged out of your account.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -286,14 +212,25 @@ $conn->close();
         }
     });
 });
-
-
 document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar toggle functionality
     const menuToggle = document.getElementById('menuToggle');
     const sidebarMenu = document.getElementById('sidebarMenu');
+    
     menuToggle.addEventListener('click', function() {
         sidebarMenu.classList.toggle('show');
     });
+
+    // Display Success Message
+    <?php if (isset($_SESSION['message'])): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '<?php echo $_SESSION['message']; ?>',
+            confirmButtonText: 'OK'
+        });
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
 });
 </script>
 

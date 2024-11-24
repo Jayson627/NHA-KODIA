@@ -13,13 +13,6 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Initialize error message variable
-$error_message = "";
-
-// Fetch unique block numbers
-$blocks_query = "SELECT DISTINCT block_no FROM student_list ORDER BY block_no ASC";
-$blocks_result = $conn->query($blocks_query);
-
 ?>
 
 <!DOCTYPE html>
@@ -33,19 +26,19 @@ $blocks_result = $conn->query($blocks_query);
 <body class="bg-light">
 
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Filter List by Block</h2>
+    <h2 class="text-center mb-4">Filter Household Owners by Block</h2>
 
+    <!-- Filter Form -->
     <form method="GET" action="">
         <div class="mb-3">
             <label for="block_no" class="form-label">Select Block:</label>
             <select class="form-select" name="block_no" id="block_no" onchange="this.form.submit()">
                 <option value="">-- Select Block --</option>
                 <?php
-                if ($blocks_result->num_rows > 0) {
-                    while ($row = $blocks_result->fetch_assoc()) {
-                        $selected = (isset($_GET['block_no']) && $_GET['block_no'] == $row['block_no']) ? 'selected' : '';
-                        echo "<option value='" . $row['block_no'] . "' $selected>Block " . $row['block_no'] . "</option>";
-                    }
+                // Generate block options 1 to 27
+                for ($i = 1; $i <= 27; $i++) {
+                    $selected = (isset($_GET['block_no']) && $_GET['block_no'] == $i) ? 'selected' : '';
+                    echo "<option value='$i' $selected>Block $i</option>";
                 }
                 ?>
             </select>
@@ -66,7 +59,10 @@ $blocks_result = $conn->query($blocks_query);
                             <th>ID</th>
                             <th>Name</th>
                             <th>Block</th>
-                            <th>Details</th>
+                            <th>Lot</th>
+                            <th>Address</th>
+                            <th>Contact Number</th>
+                            <th>Email</th>
                         </tr>
                     </thead>
                     <tbody>";
@@ -75,7 +71,10 @@ $blocks_result = $conn->query($blocks_query);
                         <td>{$row['id']}</td>
                         <td>{$row['name']}</td>
                         <td>{$row['block_no']}</td>
-                        <td>{$row['details']}</td>
+                        <td>{$row['lot_no']}</td>
+                        <td>{$row['address']}</td>
+                        <td>{$row['contact_number']}</td>
+                        <td>{$row['email']}</td>
                     </tr>";
             }
             echo "</tbody></table>";

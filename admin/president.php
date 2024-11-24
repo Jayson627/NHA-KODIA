@@ -160,8 +160,9 @@ $conn->close();
 </div>
 
 <div class="sidebar" id="sidebarMenu">
-    <a href="incident.php"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
-    <a href="residents.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="filter_block"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
+    <a href="incident"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
+    <a href="residents"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
 
 <div class="welcome-text" id="welcomeText">Welcome</div>

@@ -470,3 +470,6 @@ $conn->close();
 </body>
 </html>
 <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
+              </script>
+</script>

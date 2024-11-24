@@ -17,7 +17,7 @@ if ($conn->connect_error) {
 $error_message = "";
 
 // Fetch unique block numbers
-$blocks_query = "SELECT DISTINCT block_no FROM your_table_name ORDER BY block_no ASC";
+$blocks_query = "SELECT DISTINCT block_no FROM student_list ORDER BY block_no ASC";
 $blocks_result = $conn->query($blocks_query);
 
 ?>
@@ -56,7 +56,7 @@ $blocks_result = $conn->query($blocks_query);
     // Display the list based on the selected block
     if (isset($_GET['block_no']) && !empty($_GET['block_no'])) {
         $block_no = $conn->real_escape_string($_GET['block_no']);
-        $list_query = "SELECT * FROM your_table_name WHERE block_no = '$block_no'";
+        $list_query = "SELECT * FROM student_list WHERE block_no = '$block_no'";
         $list_result = $conn->query($list_query);
 
         if ($list_result->num_rows > 0) {

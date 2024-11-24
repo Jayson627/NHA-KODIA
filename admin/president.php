@@ -147,7 +147,7 @@ $conn->close();
         <i class="fas fa-bars"></i>
     </span>
     <div class="icons" id="menuIcons">
-        <a href="incident.php" class="btn">
+        <a href="incident" class="btn">
             <i class="fas fa-exclamation-circle"></i> Report Incident
         </a>
         <a href="#" class="btn" id="logoutBtn">

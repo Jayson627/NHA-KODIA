@@ -57,24 +57,22 @@ if ($conn->connect_error) {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Name</th>
+                            <th>Full Name</th>
                             <th>Block</th>
                             <th>Lot</th>
-                            <th>Address</th>
                             <th>Contact Number</th>
-                            <th>Email</th>
+                            <th>Address</th>
                         </tr>
                     </thead>
                     <tbody>";
             while ($row = $list_result->fetch_assoc()) {
                 echo "<tr>
                         <td>{$row['id']}</td>
-                        <td>{$row['name']}</td>
+                        <td>{$row['full_name']}</td>
                         <td>{$row['block_no']}</td>
                         <td>{$row['lot_no']}</td>
-                        <td>{$row['address']}</td>
                         <td>{$row['contact_number']}</td>
-                        <td>{$row['email']}</td>
+                        <td>{$row['address']}</td>
                     </tr>";
             }
             echo "</tbody></table>";

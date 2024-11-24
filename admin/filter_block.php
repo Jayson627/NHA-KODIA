@@ -78,7 +78,7 @@ if ($conn->connect_error) {
                 echo "<tr>
                         <td>{$row['id']}</td>
                         <td>" . date("Y-m-d H:i", strtotime($row['date_created'])) . "</td>
-                        <td>{$row['house_no']}</td>
+                        <td>{$row['roll']}</td>
                         <td>{$row['fullname']}</td>
                         <td>{$row['age']}</td>
                         <td>{$row['spouse_name']}</td>

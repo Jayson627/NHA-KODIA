@@ -373,7 +373,7 @@
       <a href="javascript:void(0)" class="close-btn">&times;</a>
       <a href="about.php">About</a>
       <a href="#" id="login-as-admin"> Admin</a>
-      <a href="residents.php"> Resident</a>
+      <a href="residents"> Resident</a>
     </div>
   </nav>
 

@@ -86,8 +86,8 @@ if ($conn->connect_error) {
                         <td>{$row['block_no']}</td>
                         <td>{$row['lot_no']}</td>
                         <td>{$row['gender']}</td>
-                        <td>{$row['contact_number']}</td>
-                        <td>{$row['address']}</td>
+                        <td>{$row['contact']}</td>
+                        <td>{$row['present_address']}</td>
                         <td>" . ($row['status'] == 1 ? 'Active' : 'Inactive') . "</td>
                     </tr>";
             }

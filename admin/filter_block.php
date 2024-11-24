@@ -50,15 +50,19 @@ if ($conn->connect_error) {
     if (isset($_GET['block_no']) && !empty($_GET['block_no'])) {
         $block_no = $conn->real_escape_string($_GET['block_no']);
         
-        // Query to get all columns from student_list based on selected block
-        $list_query = "SELECT * FROM student_list WHERE block_no = '$block_no'";
+        // Query to get all columns from student_list based on selected block, and concatenate full names
+        $list_query = "SELECT *, 
+                              CONCAT(firstname, ' ', middlename, ' ', lastname) AS fullname,
+                              CONCAT(spouse_firstname, ' ', spouse_middlename, ' ', spouse_lastname) AS spouse_fullname
+                       FROM student_list 
+                       WHERE block_no = '$block_no'";
+
         $list_result = $conn->query($list_query);
 
         if ($list_result->num_rows > 0) {
             echo "<table class='table table-bordered table-striped mt-4'>
                     <thead>
                         <tr>
-                           
                             <th>House No.</th>
                             <th>Full Name</th>
                             <th>Age</th>
@@ -75,11 +79,10 @@ if ($conn->connect_error) {
                     <tbody>";
             while ($row = $list_result->fetch_assoc()) {
                 echo "<tr>
-                        
                         <td>{$row['roll']}</td>
                         <td>{$row['fullname']}</td>
                         <td>{$row['owner_age']}</td>
-                        <td>{$row['spouse_name']}</td>
+                        <td>" . (!empty($row['spouse_fullname']) ? $row['spouse_fullname'] : 'N/A') . "</td>
                         <td>{$row['spouse_age']}</td>
                         <td>{$row['block_no']}</td>
                         <td>{$row['lot_no']}</td>

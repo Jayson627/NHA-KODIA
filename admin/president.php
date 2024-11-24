@@ -150,7 +150,7 @@ $conn->close();
         <a href="incident" class="btn">
             <i class="fas fa-exclamation-circle"></i> Report Incident
         </a>
-        <a href="incident" class="btn">
+        <a href="filter_block" class="btn">
             <i class="fas fa-exclamation-circle"></i> resident
         </a>
         <a href="#" class="btn" id="logoutBtn">

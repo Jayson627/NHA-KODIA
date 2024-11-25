@@ -54,6 +54,22 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
         $email = $_POST['email'];
         $password = $_POST['password'];
         
+        // Retrieve hCaptcha response
+        $hcaptcha_response = $_POST['g-recaptcha-response'];
+        $secret_key = 'your-secret-key'; // Replace with your hCaptcha secret key
+    
+        // Verify hCaptcha response
+        $verify_url = 'https://hcaptcha.com/siteverify';
+        $response = file_get_contents($verify_url . '?secret=' . $secret_key . '&response=' . $hcaptcha_response);
+        $response_keys = json_decode($response, true);
+    
+        // Check if hCaptcha verification was successful
+        if(intval($response_keys['success']) !== 1) {
+            $_SESSION['message'] = "Please complete the CAPTCHA.";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+        
         // Prepare and execute the statement to get the user, role, and status by email
         $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
@@ -66,12 +82,11 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
             $stmt->fetch();
     
             // Check if the account status is 'approved'
-if ($status !== 'approved') {
-    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
-
+            if ($status !== 'approved') {
+                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
     
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
@@ -116,6 +131,7 @@ if ($status !== 'approved') {
     
         $stmt->close();
     }
+    
     
 }
 
@@ -336,24 +352,18 @@ $conn->close();
     <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
 </div>
     <div class="form-container active" id="login">
-    <form method="POST" onsubmit="return validateLoginForm()">
-    <input type="email" name="email" placeholder="Email" required>
-    
-    <div class="password-wrapper">
-        <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
-        <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
-    </div>
-
-    <!-- Add hCaptcha here -->
-    <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
-
-    <button type="submit" name="login">Login</button>
-    <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
-    <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-        <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
-    </p>
-</form>
-
+        <form method="POST">
+            <input type="email" name="email" placeholder="email" required>
+            
+            <!-- Password input with show/hide toggle -->
+            <div class="password-wrapper">
+                <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
+                <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
+            </div>
+            
+            <button type="submit" name="login">Login</button>
+            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
+        </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
             <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
@@ -398,17 +408,11 @@ $conn->close();
             this.textContent = type === 'password' ? '👁️' : '🙈';
         });
 
-        function validateLoginForm() {
-    // Check if the hCaptcha is solved
-    const captchaResponse = grecaptcha.getResponse();
-    if (captchaResponse.length === 0) {
-        alert("Please complete the hCaptcha to proceed.");
-        return false;
-    }
-
-    return true; // Continue with form submission if hCaptcha is completed
-}
-
+        function validateForm() {
+        const dob = document.querySelector('input[name="dob"]').value;
+        const dobDate = new Date(dob);
+        const today = new Date();
+        const age = today.getFullYear() - dobDate.getFullYear();
         
         // Check if user is at least 18 years old
         if (age < 18) {

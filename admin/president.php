@@ -150,10 +150,6 @@ $conn->close();
         <a href="incident" class="btn">
             <i class="fas fa-exclamation-circle"></i> Report Incident
         </a>
-        <a href="filter_block" class="btn">
-    <i class="fas fa-users"></i> resident
-</a>
-
         <a href="#" class="btn" id="logoutBtn">
     <i class="fas fa-sign-out-alt"></i> Logout
 </a>
@@ -161,7 +157,6 @@ $conn->close();
 </div>
 
 <div class="sidebar" id="sidebarMenu">
-    <a href="filter_block"><i class="fas fa-users"></i> Report Incident</a>
     <a href="incident"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
     <a href="residents"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
@@ -239,6 +234,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-
 </body>
-</html>g
+</html>

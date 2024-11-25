@@ -28,7 +28,7 @@ if (isset($_POST['edit_block'])) {
     $stmt->bind_param("ss", $new_block_no, $block_no);
     if ($stmt->execute()) {
         // Redirect to avoid resubmission
-        header("Location: block.php");
+        header("Location: block");
         exit();
     } else {
         echo "Error updating record: " . $conn->error;
@@ -57,13 +57,13 @@ $conn->close();
 <body>
 <div class="container mt-5">
     <h2>Edit Block</h2>
-    <form method="POST" action="edit_block.php?block_no=<?php echo urlencode($block_no); ?>">
+    <form method="POST" action="edit_block?block_no=<?php echo urlencode($block_no); ?>">
         <div class="form-group">
             <label for="new_block_no">New Block No</label>
             <input type="text" class="form-control" id="new_block_no" name="new_block_no" value="<?php echo htmlspecialchars($current_block_no); ?>" required>
         </div>
         <button type="submit" name="edit_block" class="btn btn-primary">Save Changes</button>
-        <a href="block.php" class="btn btn-secondary">Cancel</a>
+        <a href="block" class="btn btn-secondary">Cancel</a>
     
     </form>
 </div>

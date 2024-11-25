@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('connection.php');
+include_once('connection');
 
 // Fetch announcements from the database
 $announcementQuery = "SELECT * FROM announcement ORDER BY created_at DESC";
@@ -147,7 +147,7 @@ $conn->close();
         <i class="fas fa-bars"></i>
     </span>
     <div class="icons" id="menuIcons">
-        <a href="incident.php" class="btn">
+        <a href="incident" class="btn">
             <i class="fas fa-exclamation-circle"></i> Report Incident
         </a>
         <a href="#" class="btn" id="logoutBtn">
@@ -157,8 +157,8 @@ $conn->close();
 </div>
 
 <div class="sidebar" id="sidebarMenu">
-    <a href="incident.php"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
-    <a href="residents.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="incident"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
+    <a href="residents"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
 
 <div class="welcome-text" id="welcomeText">Welcome</div>
@@ -208,7 +208,7 @@ document.getElementById('logoutBtn').addEventListener('click', function(e) {
     }).then((result) => {
         if (result.isConfirmed) {
             // Redirect to logout URL
-            window.location.href = 'residents.php'; // Replace with your logout URL
+            window.location.href = 'residents'; // Replace with your logout URL
         }
     });
 });

@@ -134,6 +134,17 @@
 
         // Start typing effect after heading animation
         setTimeout(type, 4500); // Delay to match the end of the title animation
+
+        document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+    }
+});
+
     </script>
 
 </body>

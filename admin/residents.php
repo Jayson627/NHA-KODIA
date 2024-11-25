@@ -54,22 +54,6 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
         $email = $_POST['email'];
         $password = $_POST['password'];
         
-        // Retrieve hCaptcha response
-        $hcaptcha_response = $_POST['g-recaptcha-response'];
-        $secret_key = 'your-secret-key'; // Replace with your hCaptcha secret key
-    
-        // Verify hCaptcha response
-        $verify_url = 'https://hcaptcha.com/siteverify';
-        $response = file_get_contents($verify_url . '?secret=' . $secret_key . '&response=' . $hcaptcha_response);
-        $response_keys = json_decode($response, true);
-    
-        // Check if hCaptcha verification was successful
-        if(intval($response_keys['success']) !== 1) {
-            $_SESSION['message'] = "Please complete the CAPTCHA.";
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
-        }
-        
         // Prepare and execute the statement to get the user, role, and status by email
         $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
@@ -82,11 +66,12 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
             $stmt->fetch();
     
             // Check if the account status is 'approved'
-            if ($status !== 'approved') {
-                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
-            }
+if ($status !== 'approved') {
+    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
     
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
@@ -131,7 +116,6 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
     
         $stmt->close();
     }
-    
     
 }
 

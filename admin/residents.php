@@ -300,7 +300,7 @@ $conn->close();
 <header>
     <img src="lo.png" alt="Logo" class="logo">
     <h1 style="margin: 0;">NHA Kodia-IS</h1>
-    <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
+    <a href="login" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
 </header>
 
 <div class="container">
@@ -328,7 +328,7 @@ $conn->close();
         <!-- Terms and Conditions Checkbox -->
         <div style="margin: 10px 0;">
             <input type="checkbox" id="terms" name="terms" required>
-            <label for="terms">I agree to the <a href="terms.php" target="_blank">Terms and Conditions</a></label>
+            <label for="terms">I agree to the <a href="terms" target="_blank">Terms and Conditions</a></label>
         </div>
 
         <button type="submit" name="create_account">Create Account</button>
@@ -350,7 +350,7 @@ $conn->close();
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-            <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+            <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
     <script>

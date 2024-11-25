@@ -83,10 +83,10 @@ if ($status !== 'approved') {
     
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
-                    header("Location: dashboard.php"); 
+                    header("Location: dashboard"); 
                     exit();
                 } else if ($role === 'residents') { 
-                    header("Location: people_dashboard.php");
+                    header("Location: people_dashboard");
                     exit();
                 }
             } else {
@@ -328,7 +328,7 @@ $conn->close();
         <!-- Terms and Conditions Checkbox -->
         <div style="margin: 10px 0;">
             <input type="checkbox" id="terms" name="terms" required>
-            <label for="terms">I agree to the <a href="terms.php" target="_blank">Terms and Conditions</a></label>
+            <label for="terms">I agree to the <a href="terms" target="_blank">Terms and Conditions</a></label>
         </div>
 
         <button type="submit" name="create_account">Create Account</button>
@@ -350,7 +350,7 @@ $conn->close();
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-            <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+            <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
     <script>

@@ -364,14 +364,14 @@
     <span class="open-menu-btn">&#9776;</span>
 
     <div class="navbar-nav">
-      <a href="about.php" class="nav-link">About</a>
+      <a href="about" class="nav-link">About</a>
       <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
-      <a href="residents.php" class="nav-link">Login as Resident</a>
+      <a href="residents" class="nav-link">Login as Resident</a>
     </div>
 
     <div id="push-menu">
       <a href="javascript:void(0)" class="close-btn">&times;</a>
-      <a href="about.php">About</a>
+      <a href="about">About</a>
       <a href="#" id="login-as-admin"> Admin</a>
       <a href="residents"> Resident</a>
     </div>
@@ -411,7 +411,7 @@
     </div>
     <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
     <div class="form-group text-center">
-        <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
+        <a href="forgot_password" class="text-primary">Forgot Password?</a>
     </div>
     
 </form>

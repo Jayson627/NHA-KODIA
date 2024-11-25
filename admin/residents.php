@@ -86,7 +86,7 @@ if ($status !== 'approved') {
                     header("Location: dashboard"); 
                     exit();
                 } else if ($role === 'residents') { 
-                    header("Location: people_dashboard");
+                    header("Location: people_dashboard.php");
                     exit();
                 }
             } else {

@@ -1,4 +1,4 @@
-3<?php
+<?php
 include_once('connection.php'); // Include your database connection
 
 // Fetch available blocks
@@ -241,7 +241,7 @@ $(function() {
 
         if (blockNo) {
             $.ajax({
-                url: 'get_lots.php', // Your PHP script to fetch lots
+                url: 'get_lots', // Your PHP script to fetch lots
                 method: 'POST',
                 data: { block_no: blockNo },
                 dataType: 'json',
@@ -377,7 +377,7 @@ $('#spouse_firstname, #spouse_middlename, #spouse_lastname').on('keyup', functio
             $('.err-msg').remove();
             start_loader();
             $.ajax({
-                url: _base_url_+"classes/Master.php?f=save_student",
+                url: _base_url_+"classes/Master?f=save_student",
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,

@@ -54,7 +54,7 @@ if(isset($_GET['student_id'])){
                 el.hide()
             start_loader();
             $.ajax({
-                url:_base_url_+"classes/Master.php?f=update_student_status",
+                url:_base_url_+"classes/Master?f=update_student_status",
 				data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,

@@ -117,7 +117,7 @@ $error_message = "";
             <button onclick="printTable()" class="btn btn-flat btn-sm" style="background-color: #28a745; color: white;">
                 <i class="fa fa-print"></i> Print
             </button>
-            <a href="backup_list.php" class="btn btn-sm btn-warning btn-flat">
+            <a href="backup_list" class="btn btn-sm btn-warning btn-flat">
                 <i class="fas fa-trash-alt"></i>
             </a>
         </div>

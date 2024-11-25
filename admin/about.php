@@ -109,7 +109,7 @@
 </head>
 <body>
 
-    <button class="home-button" onclick="location.href='login'">Home</button>
+    <button class="home-button" onclick="location.href=''">Home</button>
     <h2>About Kodia NHA</h2>
     <p id="description"></p>
 

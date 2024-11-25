@@ -151,7 +151,7 @@ $conn->close();
             <i class="fas fa-exclamation-circle"></i> Report Incident
         </a>
         <a href="filter_block" class="btn">
-    <i class="fas fa-users"></i> resident
+    <i class="fas fa-users"></i> Resident
 </a>
 
         <a href="#" class="btn" id="logoutBtn">
@@ -161,8 +161,8 @@ $conn->close();
 </div>
 
 <div class="sidebar" id="sidebarMenu">
-    <a href="filter_block"><i class="fas fa-users"></i> Report Incident</a>
-    <a href="incident"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
+    <a href="filter_block"><i class="fas fa-users"></i> Resident</a>
+    <a href="incident"><i class="fas fa-exclamation-circle"></i> Report </a>
     <a href="residents"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
 

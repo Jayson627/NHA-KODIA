@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('connection.php');g
+include_once('connection.php');
 
 // Fetch announcements from the database
 $announcementQuery = "SELECT * FROM announcement ORDER BY created_at DESC";
@@ -241,4 +241,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 </body>
-</html>
+</html>F

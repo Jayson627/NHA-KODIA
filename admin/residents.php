@@ -336,18 +336,24 @@ $conn->close();
     <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
 </div>
     <div class="form-container active" id="login">
-        <form method="POST">
-            <input type="email" name="email" placeholder="email" required>
-            
-            <!-- Password input with show/hide toggle -->
-            <div class="password-wrapper">
-                <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
-                <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
-            </div>
-            
-            <button type="submit" name="login">Login</button>
-            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
-        </form>
+    <form method="POST" onsubmit="return validateLoginForm()">
+    <input type="email" name="email" placeholder="Email" required>
+    
+    <div class="password-wrapper">
+        <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
+        <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
+    </div>
+
+    <!-- Add hCaptcha here -->
+    <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
+
+    <button type="submit" name="login">Login</button>
+    <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
+    <p class="forgot-password" style="text-align: center; margin-top: 10px;">
+        <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+    </p>
+</form>
+
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
             <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
@@ -392,11 +398,17 @@ $conn->close();
             this.textContent = type === 'password' ? '👁️' : '🙈';
         });
 
-        function validateForm() {
-        const dob = document.querySelector('input[name="dob"]').value;
-        const dobDate = new Date(dob);
-        const today = new Date();
-        const age = today.getFullYear() - dobDate.getFullYear();
+        function validateLoginForm() {
+    // Check if the hCaptcha is solved
+    const captchaResponse = grecaptcha.getResponse();
+    if (captchaResponse.length === 0) {
+        alert("Please complete the hCaptcha to proceed.");
+        return false;
+    }
+
+    return true; // Continue with form submission if hCaptcha is completed
+}
+
         
         // Check if user is at least 18 years old
         if (age < 18) {

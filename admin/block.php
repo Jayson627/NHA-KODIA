@@ -1,5 +1,5 @@
 <?php
-include_once('connection.php'); 
+include_once('connection'); 
 
 // Initialize error message variable
 $error_message = "";
@@ -88,7 +88,7 @@ $total_records = $conn->query("SELECT COUNT(*) AS total FROM blocks")->fetch_ass
 
 $conn->close();
 ?>
-<a href="index.php" class="btn btn-secondary">Back</a>
+<a href="index" class="btn btn-secondary">Back</a>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,7 +128,7 @@ $conn->close();
     <?php endif; ?>
 
     <!-- Form to add a new block -->
-    <form method="POST" action="block.php" class="form-inline mb-3 justify-content-center flex-wrap">
+    <form method="POST" action="block" class="form-inline mb-3 justify-content-center flex-wrap">
         <div class="form-group mb-2">
             <label for="block_no" class="sr-only">Block No</label>
             <input type="number" class="form-control" id="block_no" name="block_no" placeholder="Enter block no" min="1" required>
@@ -168,7 +168,7 @@ $conn->close();
                             ?>
                         </td>
                         <td>
-                            <a href="edit_block.php?block_no=<?php echo urlencode($block_no); ?>" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="edit_block?block_no=<?php echo urlencode($block_no); ?>" class="btn btn-primary btn-sm">Edit</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -184,11 +184,11 @@ $conn->close();
     <!-- Pagination buttons -->
     <div class="text-center">
         <?php if ($page > 1): ?>
-            <a href="block.php?page=<?php echo $page - 1; ?>" class="btn btn-secondary mr-2">&laquo; Previous</a>
+            <a href="block?page=<?php echo $page - 1; ?>" class="btn btn-secondary mr-2">&laquo; Previous</a>
         <?php endif; ?>
         
         <?php if ($total_records > $start + $limit): ?>
-            <a href="block.php?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next &raquo;</a>
+            <a href="block?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next &raquo;</a>
         <?php endif; ?>
     </div>
 </div>

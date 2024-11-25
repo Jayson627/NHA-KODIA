@@ -1,5 +1,5 @@
 <?php
-include_once('connection'); 
+include_once('connection.php'); 
 
 // Initialize error message variable
 $error_message = "";

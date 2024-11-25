@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updated_announcement'
     if ($stmt->execute()) {
         $successMessage = "Announcement updated successfully!";
         // Redirect to avoid resubmitting the form on refresh
-        header("Location: announcement.php");
+        header("Location: announcement");
         exit;
     } else {
         $errorMessage = "Error: " . $stmt->error;
@@ -230,7 +230,7 @@ $result = $conn->query($sql);
     <!-- Announcement Form Section -->
     <section class="announcement-form">
         <h2>Create a New Announcement</h2>
-        <form action="announcement.php" method="POST">
+        <form action="announcement" method="POST">
             <textarea name="announcement" rows="4" placeholder="Write your announcement here..." required></textarea>
             <button type="submit">Post Announcement</button>
         </form>
@@ -240,7 +240,7 @@ $result = $conn->query($sql);
     <?php if (isset($announcement) && is_array($announcement)) : ?>
         <section class="announcement-form">
             <h2>Edit Announcement</h2>
-            <form action="announcement.php?edit=<?= $announcement['id'] ?>" method="POST">
+            <form action="announcement?edit=<?= $announcement['id'] ?>" method="POST">
                 <textarea name="updated_announcement" rows="4" required><?= htmlspecialchars($announcement['content']) ?></textarea>
                 <button type="submit">Update Announcement</button>
             </form>
@@ -262,7 +262,7 @@ $result = $conn->query($sql);
                     </div>
                     <!-- Edit and Delete Buttons -->
                     <div>
-                        <a href="announcement.php?edit=<?= $row['id'] ?>" class="edit-btn">Edit</a>
+                        <a href="announcement?edit=<?= $row['id'] ?>" class="edit-btn">Edit</a>
                     </div>
                 </div>
             <?php endwhile; ?>

@@ -464,13 +464,24 @@ $conn->close();
 });
 
 
-<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+    }
+});
+
+
+
     </script>
 
 </body>
 </html>
-
-
-
-
 <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
+
+
+

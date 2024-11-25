@@ -145,7 +145,7 @@
             $('#uni_modal').on('shown.bs.modal',function(){
                 $('#find-student [name="tracking_code"]').focus();
             });
-            uni_modal("Enter Tracking Number","student/find_student.php");
+            uni_modal("Enter Tracking Number","student/find_student");
         });
     });
 </script>

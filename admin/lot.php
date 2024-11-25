@@ -60,7 +60,7 @@ if (isset($_GET['delete'])) {
     $stmt->execute();
     $stmt->close();
     // Redirect to avoid resubmission
-    header("Location: lot.php");
+    header("Location: lot");
     exit();
 }
 

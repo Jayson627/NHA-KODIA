@@ -63,7 +63,7 @@ if (isset($_GET['delete_household']) && !empty($household_id)) {
                 <button class="btn btn-sm btn-danger btn-flat" type="button" id="delete_household"><i class="fa fa-trash"></i> Delete Household</button>
                 <button class="btn btn-sm btn-info bg-info btn-flat" type="button" id="update_status">Update Status</button>
                 <a href="./?page=students" class="btn btn-default border btn-sm btn-flat"><i class="fa fa-angle-left"></i> Back to List</a>
-                <a href="children.php?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flat"><i class="fa fa-plus"></i> Add Children</a>
+                <a href="children?id=<?php echo $_GET['id']; ?>" class="btn btn-sm btn-primary btn-flat"><i class="fa fa-plus"></i> Add Children</a>
                 <button class="btn btn-sm btn-success btn-flat" type="button" id="print_household"><i class="fa fa-print"></i> Print Household</button>
 
                
@@ -211,7 +211,7 @@ if (isset($_GET['delete'])) {
     $stmt->execute();
     $stmt->close();
     // Redirect to avoid resubmission
-    header("Location: children.php");
+    header("Location: children");
     exit();
 }
 
@@ -269,8 +269,8 @@ $conn->close();
                         <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
                         <td><?php echo htmlspecialchars($child['remark']); ?></td>
                         <td class="hide-print"> <!-- Add the hide-print class to actions column -->
-                            <a href="view_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
-                            <a href="edit_child.php?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="view_child?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
+                            <a href="edit_child?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -332,20 +332,20 @@ $conn->close();
 <script>
     $(function() {
         $('#update_status').click(function(){
-            uni_modal("Update Status of <b><?= isset($roll) ? $roll : "" ?></b>", "students/update_status.php?student_id=<?= isset($id) ? $id : "" ?>");
+            uni_modal("Update Status of <b><?= isset($roll) ? $roll : "" ?></b>", "students/update_status?student_id=<?= isset($id) ? $id : "" ?>");
         });
         $('#add_academic').click(function(){
-            uni_modal("Add Academic Record for <b><?= isset($roll) ? $roll.' - '.$fullname : "" ?></b>", "students/manage_academic.php?student_id=<?= isset($id) ? $id : "" ?>", 'mid-large');
+            uni_modal("Add Academic Record for <b><?= isset($roll) ? $roll.' - '.$fullname : "" ?></b>", "students/manage_academic?student_id=<?= isset($id) ? $id : "" ?>", 'mid-large');
         });
         $('.edit_academic').click(function(){
-            uni_modal("Edit Academic Record of <b><?= isset($roll) ? $roll.' - '.$fullname : "" ?></b>", "students/manage_academic.php?student_id=<?= isset($id) ? $id : "" ?>&id=" + $(this).attr('data-id'), 'mid-large');
+            uni_modal("Edit Academic Record of <b><?= isset($roll) ? $roll.' - '.$fullname : "" ?></b>", "students/manage_academic?student_id=<?= isset($id) ? $id : "" ?>&id=" + $(this).attr('data-id'), 'mid-large');
         });
         $('.delete_academic').click(function(){
             _conf("Are you sure to delete this Student's Academic Record?", "delete_academic", [$(this).attr('data-id')]);
         });
        
         $('.view_data').click(function(){
-            uni_modal("Report Details", "students/view_report.php?id=" + $(this).attr('data-id'), "mid-large");
+            uni_modal("Report Details", "students/view_report?id=" + $(this).attr('data-id'), "mid-large");
         });
         $('.table td, .table th').addClass('py-1 px-2 align-middle');
         $('.table').DataTable({
@@ -411,7 +411,7 @@ $conn->close();
     function delete_academic($id){
         start_loader();
         $.ajax({
-            url: _base_url_ + "classes/Master.php?f=delete_academic",
+            url: _base_url_ + "classes/Master?f=delete_academic",
             method: "POST",
             data: {id: $id},
             dataType: "json",

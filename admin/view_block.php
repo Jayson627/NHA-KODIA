@@ -19,7 +19,7 @@ if (!$block_no) {
 <div class="container mt-5">
     <h2>View block</h2>
     <p><strong>block No:</strong> <?php echo htmlspecialchars($block_no); ?></p>
-    <a href="block.php" class="btn btn-secondary">Back</a>
+    <a href="block" class="btn btn-secondary">Back</a>
     
 </div>
 </body>

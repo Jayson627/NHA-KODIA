@@ -72,34 +72,38 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/function" method="post">
+      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
         </div>
-        <button type="button" class="btn btn-primary w-100" onclick="submitForm()">Submit</button>
+        <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
       </form>
     </div>
-    <div class="footer-text">
-      Please check your email inbox or spam folder for the OTP link.
-    </div>
+    <div class="footer-text"></div>
   </div>
 
   <script>
-    function submitForm() {
-      Swal.fire({
-        icon: 'success',
-        title: 'OTP Sent!',
-        text: 'An OTP link has been sent to your email address. Please check your inbox.',
-        confirmButtonText: 'OK',
-        allowOutsideClick: false
-      }).then(() => {
-        // Submit the form programmatically after SweetAlert
-        document.getElementById('forgotPasswordForm').submit();
-      });
-    }
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
 
-    // Disable context menu and key combinations for added security
+      const form = this;
+
+      // Show SweetAlert confirmation
+      Swal.fire({
+        title: 'Processing...',
+        text: 'Please wait while we process your request.',
+        icon: 'info',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          // Submit the form programmatically after SweetAlert is displayed
+          form.submit();
+        }
+      });
+    });
+
+    // Prevent right-click and dev tools shortcut keys
     document.addEventListener('contextmenu', function (e) {
       e.preventDefault();
     });

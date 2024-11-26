@@ -1,40 +1,3 @@
-<?php
-session_start();
-if (isset($_SESSION["notify"])) {
-    if ($_SESSION["notify"] == "success") {
-        echo "<script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Password reset link has been sent to your email!',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-              </script>";
-    } elseif ($_SESSION["notify"] == "failed") {
-        echo "<script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong. Please try again.',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-              </script>";
-    } elseif ($_SESSION["notify"] == "invalid") {
-        echo "<script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid OTP',
-                    text: 'The OTP you entered is incorrect. Please try again.',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-              </script>";
-    }
-    unset($_SESSION["notify"]); // Clear the session after displaying the alert
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,6 +85,27 @@ if (isset($_SESSION["notify"])) {
     </div>
   </div>
 
+  <!-- Include Bootstrap 5 JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- SweetAlert Script for OTP Success and Redirect -->
+  <!-- <script>
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'OTP Sent',
+        text: 'An OTP code has been sent to your email address!',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to about.php after user clicks "OK" on SweetAlert
+          window.location.href = '../admin/funtion.php';
+        }
+      });
+    });
+  </script> -->
   <script>
 
 document.addEventListener('contextmenu', function (e) {

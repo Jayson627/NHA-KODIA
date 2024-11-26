@@ -101,21 +101,6 @@ if (isset($_GET["reset"])) {
       <div class="card-header">Reset Password</div>
       <div class="card-body">
         <?php
-        if (isset($_POST['password'])) {
-          $password = $_POST['password'];
-      
-          if (strlen($password) < 8 ||
-              !preg_match('/[A-Z]/', $password) ||
-              !preg_match('/[a-z]/', $password) ||
-              !preg_match('/\d/', $password) ||
-              !preg_match('/[@$!%*?&]/', $password)) {
-              die('Password does not meet the strength requirements.');
-          }
-      
-          // Proceed to hash the password and save it
-          $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-      }
-      
           // Check if the email is passed via the URL
           if (isset($_GET['email'])) {
             $email = $_GET['email'];
@@ -142,25 +127,17 @@ if (isset($_GET["reset"])) {
   <input type="hidden" name="otp" id="otp" value="">
 </div>
 
-<div class="form-group mb-3">
-  <label for="new_password" class="form-label">New Password:</label>
-  <div class="input-group">
-    <input 
-      type="password" 
-      class="form-control" 
-      id="password" 
-      name="password" 
-      placeholder="Enter new password" 
-      autocomplete="new-password" 
-      required>
-    <span class="input-group-text" id="togglePassword">
-      <i class="bi bi-eye-fill" id="eyeIcon"></i>
-    </span>
-  </div>
-  <!-- Password strength message -->
-  <small id="passwordHelp" class="form-text text-danger"></small>
-</div>
 
+          <!-- New Password Input with Show/Hide Eye and Autofill -->
+          <div class="form-group mb-3">
+            <label for="new_password" class="form-label">New Password:</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password" autocomplete="new-password" required>
+              <span class="input-group-text" id="togglePassword">
+                <i class="bi bi-eye-fill" id="eyeIcon"></i>
+              </span>
+            </div>
+          </div>
 
           <!-- Hidden Email Field -->
           <input type="hidden" name="email" value="<?php echo $email; ?>">
@@ -231,32 +208,6 @@ const otpBoxes = document.querySelectorAll('.otp-box');
       }
     });
   });
-  const passwordInput = document.querySelector('#password');
-const passwordHelp = document.querySelector('#passwordHelp');
-
-passwordInput.addEventListener('input', () => {
-  const password = passwordInput.value;
-
-  // Regular expression for strong password
-  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-  if (password.length < 8) {
-    passwordHelp.textContent = "Password must be at least 8 characters long.";
-  } else if (!/[A-Z]/.test(password)) {
-    passwordHelp.textContent = "Password must include at least one uppercase letter.";
-  } else if (!/[a-z]/.test(password)) {
-    passwordHelp.textContent = "Password must include at least one lowercase letter.";
-  } else if (!/\d/.test(password)) {
-    passwordHelp.textContent = "Password must include at least one number.";
-  } else if (!/[@$!%*?&]/.test(password)) {
-    passwordHelp.textContent = "Password must include at least one special character.";
-  } else if (!strongPasswordRegex.test(password)) {
-    passwordHelp.textContent = "Password does not meet strength requirements.";
-  } else {
-    passwordHelp.textContent = "Strong password.";
-    passwordHelp.style.color = "green";
-  }
-});
 
 
 

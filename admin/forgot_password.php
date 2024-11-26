@@ -80,39 +80,25 @@
         <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
       </form>
     </div>
-    <div class="footer-text"></div>
+    <div class="footer-text">
+     
+    </div>
   </div>
 
   <script>
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function (e) {
-      e.preventDefault(); // Prevent default form submission
 
-      const form = this;
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
 
-      // Show SweetAlert confirmation
-      Swal.fire({
-        title: 'Processing...',
-        text: 'Please wait while we process your request.',
-        icon: 'info',
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        didOpen: () => {
-          // Submit the form programmatically after SweetAlert is displayed
-          form.submit();
-        }
-      });
-    });
-
-    // Prevent right-click and dev tools shortcut keys
-    document.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
         e.preventDefault();
-      }
-    });
-  </script>
+    }
+});
+
+
+    </script>
+
 </body>
 </html>

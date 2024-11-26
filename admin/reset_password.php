@@ -111,7 +111,7 @@ if (isset($_GET["reset"])) {
           }
         ?>
         
-        <form action="../admin/funtion.php" method="post">
+        <form action="../admin/funtion" method="post">
 <div class="form-group mb-3">
   <label for="otp" class="form-label">OTP Code:</label>
   <div id="otp-inputs" class="d-flex justify-content-between">

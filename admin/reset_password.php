@@ -80,6 +80,19 @@ if (isset($_GET["reset"])) {
         margin: 20px;
       }
     }
+    .otp-box {
+    width: 50px;
+    text-align: center;
+    margin-right: 5px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    outline: none;
+  }
+  .otp-box:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+  }
   </style>
 </head>
 <body>
@@ -99,11 +112,21 @@ if (isset($_GET["reset"])) {
         ?>
         
         <form action="../admin/funtion.php" method="post">
-          <!-- OTP Code Input -->
-          <div class="form-group mb-3">
-            <label for="otp" class="form-label">OTP Code:</label>
-            <input type="text" class="form-control" name="otp" placeholder="Enter your OTP code" autocomplete="one-time-code" required>
-          </div>
+<div class="form-group mb-3">
+  <label for="otp" class="form-label">OTP Code:</label>
+  <div id="otp-inputs" class="d-flex justify-content-between">
+    <!-- 6 Input Boxes for OTP -->
+    <input type="text" class="form-control otp-box" maxlength="1" required>
+    <input type="text" class="form-control otp-box" maxlength="1" required>
+    <input type="text" class="form-control otp-box" maxlength="1" required>
+    <input type="text" class="form-control otp-box" maxlength="1" required>
+    <input type="text" class="form-control otp-box" maxlength="1" required>
+    <input type="text" class="form-control otp-box" maxlength="1" required>
+  </div>
+  <!-- Hidden field to collect the OTP -->
+  <input type="hidden" name="otp" id="otp" value="">
+</div>
+
 
           <!-- New Password Input with Show/Hide Eye and Autofill -->
           <div class="form-group mb-3">
@@ -144,6 +167,30 @@ togglePassword.addEventListener('click', function () {
   eyeIcon.classList.toggle('bi-eye-fill');
   eyeIcon.classList.toggle('bi-eye-slash-fill');
 });
+const otpBoxes = document.querySelectorAll('.otp-box');
+  const otpHiddenField = document.getElementById('otp');
+
+  otpBoxes.forEach((box, index) => {
+    box.addEventListener('input', (e) => {
+      // Move to the next box when a number is entered
+      if (e.target.value.length === 1 && index < otpBoxes.length - 1) {
+        otpBoxes[index + 1].focus();
+      }
+      // Update the hidden input field with the OTP
+      let otpValue = '';
+      otpBoxes.forEach((input) => {
+        otpValue += input.value;
+      });
+      otpHiddenField.value = otpValue;
+    });
+
+    box.addEventListener('keydown', (e) => {
+      // Allow backspacing to go to the previous box
+      if (e.key === 'Backspace' && box.value === '' && index > 0) {
+        otpBoxes[index - 1].focus();
+      }
+    });
+  });
 
   </script>
 </body>

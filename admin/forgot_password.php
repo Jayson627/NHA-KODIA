@@ -72,7 +72,7 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/funtion" method="post" onsubmit="return submitForm(event)">
+      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
@@ -81,60 +81,26 @@
       </form>
     </div>
     <div class="footer-text">
+     
     </div>
   </div>
 
-  <!-- Include Bootstrap 5 JS Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
   <script>
-    // Preventing right-click and F12 for developer tools
-    document.addEventListener('contextmenu', function (e) {
+
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
         e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-            e.preventDefault();
-        }
-    });
-
-    // Handle form submission using AJAX
-    function submitForm(event) {
-      event.preventDefault(); // Prevent the default form submission
-
-      var form = document.getElementById('forgotPasswordForm');
-      var formData = new FormData(form);
-
-      // Send the form data using AJAX
-      $.ajax({
-        url: form.action,  // the URL where the form will be submitted
-        method: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-          // Assuming the response indicates successful password reset email
-          Swal.fire({
-            title: 'Success!',
-            text: 'Password reset instructions have been sent to your email.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-          });
-        },
-        error: function() {
-          Swal.fire({
-            title: 'Error!',
-            text: 'There was an issue sending the password reset instructions. Please try again.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          });
-        }
-      });
     }
-  </script>
+});
+
+
+    </script>
 
 </body>
 </html>

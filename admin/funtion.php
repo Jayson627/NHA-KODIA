@@ -9,46 +9,41 @@ if (isset($_POST["btn-forgotpass"])) {
     $email = $_POST["email"];
     $reset_code = random_int(100000, 999999);
     
+    // Update the reset code in the database for the user
     $sql = "UPDATE `users` SET `code`='$reset_code' WHERE email='$email'";
- 
     $query = mysqli_query($conn, $sql);
- 
- 
+
     if ($query) {
+        // Success: OTP code is sent to email
+        $_SESSION["notify"] = "success";
         
-        //Set Params 
+        // Mail setup
         $mail->SetFrom("alcantarajayson118@gmail.com");
         $mail->AddAddress("$email");
         $mail->Subject = "Reset Password OTP";
         $mail->Body = "Use this OTP Code to reset your password: ".$reset_code."<br/>".
-        "Click the link to reset password: http://nha-kodia.com/admin/reset_password.php?reset&email=$email"  //pulihan $reset_coede
-        ;
-
-
+        "Click the link to reset password: http://nha-kodia.com/admin/reset_password.php?reset&email=$email"; // Ensure the reset_code is included in the link
+        
         if(!$mail->Send()) {
             echo "Mailer Error: " . $mail->ErrorInfo;
         } else {
             echo "Message has been sent";
         }
-
-        //OTP has been sent please check your email
-        $_SESSION["notify"] = "success";
- 
+        
+        // Redirect with success notification
         header("location: ../admin/forgot_password.php");
- 
-    }else {
- 
+
+    } else {
+        // Failure: There was an issue with the database query
         $_SESSION["notify"] = "failed";
         
- 
+        // Redirect with failure notification
         header("location: ../admin/forgot_password.php");
- 
- 
     }
- 
- }
- // new password 
- if (isset($_POST["btn-new-password"])) {
+}
+
+// New password process
+if (isset($_POST["btn-new-password"])) {
 
     $email = $_POST["email"];
     $password = $_POST["password"];
@@ -68,6 +63,7 @@ if (isset($_POST["btn-forgotpass"])) {
             $reset = random_int(100000, 999999);
             $password = md5($password);
 
+            // Update the password and reset the OTP code
             $sql = "UPDATE `users` SET `password`='$password', `code`=$reset WHERE email='$email'";
             $query = mysqli_query($conn, $sql);
 

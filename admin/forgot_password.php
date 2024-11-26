@@ -1,4 +1,41 @@
-<!DOCTYPE html>
+<?php
+session_start();
+if (isset($_SESSION["notify"])) {
+    if ($_SESSION["notify"] == "success") {
+        echo "<script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Password reset link has been sent to your email!',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+              </script>";
+    } elseif ($_SESSION["notify"] == "failed") {
+        echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong. Please try again.',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+              </script>";
+    } elseif ($_SESSION["notify"] == "invalid") {
+        echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid OTP',
+                    text: 'The OTP you entered is incorrect. Please try again.',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+              </script>";
+    }
+    unset($_SESSION["notify"]); // Clear the session after displaying the alert
+}
+?>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">

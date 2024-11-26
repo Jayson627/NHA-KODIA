@@ -167,15 +167,25 @@ togglePassword.addEventListener('click', function () {
   eyeIcon.classList.toggle('bi-eye-fill');
   eyeIcon.classList.toggle('bi-eye-slash-fill');
 });
+
 const otpBoxes = document.querySelectorAll('.otp-box');
   const otpHiddenField = document.getElementById('otp');
 
   otpBoxes.forEach((box, index) => {
+    // Ensure only numbers can be entered
     box.addEventListener('input', (e) => {
-      // Move to the next box when a number is entered
-      if (e.target.value.length === 1 && index < otpBoxes.length - 1) {
+      const value = e.target.value;
+      if (!/^\d$/.test(value)) {
+        // Clear the input if it's not a valid number
+        box.value = '';
+        return;
+      }
+
+      // Move to the next box when a valid number is entered
+      if (value.length === 1 && index < otpBoxes.length - 1) {
         otpBoxes[index + 1].focus();
       }
+
       // Update the hidden input field with the OTP
       let otpValue = '';
       otpBoxes.forEach((input) => {
@@ -184,13 +194,22 @@ const otpBoxes = document.querySelectorAll('.otp-box');
       otpHiddenField.value = otpValue;
     });
 
+    // Allow backspacing to go to the previous box
     box.addEventListener('keydown', (e) => {
-      // Allow backspacing to go to the previous box
       if (e.key === 'Backspace' && box.value === '' && index > 0) {
         otpBoxes[index - 1].focus();
       }
     });
+
+    // Prevent non-numeric input during keydown
+    box.addEventListener('keypress', (e) => {
+      if (!/^\d$/.test(e.key)) {
+        e.preventDefault();
+      }
+    });
   });
+
+
 
   </script>
 </body>

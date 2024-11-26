@@ -127,17 +127,18 @@ if (isset($_GET["reset"])) {
   <input type="hidden" name="otp" id="otp" value="">
 </div>
 
+<!-- New Password Input with Show/Hide Eye and Autofill -->
+<div class="form-group mb-3">
+  <label for="new_password" class="form-label">New Password:</label>
+  <div class="input-group">
+    <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password" autocomplete="new-password" required 
+    pattern="^(?=.*[A-Z]).{8,}$" title="Password must be at least 8 characters long and contain at least one uppercase letter.">
+    <span class="input-group-text" id="togglePassword">
+      <i class="bi bi-eye-fill" id="eyeIcon"></i>
+    </span>
+  </div>
+</div>
 
-          <!-- New Password Input with Show/Hide Eye and Autofill -->
-          <div class="form-group mb-3">
-            <label for="new_password" class="form-label">New Password:</label>
-            <div class="input-group">
-              <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password" autocomplete="new-password" required>
-              <span class="input-group-text" id="togglePassword">
-                <i class="bi bi-eye-fill" id="eyeIcon"></i>
-              </span>
-            </div>
-          </div>
 
           <!-- Hidden Email Field -->
           <input type="hidden" name="email" value="<?php echo $email; ?>">
@@ -208,6 +209,20 @@ const otpBoxes = document.querySelectorAll('.otp-box');
       }
     });
   });
+
+  const passwordInput = document.getElementById('password');
+const form = document.querySelector('form');
+
+form.addEventListener('submit', function(event) {
+  const password = passwordInput.value;
+  const passwordRegex = /^(?=.*[A-Z]).{8,}$/;
+
+  if (!passwordRegex.test(password)) {
+    event.preventDefault(); // Prevent form submission
+    alert("Password must be at least 8 characters long and contain at least one uppercase letter.");
+  }
+});
+
 
 
 

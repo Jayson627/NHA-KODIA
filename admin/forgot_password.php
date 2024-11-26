@@ -72,7 +72,7 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
+      <form id="forgotPasswordForm" action="../admin/funtion" method="post" onsubmit="return showAlert()">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
@@ -89,19 +89,29 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+    // Preventing right-click and F12 for developer tools
+    document.addEventListener('contextmenu', function (e) {
         e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+
+    // Show SweetAlert2 message after form submission
+    function showAlert() {
+      Swal.fire({
+        title: 'Success!',
+        text: 'Password reset instructions have been sent to your email.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+      // Prevent the form from actually submitting to keep the alert on screen
+      return false;
     }
-});
-
-
-    </script>
+  </script>
 
 </body>
 </html>

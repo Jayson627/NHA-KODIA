@@ -35,7 +35,7 @@ if (isset($_SESSION["notify"])) {
     unset($_SESSION["notify"]); // Clear the session after displaying the alert
 }
 ?>
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">

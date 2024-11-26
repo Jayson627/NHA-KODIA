@@ -72,7 +72,7 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/function" method="post" onsubmit="handleFormSubmission(event)">
+      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
@@ -81,34 +81,36 @@
       </form>
     </div>
     <div class="footer-text">
-      Please check your email inbox or spam folder for the OTP link.
+     
     </div>
   </div>
 
   <script>
-    function handleFormSubmission(event) {
-      // Show SweetAlert confirmation
-      Swal.fire({
-        icon: 'success',
-        title: 'OTP Sent!',
-        text: 'An OTP link has been sent to your email address. Please check your inbox.',
-        confirmButtonText: 'OK',
-        allowOutsideClick: false
-      });
-      
-      // Allow form to proceed
-      return true; 
-    }
-
-    // Disable context menu and key combinations for added security
     document.addEventListener('contextmenu', function (e) {
       e.preventDefault();
     });
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault();
+          e.preventDefault();
       }
+    });
+
+    // Handle form submission and show SweetAlert on success
+    document.getElementById("forgotPasswordForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent form submission for demo purposes
+
+      // Trigger SweetAlert success message
+      Swal.fire({
+        title: 'Success!',
+        text: 'A password reset link has been sent to your email address.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+
+      // You can submit the form to the server here using AJAX if you want to handle it asynchronously
+      // For example:
+      // this.submit();
     });
   </script>
 </body>

@@ -424,7 +424,7 @@ $conn->close();
         exit();
     }
 
-    $secretKey = "YOUR_SECRET_KEY";
+    $secretKey = "f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88";
     $verifyURL = "https://hcaptcha.com/siteverify";
     $data = [
         'secret' => $secretKey,

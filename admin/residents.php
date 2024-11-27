@@ -7,40 +7,8 @@ include_once('connection.php');
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
 
-// Google reCAPTCHA secret key
-$secretKey = 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88'; // Replace with your actual secret key
-
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Verify reCAPTCHA
-    $recaptchaResponse = $_POST['g-recaptcha-response'];
-    $remoteIp = $_SERVER['REMOTE_ADDR'];
-    
-    $recaptchaUrl = 'https://www.google.com/recaptcha/api/siteverify';
-    $recaptchaData = array(
-        'secret' => $secretKey,
-        'response' => $recaptchaResponse,
-        'remoteip' => $remoteIp
-    );
-    
-    $options = array(
-        'http' => array(
-            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-            'method'  => 'POST',
-            'content' => http_build_query($recaptchaData)
-        )
-    );
-    
-    $context  = stream_context_create($options);
-    $response = file_get_contents($recaptchaUrl, false, $context);
-    $result = json_decode($response);
-    
-    if (!$result->success) {
-        $_SESSION['error'] = "reCAPTCHA verification failed. Please try again.";
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
-    }
-
     if (isset($_POST['create_account'])) {
         // Account creation code (no changes here)
         $fullname = $_POST['fullname'];
@@ -53,28 +21,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $role = $_POST['role']; // Use the selected role from form
     
        // Insert new user with default 'pending' status
-        $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')");
-        $stmt->bind_param("sssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+$stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+$stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+
     
         // Execute and check for success
         if ($stmt->execute()) {
             $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
         } else {
-            $_SESSION['error'] = "Error creating account. Please try again.";
+            $_SESSION['message'] = "Error creating account. Please try again.";
         }
         $stmt->close();
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
-    } 
-    
-    // Handle login request
+    } // Handle login request
     if (isset($_POST['login'])) {
         // Check if the user is locked out
         if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
             // Check if lockout time has passed
             if (isset($_SESSION['last_attempt_time']) && (time() - $_SESSION['last_attempt_time']) < LOCKOUT_TIME) {
                 $remaining_time = LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']);
-                $_SESSION['error'] = "Too many login attempts. Please try again in " . $remaining_time . " seconds.";
+                $_SESSION['message'] = "Too many login attempts. Please try again in " . $remaining_time . " seconds.";
                 header("Location: " . $_SERVER['PHP_SELF']); 
                 exit();
             } else {
@@ -99,11 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->fetch();
     
             // Check if the account status is 'approved'
-            if ($status !== 'approved') {
-                $_SESSION['error'] = "Your account is not approved yet. Please wait for approval.";
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
-            }
+if ($status !== 'approved') {
+    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
     
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
@@ -131,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Store the last attempt time
                 $_SESSION['last_attempt_time'] = time();
     
-                $_SESSION['error'] = "Invalid email or password!";
+                $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
             // Increment the login attempts
@@ -143,16 +111,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
     
-            $_SESSION['error'] = "Invalid email or password!";
+            $_SESSION['message'] = "Invalid email or password!";
         }
     
         $stmt->close();
     }
+    
 }
 
 $conn->close();
 ?>
-
 
 
 
@@ -445,6 +413,18 @@ $conn->close();
         }
     };
 
+    function validateLoginForm() {
+            const hCaptchaResponse = document.querySelector('.h-captcha textarea').value;
+            if (!hCaptchaResponse) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Please complete the captcha!'
+                });
+                return false;
+            }
+            return true;
+        }
         // Check if terms and conditions checkbox is checked
         const termsCheckbox = document.getElementById('terms');
         if (!termsCheckbox.checked) {

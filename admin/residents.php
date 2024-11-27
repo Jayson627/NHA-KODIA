@@ -1,15 +1,48 @@
 <?php
 session_start();
+
 include_once('connection.php');
 
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
 
+// Google reCAPTCHA secret key
+$secretKey = 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88';
+
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Verify reCAPTCHA
+    $recaptchaResponse = $_POST['g-recaptcha-response'];
+    $remoteIp = $_SERVER['REMOTE_ADDR'];
+    
+    $recaptchaUrl = 'https://www.google.com/recaptcha/api/siteverify';
+    $recaptchaData = array(
+        'secret' => $secretKey,
+        'response' => $recaptchaResponse,
+        'remoteip' => $remoteIp
+    );
+    
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($recaptchaData)
+        )
+    );
+    
+    $context  = stream_context_create($options);
+    $response = file_get_contents($recaptchaUrl, false, $context);
+    $result = json_decode($response);
+    
+    if (!$result->success) {
+        $_SESSION['message'] = "reCAPTCHA verification failed. Please try again.";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
+
     if (isset($_POST['create_account'])) {
-        // Account creation code
+        // Account creation code (no changes here)
         $fullname = $_POST['fullname'];
         $dob = $_POST['dob'];
         $lot_no = $_POST['lot_no'];
@@ -19,13 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing the password
         $role = $_POST['role']; // Use the selected role from form
     
-        // Insert new user with default 'pending' status
+       // Insert new user with default 'pending' status
         $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
         $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
     
         // Execute and check for success
         if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully! Wait for approval and check your email.";
+            $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
         } else {
             $_SESSION['message'] = "Error creating account. Please try again.";
         }
@@ -36,18 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Handle login request
     if (isset($_POST['login'])) {
-        // Check hCaptcha
-        $hcaptcha_response = $_POST['h-captcha-response'];
-        $secret_key = 'YOUR_SECRET_KEY';
-        $verify_response = file_get_contents("https://hcaptcha.com/siteverify?secret={$secret_key}&response={$hcaptcha_response}");
-        $response_data = json_decode($verify_response);
-        
-        if (!$response_data->success) {
-            $_SESSION['message'] = "hCaptcha verification failed. Please try again.";
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
-        }
-        
         // Check if the user is locked out
         if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
             // Check if lockout time has passed

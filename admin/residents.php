@@ -413,18 +413,6 @@ $conn->close();
         }
     };
 
-    function validateLoginForm() {
-            const hCaptchaResponse = document.querySelector('.h-captcha textarea').value;
-            if (!hCaptchaResponse) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Please complete the captcha!'
-                });
-                return false;
-            }
-            return true;
-        }
         // Check if terms and conditions checkbox is checked
         const termsCheckbox = document.getElementById('terms');
         if (!termsCheckbox.checked) {

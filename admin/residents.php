@@ -233,6 +233,43 @@ $conn->close();
         cursor: pointer;
         font-size: 20px;
     }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 4px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
 
     /* Responsive Design */
     @media (max-width: 768px) {
@@ -313,7 +350,7 @@ $conn->close();
         <input type="text" name="house_no" placeholder="House No" required pattern="^\d{1,4}$" title="House number should contain 1-4 digits">
         <input type="email" name="email" placeholder="Email" required>
         <input type="text" name="username" placeholder="Username" required pattern="^[A-Za-z0-9_]{5,20}$" title="Username should be alphanumeric, 5-20 characters, and may include underscores">
-        
+        <p class="toggle-button" onclick="showTerms()">Terms and Conditions</p>
         <!-- Password input with show/hide toggle -->
         <div class="password-wrapper">
             <input type="password" id="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
@@ -328,7 +365,7 @@ $conn->close();
         <!-- Terms and Conditions Checkbox -->
         <div style="margin: 10px 0;">
             <input type="checkbox" id="terms" name="terms" required>
-            <label for="terms">I agree to the <a href="terms" target="_blank">Terms and Conditions</a></label>
+            <label for="terms">I agree to the <a href="" target="_blank">Terms and Conditions</a></label>
         </div>
 
         <button type="submit" name="create_account">Create Account</button>
@@ -352,6 +389,14 @@ $conn->close();
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
             <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
+    </div>
+    <!-- Modal for Terms and Conditions -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTerms()">&times;</span>
+            <h2>Terms and Conditions</h2>
+            <p>Here are the terms and conditions...</p>
+        </div>
     </div>
     <script>
         function toggleForm() {
@@ -413,15 +458,23 @@ $conn->close();
         }
     };
 
-        // Check if terms and conditions checkbox is checked
-        const termsCheckbox = document.getElementById('terms');
-        if (!termsCheckbox.checked) {
-            alert("You must agree to the Terms and Conditions to create an account.");
-            return false;
-        }
-
-        return true;
+    function showTerms() {
+        var modal = document.getElementById('termsModal');
+        modal.style.display = "block";
     }
+
+    function closeTerms() {
+        var modal = document.getElementById('termsModal');
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        var modal = document.getElementById('termsModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
 
     document.addEventListener('DOMContentLoaded', function() {
     <?php if (isset($_SESSION['message'])): ?>

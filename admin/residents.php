@@ -370,7 +370,9 @@ $conn->close();
     <div class="modal-content">
         <span class="close" onclick="closeTerms()">&times;</span>
         <h2>Terms and Conditions</h2>
-        <p>Here are the terms and conditions...</p>
+        <p>Welcome to the Kodi NHA Information System. This system is intended for administrators managing the Kodi NHA community information, including household details, block, and lot data.</p>
+    <p>By accessing this system, you agree to handle all data with confidentiality and to use the information solely for administrative purposes. Unauthorized access, data sharing, or modification without permission may result in disciplinary action.</p>
+    <p>Ensure that all actions taken comply with the privacy policies and data protection regulations governing community information management. The system logs all activities for security and auditing purposes.</p>
     </div>
 </div>
 

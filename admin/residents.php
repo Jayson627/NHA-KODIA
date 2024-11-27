@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = $_POST['username'];
         $password = password_hash($_POST['password'], PASSWORD_ARGON2I); // Hashing the password with argon2i
         $role = $_POST['role']; // Use the selected role from form
-        $id = uniqid(); // Generate a random unique ID
+        $id = uniqid(); // Generate a random 
     
        // Insert new user with default 'pending' status
 $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");

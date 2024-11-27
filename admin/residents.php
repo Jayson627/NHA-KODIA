@@ -475,6 +475,19 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+if (isset($_POST['g-recaptcha-response'])) {
+    $captcha = $_POST['g-recaptcha-response'];
+    $secretKey = 'your-secret-key'; // Replace with your secret key
+    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$captcha");
+    $responseKeys = json_decode($response, true);
+    if (!$responseKeys['success']) {
+        $_SESSION['message'] = "CAPTCHA validation failed. Please try again.";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
+}
+
+
 
 
     </script>

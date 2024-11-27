@@ -221,6 +221,41 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebarMenu.classList.toggle('show');
     });
 
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $hcaptchaResponse = $_POST['h-captcha-response'];
+
+    if (empty($hcaptchaResponse)) {
+        echo "<script>alert('Please complete the hCaptcha');</script>";
+        exit();
+    }
+
+    $secretKey = "f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88";
+    $verifyURL = "https://hcaptcha.com/siteverify";
+    $data = [
+        'secret' => $secretKey,
+        'response' => $hcaptchaResponse
+    ];
+
+    // Use cURL to validate the hCaptcha response
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $verifyURL);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $responseData = json_decode($response, true);
+
+    if (!$responseData['success']) {
+        echo "<script>alert('hCaptcha verification failed. Please try again.');</script>";
+        exit();
+    }
+
+    // Continue with your login logic here...
+}
+
+
     // Display Success Message
     <?php if (isset($_SESSION['message'])): ?>
         Swal.fire({

@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 include_once('connection.php');
 
 // Define max login attempts and lockout time
@@ -10,7 +9,7 @@ define('LOCKOUT_TIME', 60); // 60 seconds
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['create_account'])) {
-        // Account creation code (no changes here)
+        // Account creation code
         $fullname = $_POST['fullname'];
         $dob = $_POST['dob'];
         $lot_no = $_POST['lot_no'];
@@ -20,22 +19,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing the password
         $role = $_POST['role']; // Use the selected role from form
     
-       // Insert new user with default 'pending' status
-$stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-$stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
-
+        // Insert new user with default 'pending' status
+        $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
     
         // Execute and check for success
         if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
+            $_SESSION['message'] = "Account created successfully! Wait for approval and check your email.";
         } else {
             $_SESSION['message'] = "Error creating account. Please try again.";
         }
         $stmt->close();
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
-    } // Handle login request
+    } 
+    
+    // Handle login request
     if (isset($_POST['login'])) {
+        // Check hCaptcha
+        $hcaptcha_response = $_POST['h-captcha-response'];
+        $secret_key = 'YOUR_SECRET_KEY';
+        $verify_response = file_get_contents("https://hcaptcha.com/siteverify?secret={$secret_key}&response={$hcaptcha_response}");
+        $response_data = json_decode($verify_response);
+        
+        if (!$response_data->success) {
+            $_SESSION['message'] = "hCaptcha verification failed. Please try again.";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+        
         // Check if the user is locked out
         if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
             // Check if lockout time has passed
@@ -66,12 +78,11 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
             $stmt->fetch();
     
             // Check if the account status is 'approved'
-if ($status !== 'approved') {
-    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
-
+            if ($status !== 'approved') {
+                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
     
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
@@ -116,7 +127,6 @@ if ($status !== 'approved') {
     
         $stmt->close();
     }
-    
 }
 
 $conn->close();

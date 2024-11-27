@@ -416,6 +416,41 @@ $conn->close();
         }
     };
 
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $hcaptchaResponse = $_POST['h-captcha-response'];
+
+    if (empty($hcaptchaResponse)) {
+        echo "<script>alert('Please complete the hCaptcha');</script>";
+        exit();
+    }
+
+    $secretKey = "YOUR_SECRET_KEY";
+    $verifyURL = "https://hcaptcha.com/siteverify";
+    $data = [
+        'secret' => $secretKey,
+        'response' => $hcaptchaResponse
+    ];
+
+    // Use cURL to validate the hCaptcha response
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $verifyURL);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $responseData = json_decode($response, true);
+
+    if (!$responseData['success']) {
+        echo "<script>alert('hCaptcha verification failed. Please try again.');</script>";
+        exit();
+    }
+
+    // Continue with your login logic here...
+}
+
+
         // Check if terms and conditions checkbox is checked
         const termsCheckbox = document.getElementById('terms');
         if (!termsCheckbox.checked) {

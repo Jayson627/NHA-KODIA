@@ -34,14 +34,14 @@ if (isset($_POST["btn-forgotpass"])) {
         //OTP has been sent please check your email
         $_SESSION["notify"] = "success";
  
-        header("location: ../admin/forgot_password.php");
+        header("location: ../admin/forgot_password");
  
     }else {
  
         $_SESSION["notify"] = "failed";
         
  
-        header("location: ../admin/forgot_password.php");
+        header("location: ../admin/forgot_password");
  
  
     }
@@ -72,16 +72,16 @@ if (isset($_POST["btn-forgotpass"])) {
             $query = mysqli_query($conn, $sql);
 
             $_SESSION["notify"] = "success";
-            header("location: ../admin/forgot_password.php");
+            header("location: ../admin/forgot_password");
 
         } else {
             $_SESSION["notify"] = "invalid";
-            header("location: ../admin/forgot_password.php");
+            header("location: ../admin/forgot_password");
         }
 
     } else {
         $_SESSION["notify"] = "invalid";
-        header("location: ../admin/forgot_password.php");
+        header("location: ../admin/forgot_password");
     }
 }
 ?>

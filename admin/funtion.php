@@ -72,7 +72,7 @@ if (isset($_POST["btn-forgotpass"])) {
             $query = mysqli_query($conn, $sql);
 
             $_SESSION["notify"] = "success";
-            header("location: ../admin/forgot_password.");
+            header("location: ../admin/forgot_password");
 
         } else {
             $_SESSION["notify"] = "invalid";

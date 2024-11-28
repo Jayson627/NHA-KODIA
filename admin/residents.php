@@ -270,6 +270,15 @@ $conn->close();
         text-decoration: none;
         cursor: pointer;
     }
+    .text-button {
+        background: none;
+        border: none;
+        color: #007BFF;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 0;
+    }
 
     /* Responsive Design */
     @media (max-width: 768px) {
@@ -363,7 +372,7 @@ $conn->close();
         </select>
         <div>
                 <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">I agree to the <span id="terms-conditions-link">Terms and Conditions</span></label>
+                <label for="terms">I agree to the <button type="button" id="terms-conditions-link" class="text-button">Terms and Conditions</button></label>
             </div>
 
 

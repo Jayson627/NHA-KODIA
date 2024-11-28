@@ -7,24 +7,40 @@ include_once('connection.php');
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
 
+// Secure session settings
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.use_only_cookies', 1);
+
+function generateToken() {
+    return bin2hex(random_bytes(32));
+}
+
+if (empty($_SESSION['token'])) {
+    $_SESSION['token'] = generateToken();
+}
+
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!hash_equals($_SESSION['token'], $_POST['token'])) {
+        die("CSRF token validation failed");
+    }
+    
     if (isset($_POST['create_account'])) {
         // Account creation code (no changes here)
-        $fullname = $_POST['fullname'];
+        $fullname = htmlspecialchars($_POST['fullname']);
         $dob = $_POST['dob'];
-        $lot_no = $_POST['lot_no'];
-        $house_no = $_POST['house_no'];
-        $email = $_POST['email'];
-        $username = $_POST['username'];
+        $lot_no = htmlspecialchars($_POST['lot_no']);
+        $house_no = htmlspecialchars($_POST['house_no']);
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+        $username = htmlspecialchars($_POST['username']);
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing the password
         $role = $_POST['role']; // Use the selected role from form
-    
-       // Insert new user with default 'pending' status
-$stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-$stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
 
-    
+        // Insert new user with default 'pending' status
+        $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+
         // Execute and check for success
         if ($stmt->execute()) {
             $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
@@ -34,7 +50,9 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
         $stmt->close();
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
-    } // Handle login request
+    }
+
+    // Handle login request
     if (isset($_POST['login'])) {
         // Check if the user is locked out
         if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
@@ -42,81 +60,79 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
             if (isset($_SESSION['last_attempt_time']) && (time() - $_SESSION['last_attempt_time']) < LOCKOUT_TIME) {
                 $remaining_time = LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']);
                 $_SESSION['message'] = "Too many login attempts. Please try again in " . $remaining_time . " seconds.";
-                header("Location: " . $_SERVER['PHP_SELF']); 
+                header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             } else {
                 // Reset the login attempts after lockout time has passed
                 $_SESSION['login_attempts'] = 0;
             }
         }
-    
+
         // Collect the email and password
-        $email = $_POST['email'];
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
         $password = $_POST['password'];
-        
+
         // Prepare and execute the statement to get the user, role, and status by email
-        $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
+        $stmt = $conn->prepare("SELECT id, password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-        
+
         // Check if user exists
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($hashedPassword, $role, $status);
+            $stmt->bind_result($userId, $hashedPassword, $role, $status);
             $stmt->fetch();
-    
-            // Check if the account status is 'approved'
-if ($status !== 'approved') {
-    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
 
-    
+            // Check if the account status is 'approved'
+            if ($status !== 'approved') {
+                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
+
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
                 // Reset login attempts on successful login
                 $_SESSION['login_attempts'] = 0;
-    
-                // Convert role to lowercase to avoid case sensitivity issues
-                $role = strtolower($role);
-    
+
+                // Regenerate session ID
+                session_regenerate_id(true);
+
+                // Store user data in session
+                $_SESSION['user_id'] = $userId;
+                $_SESSION['role'] = strtolower($role);
+
                 // Check role and redirect accordingly
-                if ($role === 'president') {  
-                    header("Location: president"); 
+                if ($role === 'president') {
+                    header("Location: president");
                     exit();
-                } else if ($role === 'residents') { 
+                } else if ($role === 'residents') {
                     header("Location: people_dashboard");
                     exit();
                 }
             } else {
                 // Increment the login attempts
-                if (!isset($_SESSION['login_attempts'])) {
-                    $_SESSION['login_attempts'] = 0;
-                }
+                $_SESSION['login_attempts'] = $_SESSION['login_attempts'] ?? 0;
                 $_SESSION['login_attempts']++;
-    
+
                 // Store the last attempt time
                 $_SESSION['last_attempt_time'] = time();
-    
+
                 $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
             // Increment the login attempts
-            if (!isset($_SESSION['login_attempts'])) {
-                $_SESSION['login_attempts'] = 0;
-            }
+            $_SESSION['login_attempts'] = $_SESSION['login_attempts'] ?? 0;
             $_SESSION['login_attempts']++;
-    
+
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
-    
+
             $_SESSION['message'] = "Invalid email or password!";
         }
-    
+
         $stmt->close();
     }
-    
 }
 
 $conn->close();
@@ -375,7 +391,8 @@ $conn->close();
                 <input type="checkbox" id="terms" name="terms" required>
                 <label for="terms">I agree to the <span id="terms-conditions-link" class="text-button">Terms and Conditions</span></label>
             </div>
-
+            <input type="hidden" name="create_account" value="1">
+            <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
 
         <button type="submit" name="create_account">Create Account</button>
     </form>
@@ -390,7 +407,8 @@ $conn->close();
                 <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
-            
+            <input type="hidden" name="login" value="1">
+            <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
             <button type="submit" name="login">Login</button>
             <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>

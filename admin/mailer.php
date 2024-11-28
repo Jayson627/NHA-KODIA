@@ -1,24 +1,26 @@
+
 <?php
-// DO NOT TOUCH THIS SECTION ~ 
-//These must be at the top of your script, not inside a function
+// Use PHPMailer's Autoloader
 require("PHPMailer/src/PHPMailer.php");
 require("PHPMailer/src/SMTP.php");
 require("PHPMailer/src/Exception.php");
 
 $mail = new PHPMailer\PHPMailer\PHPMailer();
-$mail->IsSMTP(); 
+$mail->IsSMTP();
 
-$mail->CharSet="UTF-8";
+// Load environment variables
+$mail->CharSet = "UTF-8";
 $mail->Host = "smtp.gmail.com";
-$mail->SMTPDebug = 1; 
-$mail->Port = 465 ; //465 or 587
-
-$mail->SMTPSecure = 'ssl';  
-$mail->SMTPAuth = true; 
+$mail->Port = 465; // Use 465 for SSL
+$mail->SMTPSecure = 'ssl';
+$mail->SMTPAuth = true;
 $mail->IsHTML(true);
 
-$mail->Username = "alcantarajayson118@gmail.com";
-$mail->Password = "xbdldpzpvsdhicxd";
+// Fetch credentials from environment variables
+$mail->Username = getenv('alcantarajayson118@gmail.com'); // Set this in your server's environment variables
+$mail->Password = getenv('xbdldpzpvsdhicxd'); // Set this in your server's environment variables
 
+// Disable debug in production
+$mail->SMTPDebug = 0;
 
 ?>

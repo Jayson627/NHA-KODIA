@@ -19,6 +19,8 @@ if (isset($_GET["reset"])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Include Bootstrap Icons CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Include SweetAlert2 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.21/dist/sweetalert2.min.css" rel="stylesheet">
   <style>
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -208,7 +210,16 @@ const otpBoxes = document.querySelectorAll('.otp-box');
       }
     });
   });
-
+// SweetAlert2 example success message after password reset
+<?php if (isset($_SESSION['password_reset_success'])) { ?>
+      Swal.fire({
+        icon: 'success',
+        title: 'Password Reset Successful!',
+        text: 'Your password has been reset successfully.',
+        confirmButtonText: 'Okay',
+      });
+      <?php unset($_SESSION['password_reset_success']); ?>
+    <?php } ?>
 
 
   </script>

@@ -148,10 +148,10 @@ if (isset($_GET["reset"])) {
       </div>
     </div>
   </div>
-
+  
   <!-- Include Bootstrap 5 JS Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+  
   <!-- JavaScript for Toggling Password Visibility -->
   <script>
     const togglePassword = document.querySelector('#togglePassword');
@@ -200,6 +200,15 @@ const otpBoxes = document.querySelectorAll('.otp-box');
         otpBoxes[index - 1].focus();
       }
     });
+    <?php if (isset($_SESSION['password_reset_success'])) { ?>
+      Swal.fire({
+        icon: 'success',
+        title: 'Password Reset Successful!',
+        text: 'Your password has been reset successfully.',
+        confirmButtonText: 'Okay',
+      });
+      <?php unset($_SESSION['password_reset_success']); ?>
+    <?php } ?>
 
     // Prevent non-numeric input during keydown
     box.addEventListener('keypress', (e) => {

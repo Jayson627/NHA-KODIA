@@ -81,12 +81,27 @@
       </form>
     </div>
     <div class="footer-text">
-     
     </div>
   </div>
 
   
   <script>
+    
+
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+    }
+});
+
+
+    </script>
+    <script>
+    // Check if there's a session message for success or failure
     <?php if (isset($_SESSION["notify"])): ?>
       <?php if ($_SESSION["notify"] == "success"): ?>
         Swal.fire({
@@ -112,19 +127,8 @@
       <?php endif; ?>
       <?php unset($_SESSION["notify"]); // Clear the session variable after use ?>
     <?php endif; ?>
+  </script>
 
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault();
-    }
-});
-
-
-    </script>
 
 </body>
 </html>

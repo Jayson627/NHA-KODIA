@@ -270,7 +270,8 @@ $conn->close();
         text-decoration: none;
         cursor: pointer;
     }
-    .text-button {
+     /* Style for the Terms and Conditions text button */
+     .text-button {
         background: none;
         border: none;
         color: #007BFF;
@@ -372,9 +373,8 @@ $conn->close();
         </select>
         <div>
                 <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">I agree to the <span><button type="button" id="terms-conditions-link" class="text-button">Terms and Conditions</span></button></label>
+                <label for="terms">I agree to the <span id="terms-conditions-link" class="text-button">Terms and Conditions</span></label>
             </div>
-           
 
 
         <button type="submit" name="create_account">Create Account</button>

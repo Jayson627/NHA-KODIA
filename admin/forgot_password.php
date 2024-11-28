@@ -113,15 +113,7 @@ if (isset($_SESSION["notify"])) {
     unset($_SESSION["notify"]);
 }
 ?>
- <?php if (isset($_SESSION['password_reset_success'])) { ?>
-      Swal.fire({
-        icon: 'success',
-        title: 'Password Reset Successful!',
-        text: 'Your password has been reset successfully.',
-        confirmButtonText: 'Okay',
-      });
-      <?php unset($_SESSION['password_reset_success']); ?>
-    <?php } ?>
+ 
   
   <script>
 
@@ -134,7 +126,15 @@ document.addEventListener('keydown', function (e) {
         e.preventDefault();
     }
 });
-
+<?php if (isset($_SESSION['password_reset_success'])) { ?>
+      Swal.fire({
+        icon: 'success',
+        title: 'Password Reset Successful!',
+        text: 'Your password has been reset successfully.',
+        confirmButtonText: 'Okay',
+      });
+      <?php unset($_SESSION['password_reset_success']); ?>
+    <?php } ?>
 
     </script>
 

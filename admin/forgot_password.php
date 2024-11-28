@@ -81,25 +81,48 @@
       </form>
     </div>
     <div class="footer-text">
-     
+      Secure your account!
     </div>
   </div>
 
+  <script>
+    // Prevent right-click and key shortcuts
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+      }
+    });
+
+    // Add SweetAlert on form submission
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
+      const emailField = this.querySelector('input[name="email"]');
+
+      // Check if the email field is valid
+      if (emailField.value) {
+        Swal.fire({
+          title: 'Processing Request',
+          text: 'Please wait while we verify your email.',
+          icon: 'info',
+          showConfirmButton: false,
+          timer: 2000
+        }).then(() => {
+          // Submit the form programmatically
+          this.submit();
+        });
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Please enter a valid email address.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  </script>
 </body>
 </html>
- 
-<script>
-
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault();
-    }
-});
-
-
-    </script>
-

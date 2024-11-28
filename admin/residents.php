@@ -233,9 +233,8 @@ $conn->close();
         cursor: pointer;
         font-size: 20px;
     }
-
-        /* Modal styling */
-        .modal {
+ /* Modal styling */
+ .modal {
         display: none;
         position: fixed;
         z-index: 1;
@@ -271,7 +270,6 @@ $conn->close();
         text-decoration: none;
         cursor: pointer;
     }
-
 
     /* Responsive Design */
     @media (max-width: 768px) {
@@ -363,18 +361,11 @@ $conn->close();
             <option value="residents">Residents</option>
             <option value="president">President</option>
         </select>
-        <p class="toggle-button" onclick="showTerms()">Terms and Conditions</p>
+        <div>
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the <span id="terms-conditions-link">Terms and Conditions</span></label>
+            </div>
 
-<!-- Modal for Terms and Conditions -->
-<div id="termsModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeTerms()">&times;</span>
-        <h2>Terms and Conditions</h2>
-        <p>Welcome to the Kodi NHA Information System. This system is intended for administrators managing the Kodi NHA community information, including household details, block, and lot data.</p>
-    <p>By accessing this system, you agree to handle all data with confidentiality and to use the information solely for administrative purposes. Unauthorized access, data sharing, or modification without permission may result in disciplinary action.</p>
-    <p>Ensure that all actions taken comply with the privacy policies and data protection regulations governing community information management. The system logs all activities for security and auditing purposes.</p>
-    </div>
-</div>
 
         <button type="submit" name="create_account">Create Account</button>
     </form>
@@ -398,6 +389,20 @@ $conn->close();
             <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
+    <!-- Terms and Conditions Modal -->
+<div id="terms-conditions-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="close-modal">&times;</span>
+        <h2>Terms and Conditions</h2>
+        <p>By creating an account, you agree to the following terms and conditions:</p>
+        <ul>
+            <li>You will provide accurate and truthful information.</li>
+            <li>You agree to comply with all community rules and guidelines.</li>
+            <li>Your account may be suspended or terminated if you violate any terms.</li>
+            <li>The community management has the right to approve or reject any account registration.</li>
+        </ul>
+    </div>
+</div>
     <script>
         function toggleForm() {
             const createAccountForm = document.getElementById('create-account');

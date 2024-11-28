@@ -200,15 +200,7 @@ const otpBoxes = document.querySelectorAll('.otp-box');
         otpBoxes[index - 1].focus();
       }
     });
-    <?php if (isset($_SESSION['password_reset_success'])) { ?>
-      Swal.fire({
-        icon: 'success',
-        title: 'Password Reset Successful!',
-        text: 'Your password has been reset successfully.',
-        confirmButtonText: 'Okay',
-      });
-      <?php unset($_SESSION['password_reset_success']); ?>
-    <?php } ?>
+    
 
     // Prevent non-numeric input during keydown
     box.addEventListener('keypress', (e) => {

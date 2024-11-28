@@ -372,8 +372,9 @@ $conn->close();
         </select>
         <div>
                 <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">I agree to the <button type="button" id="terms-conditions-link" class="text-button">Terms and Conditions</button></label>
+                <label for="terms">I agree to the <span><button type="button" id="terms-conditions-link" class="text-button">Terms and Conditions</span></button></label>
             </div>
+           
 
 
         <button type="submit" name="create_account">Create Account</button>

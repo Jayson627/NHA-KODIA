@@ -31,7 +31,7 @@ if (isset($_POST["btn-forgotpass"])) {
             echo "Message has been sent";
         }
 
-        //OTP has been sent please check your email
+        //OTP has been sent please check your email//
         $_SESSION["notify"] = "success";
  
         header("location: ../admin/forgot_password");

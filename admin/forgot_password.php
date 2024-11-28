@@ -72,7 +72,7 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
+      <form id="forgotPasswordForm" action="../admin/funtion" method="post" onsubmit="handleSubmit(event)">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
@@ -80,15 +80,13 @@
         <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
       </form>
     </div>
-    <div class="footer-text">
-     
-    </div>
+    <div class="footer-text"></div>
   </div>
-
 </body>
 </html>
-<script>
-    // Prevent right-click and F12 for debugging
+
+  <script>
+    // Prevent right-click and developer tools
     document.addEventListener('contextmenu', function (e) {
         e.preventDefault();
     });
@@ -99,21 +97,21 @@
         }
     });
 
-    // Function to show success alert after form submission
-    function showSuccessAlert(event) {
-      event.preventDefault(); // Prevent form from submitting immediately (for demo purposes)
-
-      // Show SweetAlert after form submission
+    function handleSubmit(event) {
+      event.preventDefault(); // Prevent default form submission
+      
+      // Example: Show SweetAlert success message
       Swal.fire({
-        icon: 'success',
         title: 'Success!',
         text: 'A password reset link has been sent to your email.',
-        confirmButtonText: 'Okay'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Now submit the form if the user clicks 'Okay'
-          document.getElementById("forgotPasswordForm").submit();
-        }
+        icon: 'success',
+        confirmButtonText: 'OK'
       });
+
+      // Here you would actually handle the form submission (e.g., via AJAX or a server-side redirect)
+      // For now, just simulating the message popup on submit.
     }
   </script>
+
+</body>
+</html>

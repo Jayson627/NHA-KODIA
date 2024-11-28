@@ -419,6 +419,19 @@ $conn->close();
                 formTitle.textContent = 'Create Account';
             }
         }
+        document.getElementById('terms-conditions-link').addEventListener('click', function() {
+    document.getElementById('terms-conditions-modal').style.display = 'block';
+});
+
+document.getElementById('close-modal').addEventListener('click', function() {
+    document.getElementById('terms-conditions-modal').style.display = 'none';
+});
+
+window.onclick = function(event) {
+    if (event.target == document.getElementById('terms-conditions-modal')) {
+        document.getElementById('terms-conditions-modal').style.display = 'none';
+    }
+}
 
           // Toggle password visibility for account creation
           const togglePassword = document.getElementById('togglePassword');

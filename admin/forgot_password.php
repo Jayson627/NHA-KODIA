@@ -81,48 +81,54 @@
       </form>
     </div>
     <div class="footer-text">
-      Secure your account!
+     
     </div>
   </div>
+  <?php
+session_start();
+if (isset($_SESSION["notify"])) {
+    // Determine the type of notification
+    if ($_SESSION["notify"] == "success") {
+        $message = "Your OTP has been sent successfully!";
+        $icon = "success";
+    } elseif ($_SESSION["notify"] == "failed") {
+        $message = "Something went wrong. Please try again.";
+        $icon = "error";
+    } elseif ($_SESSION["notify"] == "invalid") {
+        $message = "Invalid OTP or email. Please check your details.";
+        $icon = "warning";
+    }
 
+    // Show SweetAlert
+    echo "<script>
+        Swal.fire({
+            title: 'Notification',
+            text: '$message',
+            icon: '$icon',
+            confirmButtonText: 'OK'
+        });
+    </script>";
+
+    // Clear session after alert is displayed
+    unset($_SESSION["notify"]);
+}
+?>
+
+  
   <script>
-    // Prevent right-click and key shortcuts
-    document.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-    });
 
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
         e.preventDefault();
-      }
-    });
+    }
+});
 
-    // Add SweetAlert on form submission
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function (e) {
-      e.preventDefault(); // Prevent default form submission
-      const emailField = this.querySelector('input[name="email"]');
 
-      // Check if the email field is valid
-      if (emailField.value) {
-        Swal.fire({
-          title: 'Processing Request',
-          text: 'Please wait while we verify your email.',
-          icon: 'info',
-          showConfirmButton: false,
-          timer: 2000
-        }).then(() => {
-          // Submit the form programmatically
-          this.submit();
-        });
-      } else {
-        Swal.fire({
-          title: 'Error',
-          text: 'Please enter a valid email address.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      }
-    });
-  </script>
+    </script>
+
 </body>
 </html>

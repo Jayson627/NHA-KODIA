@@ -71,13 +71,13 @@ if (isset($_POST["btn-forgotpass"])) {
             $sql = "UPDATE `users` SET `password`='$password', `code`=$reset WHERE email='$email'";
             $query = mysqli_query($conn, $sql);
 
-            $_SESSION["notify"] = "success";
-            header("location: ../admin/forgot_password.php");
+            // After email is successfully sent
+$_SESSION["notify"] = "success";
+header("location: ../admin/forgot_password.php");
 
-        } else {
-            $_SESSION["notify"] = "invalid";
-            header("location: ../admin/forgot_password.php");
-        }
+// If something went wrong
+$_SESSION["notify"] = "failed";
+header("location: ../admin/forgot_password.php");
 
     } else {
         $_SESSION["notify"] = "invalid";

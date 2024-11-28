@@ -85,28 +85,33 @@
     </div>
   </div>
 
-  <!-- Include Bootstrap 5 JS Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- SweetAlert Script for OTP Success and Redirect -->
-  <!-- <script>
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent form submission
-      
-      Swal.fire({
-        icon: 'success',
-        title: 'OTP Sent',
-        text: 'An OTP code has been sent to your email address!',
-        confirmButtonText: 'OK'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Redirect to about.php after user clicks "OK" on SweetAlert
-          window.location.href = '../admin/funtion.php';
-        }
-      });
-    });
-  </script> -->
+  
   <script>
+    <?php if (isset($_SESSION["notify"])): ?>
+      <?php if ($_SESSION["notify"] == "success"): ?>
+        Swal.fire({
+          title: 'Success!',
+          text: 'The OTP has been sent to your email.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+      <?php elseif ($_SESSION["notify"] == "failed"): ?>
+        Swal.fire({
+          title: 'Error!',
+          text: 'Failed to send the OTP. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'Try Again'
+        });
+      <?php elseif ($_SESSION["notify"] == "invalid"): ?>
+        Swal.fire({
+          title: 'Invalid OTP!',
+          text: 'The OTP you entered is incorrect.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      <?php endif; ?>
+      <?php unset($_SESSION["notify"]); // Clear the session variable after use ?>
+    <?php endif; ?>
 
 document.addEventListener('contextmenu', function (e) {
     e.preventDefault();

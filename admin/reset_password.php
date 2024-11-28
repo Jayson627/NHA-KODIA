@@ -3,11 +3,21 @@ session_start();
 require_once('../admin/connection.php');
 require_once("../initialize.php");
 
+// Generate and validate CSRF token
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('CSRF token validation failed');
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET["reset"])) {
     $email = filter_input(INPUT_GET, 'email', FILTER_VALIDATE_EMAIL);
     if (!$email) {
         die('Invalid email address');
     }
+
+    // Generate CSRF token
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Store token for the session
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $otp = filter_input(INPUT_POST, 'otp', FILTER_SANITIZE_NUMBER_INT);
@@ -17,21 +27,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET["reset"])) {
         die('Invalid input');
     }
 
-    // Verify OTP and expiration here...
-
-    // Hash the new password securely
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-    // Update the user's password in the database
-    // Use prepared statements to prevent SQL injection
-    $stmt = $conn->prepare("UPDATE users SET password = ? WHERE email = ?");
-    $stmt->bind_param("ss", $hashedPassword, $email);
+    // OTP verification and expiration check
+    $stmt = $conn->prepare("SELECT `code`, `otp_time` FROM `users` WHERE email = ?");
+    $stmt->bind_param('s', $email);
     $stmt->execute();
-    $stmt->close();
+    $stmt->store_result();
+    $stmt->bind_result($stored_otp, $otp_time);
+    $stmt->fetch();
 
-    // Redirect or provide feedback to the user
-    echo "Password reset successful!";
-    exit();
+    // Check if OTP matches and is not expired (e.g., 10 minutes expiration time)
+    if ($stored_otp === $otp && (time() - strtotime($otp_time)) <= 600) {
+        // Hash the new password securely
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+        // Update the user's password in the database
+        $stmt = $conn->prepare("UPDATE users SET password = ?, code = NULL WHERE email = ?");
+        $stmt->bind_param("ss", $hashedPassword, $email);
+        $stmt->execute();
+        $stmt->close();
+
+        // Provide feedback to the user
+        $_SESSION['notify'] = 'success';
+        header("Location: success_page.php");
+        exit();
+    } else {
+        // OTP is invalid or expired
+        $_SESSION['notify'] = 'invalid_otp';
+        header("Location: reset_password.php");
+        exit();
+    }
 }
 ?>
 
@@ -41,9 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET["reset"])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reset Password</title>
-  <!-- Include Bootstrap 5 CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Include Bootstrap Icons CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
@@ -97,10 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET["reset"])) {
     .btn-primary:hover {
       background: linear-gradient(135deg, #0056b3, #004085);
     }
-    .input-group-text {
-      border-radius: 0 30px 30px 0;
-      cursor: pointer;
-    }
     .otp-box {
       width: 50px;
       text-align: center;
@@ -131,18 +149,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET["reset"])) {
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-        <?php
-          if (!isset($email)) {
-            echo '<div class="alert alert-danger">Email is missing. Please try again.</div>';
-            exit();
-          }
-        ?>
-        
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
           <div class="form-group mb-3">
             <label for="otp" class="form-label">OTP Code:</label>
             <div id="otp-inputs" class="d-flex justify-content-between">
-              <!-- 6 Input Boxes for OTP -->
               <input type="text" class="form-control otp-box" maxlength="1" required>
               <input type="text" class="form-control otp-box" maxlength="1" required>
               <input type="text" class="form-control otp-box" maxlength="1" required>
@@ -150,11 +160,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET["reset"])) {
               <input type="text" class="form-control otp-box" maxlength="1" required>
               <input type="text" class="form-control otp-box" maxlength="1" required>
             </div>
-            <!-- Hidden field to collect the OTP -->
             <input type="hidden" name="otp" id="otp" value="">
           </div>
 
-          <!-- New Password Input with Show/Hide Eye and Autofill -->
           <div class="form-group mb-3">
             <label for="new_password" class="form-label">New Password:</label>
             <div class="input-group">
@@ -165,20 +173,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET["reset"])) {
             </div>
           </div>
 
-          <!-- Hidden Email Field -->
           <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
 
-          <!-- Submit Button -->
+          <!-- CSRF Token -->
+          <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
           <button type="submit" class="btn btn-primary" name="btn-new-password">Reset Password</button>
         </form>
       </div>
     </div>
   </div>
-  
-  <!-- Include Bootstrap 5 JS Bundle with Popper -->
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- JavaScript for Toggling Password Visibility -->
   <script>
     const togglePassword = document.querySelector('#togglePassword');
     const passwordInput = document.querySelector('#password');

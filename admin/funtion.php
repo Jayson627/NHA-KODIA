@@ -62,7 +62,6 @@ if (isset($_POST["btn-forgotpass"])) {
         while ($res = mysqli_fetch_assoc($query)) {
             $get_code = $res["code"];
         }
-    }
 
         if ($otp === $get_code) {
 
@@ -72,18 +71,17 @@ if (isset($_POST["btn-forgotpass"])) {
             $sql = "UPDATE `users` SET `password`='$password', `code`=$reset WHERE email='$email'";
             $query = mysqli_query($conn, $sql);
 
-            // After email is successfully sent
-$_SESSION["notify"] = "success";
-header("location: ../admin/forgot_password");
+            $_SESSION["notify"] = "success";
+            header("location: ../admin/forgot_password.php");
 
-// If something went wrong
-$_SESSION["notify"] = "failed";
-header("location: ../admin/forgot_password.php");
-        
+        } else {
+            $_SESSION["notify"] = "invalid";
+            header("location: ../admin/forgot_password.php");
+        }
+
     } else {
         $_SESSION["notify"] = "invalid";
         header("location: ../admin/forgot_password.php");
     }
 }
- 
 ?>

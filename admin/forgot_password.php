@@ -81,54 +81,39 @@
       </form>
     </div>
     <div class="footer-text">
+     
     </div>
   </div>
 
-  
-  <script>
-    
-
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault();
-    }
-});
-
-
-    </script>
-    <script>
-    // Check if there's a session message for success or failure
-    <?php if (isset($_SESSION["notify"])): ?>
-      <?php if ($_SESSION["notify"] == "success"): ?>
-        Swal.fire({
-          title: 'Success!',
-          text: 'The OTP has been sent to your email.',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        });
-      <?php elseif ($_SESSION["notify"] == "failed"): ?>
-        Swal.fire({
-          title: 'Error!',
-          text: 'Failed to send the OTP. Please try again.',
-          icon: 'error',
-          confirmButtonText: 'Try Again'
-        });
-      <?php elseif ($_SESSION["notify"] == "invalid"): ?>
-        Swal.fire({
-          title: 'Invalid OTP!',
-          text: 'The OTP you entered is incorrect.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      <?php endif; ?>
-      <?php unset($_SESSION["notify"]); // Clear the session variable after use ?>
-    <?php endif; ?>
-  </script>
-
-
 </body>
 </html>
+<script>
+    // Prevent right-click and F12 for debugging
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+
+    // Function to show success alert after form submission
+    function showSuccessAlert(event) {
+      event.preventDefault(); // Prevent form from submitting immediately (for demo purposes)
+
+      // Show SweetAlert after form submission
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'A password reset link has been sent to your email.',
+        confirmButtonText: 'Okay'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Now submit the form if the user clicks 'Okay'
+          document.getElementById("forgotPasswordForm").submit();
+        }
+      });
+    }
+  </script>

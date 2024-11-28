@@ -74,16 +74,6 @@ if (isset($_GET["reset"])) {
       border-radius: 0 30px 30px 0;
       cursor: pointer;
     }
-    @media (max-width: 576px) {
-      .card {
-        margin: 20px;
-      }
-      .otp-box {
-        width: 40px;
-        margin-right: 3px;
-        font-size: 1rem;
-      }
-    }
     .otp-box {
       width: 50px;
       text-align: center;
@@ -96,6 +86,16 @@ if (isset($_GET["reset"])) {
     .otp-box:focus {
       border-color: #007bff;
       box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+    }
+    @media (max-width: 576px) {
+      .card {
+        margin: 20px;
+      }
+      .otp-box {
+        width: 40px;
+        margin-right: 3px;
+        font-size: 1rem;
+      }
     }
   </style>
 </head>

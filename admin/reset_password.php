@@ -11,68 +11,92 @@ if (isset($_GET["reset"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
+  
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfuV4sqAAAAAPsjFo7TvYq8CcYwSu0qMf227C6I"></script>
+
+    <!-- Styling for the page -->
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #FBF5DF;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
 
         .reset-password-box {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
             width: 100%;
             max-width: 400px;
-            text-align: center;
+            padding: 30px;
+            box-sizing: border-box;
         }
 
-        h2 {
-            margin-bottom: 20px;
+        .reset-password-title {
+            text-align: center;
+            font-size: 24px;
             color: #333;
+            margin-bottom: 20px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-control {
             width: 100%;
             padding: 10px;
-            border-radius: 5px;
+            font-size: 16px;
             border: 1px solid #ccc;
+            border-radius: 5px;
             box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #5cb85c;
         }
 
         button {
             width: 100%;
             padding: 10px;
-            background-color: #d32f2f;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            background-color: #5cb85c;
+            color: white;
             font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
         button:hover {
-            background-color: #b71c1c;
+            background-color: #4cae4c;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .reset-password-box {
+                padding: 20px;
+            }
+
+            .reset-password-title {
+                font-size: 20px;
+            }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-<script src="https://www.google.com/recaptcha/api.js?render=6LfuV4sqAAAAAPsjFo7TvYq8CcYwSu0qMf227C6I"></script>
 </head>
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
         <form action="../admin/funtion.php" method="post">
             <div class="form-group has-feedback">
-                <input type="hidden" name="email" class="form-control" name="email" value="<?php echo $email ?>" required readonly>
+                <input type="hidden" name="email" class="form-control" value="<?php echo $email ?>" required readonly>
             </div>
             <div class="form-group has-feedback">
                 <input type="password" class="form-control" placeholder="Set new password" name="password" required>
@@ -83,34 +107,35 @@ if (isset($_GET["reset"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
+
     <script>
-         <?php
-    // Check if there's a session message to displays
-    if (isset($_SESSION['notify'])) {
-        $message = addslashes($_SESSION['notify']);
-        if (strpos($message, 'Your password has been reset successfully') !== false) {
-            echo "Swal.fire({
-                title: 'Success',
-                text: '$message',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });";
-        } else {
-            echo "Swal.fire({
-                title: 'Error',
-                text: '$message',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });";
+        <?php
+        // Check if there's a session message to display
+        if (isset($_SESSION['notify'])) {
+            $message = addslashes($_SESSION['notify']);
+            if (strpos($message, 'Your password has been reset successfully') !== false) {
+                echo "Swal.fire({
+                    title: 'Success',
+                    text: '$message',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });";
+            } else {
+                echo "Swal.fire({
+                    title: 'Error',
+                    text: '$message',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });";
+            }
+            unset($_SESSION['notify']);
         }
-        unset($_SESSION['notify']);
-    }
-    ?>
+        ?>
     </script>
 </body>
 </html>
 <?php
 } else {
-    // handle case when reset is not set
+    // Handle case when reset is not set
 }
 ?>

@@ -11,7 +11,7 @@ define('LOCKOUT_TIME', 60); // 60 seconds
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
-    'domain' => 'yourdomain.com',
+    'domain' => 'nha-kodia.com',
     'secure' => true, // Ensure HTTPS
     'httponly' => true,
     'samesite' => 'Strict'

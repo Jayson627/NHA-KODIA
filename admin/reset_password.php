@@ -2,7 +2,6 @@
 session_start();
 require_once('../admin/connection.php');
 
-
 if (isset($_POST["btn-new-password"])) {
     $email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
     $otp = filter_var($_POST["otp"], FILTER_SANITIZE_NUMBER_INT);
@@ -20,7 +19,7 @@ if (isset($_POST["btn-new-password"])) {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+        $hashed_password = password_hash($new_password, PASSWORD_ARGON2I);
         $stmt = $conn->prepare("UPDATE users SET password=?, code=NULL WHERE email=?");
         $stmt->bind_param('ss', $hashed_password, $email);
         $update = $stmt->execute();
@@ -38,7 +37,6 @@ if (isset($_POST["btn-new-password"])) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

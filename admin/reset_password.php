@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once('../admin/connection.php');
-require_once('PasswordHash.php'); // Use a library like password_hash()
+
 
 if (isset($_POST["btn-new-password"])) {
     $email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);

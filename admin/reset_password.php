@@ -161,7 +161,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
   <!-- JavaScript for Toggling Password Visibility -->
   <script>
     const togglePassword = document.querySelector('#togglePassword');
-    const passwordInput = document.querySelector('#password'); // Fixed selector
+    const passwordInput = document.querySelector('#password');
     const eyeIcon = document.querySelector('#eyeIcon');
 
     togglePassword.addEventListener('click', function () {

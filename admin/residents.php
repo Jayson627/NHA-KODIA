@@ -399,13 +399,11 @@ $conn->close();
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
             <button type="submit" name="login">Login</button>
+            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
-    </div>
-</div>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-            <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
-        </p>
+        <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
     </div>
     <!-- Terms and Conditions Modal -->
 <div id="terms-conditions-modal" class="modal">

@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forgot Password</title>
-  <!-- Include Bootstrap 5 CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Include SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body {
@@ -78,57 +76,47 @@
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
         </div>
         <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
+        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
       </form>
     </div>
     <div class="footer-text">
-     
     </div>
   </div>
   <?php
-session_start();
-if (isset($_SESSION["notify"])) {
-    // Determine the type of notification
-    if ($_SESSION["notify"] == "success") {
-        $message = "Your OTP has been sent successfully!";
-        $icon = "success";
-    } elseif ($_SESSION["notify"] == "failed") {
-        $message = "Something went wrong. Please try again.";
-        $icon = "error";
-    } elseif ($_SESSION["notify"] == "invalid") {
-        $message = "Invalid OTP or email. Please check your details.";
-        $icon = "warning";
-    }
-
-    // Show SweetAlert
-    echo "<script>
-        Swal.fire({
-            title: 'Notification',
-            text: '$message',
-            icon: '$icon',
-            confirmButtonText: 'OK'
-        });
-    </script>";
-
-    // Clear session after alert is displayed
-    unset($_SESSION["notify"]);
-}
-?>
-
-  
+  session_start();
+  if (isset($_SESSION["notify"])) {
+      $message = "";
+      $icon = "";
+      if ($_SESSION["notify"] == "success") {
+          $message = "Your OTP has been sent successfully!";
+          $icon = "success";
+      } elseif ($_SESSION["notify"] == "failed") {
+          $message = "Something went wrong. Please try again.";
+          $icon = "error";
+      } elseif ($_SESSION["notify"] == "invalid") {
+          $message = "Invalid OTP or email. Please check your details.";
+          $icon = "warning";
+      }
+      echo "<script>
+          Swal.fire({
+              title: 'Notification',
+              text: '$message',
+              icon: '$icon',
+              confirmButtonText: 'OK'
+          });
+      </script>";
+      unset($_SESSION["notify"]);
+  }
+  ?>
   <script>
-
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
         e.preventDefault();
-    }
-});
-
-
-    </script>
-
+      }
+    });
+  </script>
 </body>
 </html>

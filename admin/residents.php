@@ -1,40 +1,58 @@
 <?php
 session_start();
-
 include_once('connection.php');
 
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
 
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Function to sanitize input
+function sanitize_input($data) {
+    return htmlspecialchars(strip_tags(trim($data)));
+}
+
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Check CSRF token
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die("CSRF token validation failed.");
+    }
+
     if (isset($_POST['create_account'])) {
-        // Account creation code (no changes here)
-        $fullname = $_POST['fullname'];
-        $dob = $_POST['dob'];
-        $lot_no = $_POST['lot_no'];
-        $house_no = $_POST['house_no'];
-        $email = $_POST['email'];
-        $username = $_POST['username'];
-        $password = password_hash($_POST['password'], PASSWORD_ARGON2I); // Hashing the password with argon2i
-        $role = $_POST['role']; // Use the selected role from form
-        $id = uniqid(); // Generate a random unique ID
-        
+        // Sanitize and validate input
+        $fullname = sanitize_input($_POST['fullname']);
+        $dob = sanitize_input($_POST['dob']);
+        $lot_no = sanitize_input($_POST['lot_no']);
+        $house_no = sanitize_input($_POST['house_no']);
+        $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
+        $username = sanitize_input($_POST['username']);
+        $password = sanitize_input($_POST['password']);
+        $role = sanitize_input($_POST['role']);
+        $id = uniqid();
+
+        // Hash the password
+        $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+
         // Insert new user with default 'pending' status and random ID
         $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
 
         // Execute and check for success
         if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
+            $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
         } else {
             $_SESSION['message'] = "Error creating account. Please try again.";
         }
         $stmt->close();
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
-    } // Handle login request
+    }
+
     if (isset($_POST['login'])) {
         // Check if the user is locked out
         if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
@@ -49,38 +67,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
         }
-    
-        // Collect the email and password
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        
+
+        // Collect and sanitize input
+        $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
+        $password = sanitize_input($_POST['password']);
+
         // Prepare and execute the statement to get the user, role, and status by email
         $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-        
+
         // Check if user exists
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
-    
-            // Check if the account status is 'approved'
-if ($status !== 'approved') {
-    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
 
-    
+            // Check if the account status is 'approved'
+            if ($status !== 'approved') {
+                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
+
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
                 // Reset login attempts on successful login
                 $_SESSION['login_attempts'] = 0;
-    
+
                 // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
-    
+
+                // Regenerate session ID to prevent session fixation attacks
+                session_regenerate_id(true);
+
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
                     header("Location: president"); 
@@ -95,10 +115,10 @@ if ($status !== 'approved') {
                     $_SESSION['login_attempts'] = 0;
                 }
                 $_SESSION['login_attempts']++;
-    
+
                 // Store the last attempt time
                 $_SESSION['last_attempt_time'] = time();
-    
+
                 $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
@@ -107,22 +127,19 @@ if ($status !== 'approved') {
                 $_SESSION['login_attempts'] = 0;
             }
             $_SESSION['login_attempts']++;
-    
+
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
-    
+
             $_SESSION['message'] = "Invalid email or password!";
         }
-    
+
         $stmt->close();
     }
-    
 }
 
 $conn->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -250,6 +267,7 @@ $conn->close();
     <h2 id="form-title">Login Portal</h2>
     <div class="form-container" id="create-account">
     <form method="POST" onsubmit="return validateForm()">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
         <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
         <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
@@ -280,23 +298,19 @@ $conn->close();
 </div>
     <div class="form-container active" id="login">
         <form method="POST">
-            <input type="email" name="email" placeholder="email" required>
-            
-            <!-- Password input with show/hide toggle -->
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+            <input type="email" name="email" placeholder="Email" required>
             <div class="password-wrapper">
-                <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
+                <input type="password" id="login_password" name="password" placeholder="Password" required>
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
-            
             <button type="submit" name="login">Login</button>
-            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
-        <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-            <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
-        </p>
     </div>
-    <script>
+</div>
+
+<script>
         function toggleForm() {
             const createAccountForm = document.getElementById('create-account');
             const loginForm = document.getElementById('login');

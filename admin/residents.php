@@ -397,13 +397,15 @@ $conn->close();
         <form method="POST">
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
+            <div class="password-wrapper">
+                <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
+                <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
+            </div>
             <button type="submit" name="login">Login</button>
-            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
-        <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-        <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+    </div>
+</div>
 
     </div>
     <!-- Terms and Conditions Modal -->

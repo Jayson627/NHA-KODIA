@@ -161,7 +161,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
   <!-- JavaScript for Toggling Password Visibility -->
   <script>
     const togglePassword = document.querySelector('#togglePassword');
-    const passwordInput = document.querySelector('#password');
+    const passwordInput = document.querySelector('#password'); // Fixed selector
     const eyeIcon = document.querySelector('#eyeIcon');
 
     togglePassword.addEventListener('click', function () {
@@ -204,6 +204,17 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
           otpBoxes[index - 1].focus();
         }
       });
+
+      
+if (!empty($new_password)) {
+    $hashed_password = password_hash($new_password, PASSWORD_ARGON2I);
+    
+    // Update the password in the database
+    $stmt = $this->conn->prepare("UPDATE users SET password = ? WHERE email = ?");
+    $stmt->bind_param('ss', $hashed_password, $email);
+    $stmt->execute();
+}
+
 
       // Prevent non-numeric input during keydown
       box.addEventListener('keypress', (e) => {

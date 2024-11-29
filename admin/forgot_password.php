@@ -1,13 +1,32 @@
-
 <?php
 session_start();
+if (isset($_SESSION["notify"])) {
+    // Determine the type of notification
+    if ($_SESSION["notify"] == "success") {
+        $message = "Your OTP has been sent successfully!";
+        $icon = "success";
+    } elseif ($_SESSION["notify"] == "failed") {
+        $message = "Something went wrong. Please try again.";
+        $icon = "error";
+    } elseif ($_SESSION["notify"] == "invalid") {
+        $message = "Invalid OTP or email. Please check your details.";
+        $icon = "warning";
+    }
 
-// Generate CSRF token if it doesn't exist
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    // Show SweetAlert
+    echo "<script>
+        Swal.fire({
+            title: 'Notification',
+            text: '$message',
+            icon: '$icon',
+            confirmButtonText: 'OK'
+        });
+    </script>";
+
+    // Clear session after alert is displayed
+    unset($_SESSION["notify"]);
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +34,9 @@ if (empty($_SESSION['csrf_token'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forgot Password</title>
+  <!-- Include Bootstrap 5 CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Include SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body {
@@ -81,52 +102,48 @@ if (empty($_SESSION['csrf_token'])) {
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-    <form method="POST" action="../admin/funtion">
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-        <input type="email" name="email" required>
-        <input type="submit" name="btn-forgotpass" value="Submit">
-    </form>
-
-
+      <form id="forgotPasswordForm" action="../admin/funtion" method="post" onsubmit="return validateForm()">
+        <div class="mb-3">
+          <label for="email" class="form-label">Enter your email address:</label>
+          <input type="email" id="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
+        </div>
+        <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
+      </form>
     </div>
     <div class="footer-text">
+      <small>Forgot your password? Please enter your email above.</small>
     </div>
   </div>
-  <?php
-  session_start();
-  if (isset($_SESSION["notify"])) {
-      $message = "";
-      $icon = "";
-      if ($_SESSION["notify"] == "success") {
-          $message = "Your OTP has been sent successfully!";
-          $icon = "success";
-      } elseif ($_SESSION["notify"] == "failed") {
-          $message = "Something went wrong. Please try again.";
-          $icon = "error";
-      } elseif ($_SESSION["notify"] == "invalid") {
-          $message = "Invalid OTP or email. Please check your details.";
-          $icon = "warning";
-      }
-      echo "<script>
-          Swal.fire({
-              title: 'Notification',
-              text: '$message',
-              icon: '$icon',
-              confirmButtonText: 'OK'
-          });
-      </script>";
-      unset($_SESSION["notify"]);
-  }
-  ?>
+
   <script>
+    // Preventing right-click and F12 developer tools
     document.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
         e.preventDefault();
-      }
     });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+
+    // Form validation
+    function validateForm() {
+        const email = document.getElementById('email').value;
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailRegex.test(email)) {
+            Swal.fire({
+                title: 'Invalid Email',
+                text: 'Please enter a valid email address.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+
+        return true;
+    }
   </script>
 </body>
 </html>

@@ -111,7 +111,7 @@ if ($status !== 'approved') {
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
     
-            $_SESSION['message'] = "Invalid email or password!";
+            $_SESSION['message'] = "Invalid email or password!";v
         }
     
         $stmt->close();

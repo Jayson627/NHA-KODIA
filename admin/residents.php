@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $house_no = sanitize_input($_POST['house_no']);
         $email = filter_var(sanitize_input($_POST['email']), FILTER_SANITIZE_EMAIL);
         $username = sanitize_input($_POST['username']);
-        $password = password_hash(sanitize_input($_POST['password']), PASSWORD_DEFAULT); // Hashing the password
+        $password = password_hash($_POST['password'], PASSWORD_ARGON2I); // Hashing the password with argon2i
         $role = sanitize_input($_POST['role']); // Use the selected role from form
 
         // Insert new user with default 'pending' status

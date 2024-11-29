@@ -7,24 +7,48 @@ include_once('connection.php');
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
 
+// Set secure session settings
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => 'yourdomain.com',
+    'secure' => true, // Ensure HTTPS
+    'httponly' => true,
+    'samesite' => 'Strict'
+]);
+
+// Function to sanitize inputs
+function sanitize_input($data) {
+    return htmlspecialchars(stripslashes(trim($data)));
+}
+
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['create_account'])) {
-        // Account creation code (no changes here)
-        $fullname = $_POST['fullname'];
-        $dob = $_POST['dob'];
-        $lot_no = $_POST['lot_no'];
-        $house_no = $_POST['house_no'];
-        $email = $_POST['email'];
-        $username = $_POST['username'];
-        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing the password
-        $role = $_POST['role']; // Use the selected role from form
-    
-       // Insert new user with default 'pending' status
-$stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-$stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+    // Verify CSRF token
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('Invalid CSRF token');
+    }
 
-    
+    if (isset($_POST['create_account'])) {
+        // Account creation code
+        $fullname = sanitize_input($_POST['fullname']);
+        $dob = sanitize_input($_POST['dob']);
+        $lot_no = sanitize_input($_POST['lot_no']);
+        $house_no = sanitize_input($_POST['house_no']);
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+        $username = sanitize_input($_POST['username']);
+        $password = password_hash(sanitize_input($_POST['password']), PASSWORD_DEFAULT); // Hashing the password
+        $role = sanitize_input($_POST['role']);
+
+        // Insert new user with default 'pending' status
+        $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+
         // Execute and check for success
         if ($stmt->execute()) {
             $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
@@ -34,7 +58,8 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
         $stmt->close();
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
-    } // Handle login request
+    }
+
     if (isset($_POST['login'])) {
         // Check if the user is locked out
         if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
@@ -42,50 +67,49 @@ $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $user
             if (isset($_SESSION['last_attempt_time']) && (time() - $_SESSION['last_attempt_time']) < LOCKOUT_TIME) {
                 $remaining_time = LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']);
                 $_SESSION['message'] = "Too many login attempts. Please try again in " . $remaining_time . " seconds.";
-                header("Location: " . $_SERVER['PHP_SELF']); 
+                header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             } else {
                 // Reset the login attempts after lockout time has passed
                 $_SESSION['login_attempts'] = 0;
             }
         }
-    
+
         // Collect the email and password
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+        $password = sanitize_input($_POST['password']);
+
         // Prepare and execute the statement to get the user, role, and status by email
         $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-        
+
         // Check if user exists
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
-    
-            // Check if the account status is 'approved'
-if ($status !== 'approved') {
-    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
 
-    
+            // Check if the account status is 'approved'
+            if ($status !== 'approved') {
+                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
+
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
                 // Reset login attempts on successful login
                 $_SESSION['login_attempts'] = 0;
-    
+
                 // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
-    
+
                 // Check role and redirect accordingly
-                if ($role === 'president') {  
-                    header("Location: president"); 
+                if ($role === 'president') {
+                    header("Location: president");
                     exit();
-                } else if ($role === 'residents') { 
+                } else if ($role === 'residents') {
                     header("Location: people_dashboard");
                     exit();
                 }
@@ -95,10 +119,10 @@ if ($status !== 'approved') {
                     $_SESSION['login_attempts'] = 0;
                 }
                 $_SESSION['login_attempts']++;
-    
+
                 // Store the last attempt time
                 $_SESSION['last_attempt_time'] = time();
-    
+
                 $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
@@ -107,22 +131,19 @@ if ($status !== 'approved') {
                 $_SESSION['login_attempts'] = 0;
             }
             $_SESSION['login_attempts']++;
-    
+
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
-    
+
             $_SESSION['message'] = "Invalid email or password!";
         }
-    
+
         $stmt->close();
     }
-    
 }
 
 $conn->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -353,7 +374,8 @@ $conn->close();
 <div class="container">
     <h2 id="form-title">Login Portal</h2>
     <div class="form-container" id="create-account">
-    <form method="POST" onsubmit="return validateForm()">
+    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
         <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
         <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
         <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
@@ -382,7 +404,8 @@ $conn->close();
     <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
 </div>
     <div class="form-container active" id="login">
-        <form method="POST">
+    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <input type="email" name="email" placeholder="email" required>
             
             <!-- Password input with show/hide toggle -->
@@ -433,6 +456,7 @@ $conn->close();
     document.getElementById('terms-conditions-modal').style.display = 'block';
 });
 
+
 document.getElementById('close-modal').addEventListener('click', function() {
     document.getElementById('terms-conditions-modal').style.display = 'none';
 });
@@ -442,7 +466,12 @@ window.onclick = function(event) {
         document.getElementById('terms-conditions-modal').style.display = 'none';
     }
 }
-
+<?php
+        if (isset($_SESSION['message'])) {
+            echo "<p>" . $_SESSION['message'] . "</p>";
+            unset($_SESSION['message']);
+        }
+        ?>
           // Toggle password visibility for account creation
           const togglePassword = document.getElementById('togglePassword');
         const passwordField = document.getElementById('password');

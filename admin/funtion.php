@@ -71,7 +71,7 @@ if (isset($_POST["btn-new-password"])) {
         // Validate OTP
         if ($get_code && $otp === $get_code) {
             $reset = random_int(100000, 999999);
-            $hashed_password = md5($password);
+            $hashed_password = PASSWORD_ARGON2I($password, PASSWORD_DEFAULT);
 
             // Direct SQL query to update the password and reset code
             $update_sql = "UPDATE `users` SET `password` = '$hashed_password', `code` = '$reset' WHERE email = '$email'";

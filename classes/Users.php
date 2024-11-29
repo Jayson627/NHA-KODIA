@@ -142,11 +142,11 @@ class Users extends DBConnection {
             $resp['status'] = 'failed';
         }
         return json_encode($resp);
-    }
+    } 
 
     public function save_employee(){
         if(!empty($_POST['password'])){
-            $_POST['password'] = password_hash($_POST['password'], PASSWORD_ARGON2I);  // Hash password
+            $_POST['password'] = password_hash($_POST['password'], PASSWORD_ARGON2I);  // Hash password  wala na unta ka nag argon2 pre dili namn ma decrpy ang bcrypt hahamd5
         } else {
             unset($_POST['password']);
         }

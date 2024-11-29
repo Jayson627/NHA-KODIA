@@ -254,6 +254,57 @@ $conn->close();
             cursor: pointer;
             font-size: 20px;
         }
+        .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto; /* Enable scrolling if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 8px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .accept-button {
+        background-color: #5a67d8;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .accept-button:hover {
+        background-color: #4c51bf;
+    }
     </style>
 </head>
 <body>
@@ -285,13 +336,11 @@ $conn->close();
             <option value="residents">Residents</option>
             <option value="president">President</option>
         </select>
-
-        <!-- Terms and Conditions Checkbox -->
-        <div style="margin: 10px 0;">
-            <input type="checkbox" id="terms" name="terms" required>
-            <label for="terms">I agree to the <a href="terms" target="_blank">Terms and Conditions</a></label>
-        </div>
-
+ <!-- Terms and Conditions Checkbox -->
+ <div style="margin: 10px 0;">
+    <input type="checkbox" id="terms" name="terms" required>
+    <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
+</div>
         <button type="submit" name="create_account">Create Account</button>
     </form>
     <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
@@ -311,6 +360,19 @@ $conn->close();
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
             <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
+    </div>
+</div>
+
+       <!-- Modal for Terms and Conditions -->
+       <div id="termsModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Terms and Conditions</h2>
+        <p>
+            <!-- Your terms and conditions content goes here. -->
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec ullamcorper libero. Integer volutpat libero id ex tempus, at consequat enim varius. 
+        </p>
+        <button id="acceptTerms" class="accept-button">I Agree</button>
     </div>
 </div>
 <script>
@@ -363,6 +425,7 @@ $conn->close();
             alert("You must be at least 18 years old to register.");
             return false;
         }
+    }
 
         // Retrieve data from localStorage when loading the page
         window.onload = function() {
@@ -372,16 +435,45 @@ $conn->close();
                 document.getElementById('email').value = storedData.email || '';
             }
         };
+// Get the modal
+var modal = document.getElementById("termsModal");
 
-        // Check if terms and conditions checkbox is checked
-        const termsCheckbox = document.getElementById('terms');
-        if (!termsCheckbox.checked) {
-            alert("You must agree to the Terms and Conditions to create an account.");
-            return false;
-        }
+// Get the checkbox
+var termsCheckbox = document.getElementById("terms");
 
-        return true;
+// Get the <span> element that closes the modal
+var closeBtn = document.getElementsByClassName("close")[0];
+
+// Get the "I Agree" button
+var acceptBtn = document.getElementById("acceptTerms");
+
+// When the user clicks the checkbox, open the modal
+termsCheckbox.addEventListener('change', function() {
+    if (termsCheckbox.checked) {
+        modal.style.display = "block";
     }
+});
+
+// When the user clicks on <span> (x), close the modal
+closeBtn.onclick = function() {
+    modal.style.display = "none";
+    termsCheckbox.checked = false; // Uncheck the checkbox when modal is closed
+}
+
+// When the user clicks the "I Agree" button, close the modal
+acceptBtn.onclick = function() {
+    modal.style.display = "none";
+    termsCheckbox.checked = true; // Ensure the checkbox is checked
+}
+
+// Close the modal if the user clicks anywhere outside the modal content
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        termsCheckbox.checked = false;
+    }
+}
+        
 
     document.addEventListener('DOMContentLoaded', function() {
         <?php if (isset($_SESSION['message'])): ?>

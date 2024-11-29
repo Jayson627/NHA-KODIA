@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once("mailer.php");
+require_once("mailer");
 require_once('../admin/connection.php');
 require_once("../initialize.php");
 

@@ -420,66 +420,23 @@ $conn->close();
         </ul>
     </div>
 </div>
+
 <script>
-     function toggleForm() {
-            const createAccountForm = document.getElementById('create-account');
-            const loginForm = document.getElementById('login');
-            const formTitle = document.getElementById('form-title');
+    function toggleForm() {
+        const createAccountForm = document.getElementById('create-account');
+        const loginForm = document.getElementById('login');
+        const formTitle = document.getElementById('form-title');
 
-            if (createAccountForm.classList.contains('active')) {
-                createAccountForm.classList.remove('active');
-                loginForm.classList.add('active');
-                formTitle.textContent = 'Login';
-            } else {
-                loginForm.classList.remove('active');
-                createAccountForm.classList.add('active');
-                formTitle.textContent = 'Create Account';
-            }
+        if (createAccountForm.classList.contains('active')) {
+            createAccountForm.classList.remove('active');
+            loginForm.classList.add('active');
+            formTitle.textContent = 'Login Portal';
+        } else {
+            loginForm.classList.remove('active');
+            createAccountForm.classList.add('active');
+            formTitle.textContent = 'Create Account';
         }
-
-          // Toggle password visibility for account creation
-          const togglePassword = document.getElementById('togglePassword');
-        const passwordField = document.getElementById('password');
-        togglePassword.addEventListener('click', function (e) {
-            // Toggle the password type between text and password
-            const type = passwordField.type === 'password' ? 'text' : 'password';
-            passwordField.type = type;
-            // Change the eye icon
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
-
-        // Toggle password visibility for login
-        const toggleLoginPassword = document.getElementById('toggleLoginPassword');
-        const loginPasswordField = document.getElementById('login-password');
-        toggleLoginPassword.addEventListener('click', function (e) {
-            // Toggle the password type between text and password
-            const type = loginPasswordField.type === 'password' ? 'text' : 'password';
-            loginPasswordField.type = type;
-            // Change the eye icon
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
-
-        function validateForm() {
-        const dob = document.querySelector('input[name="dob"]').value;
-        const dobDate = new Date(dob);
-        const today = new Date();
-        const age = today.getFullYear() - dobDate.getFullYear();
-        
-        // Check if user is at least 18 years old
-        if (age < 18) {
-            alert("You must be at least 18 years old to register.");
-            return false;
-        }
-
-        // Retrieve data from localStorage when loading the page
-    window.onload = function() {
-        const storedData = JSON.parse(localStorage.getItem('formData'));
-        if (storedData) {
-            document.getElementById('username').value = storedData.username || '';
-            document.getElementById('email').value = storedData.email || '';
-        }
-    };
-       
+    }
 
     document.getElementById('terms-conditions-link').addEventListener('click', function() {
         document.getElementById('terms-conditions-modal').style.display = 'block';
@@ -495,8 +452,36 @@ $conn->close();
         }
     }
 
-   
+    // Toggle password visibility for account creation
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordField = document.getElementById('password');
+    togglePassword.addEventListener('click', function (e) {
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+        this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
 
+    // Toggle password visibility for login
+    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+    const loginPasswordField = document.getElementById('login-password');
+    toggleLoginPassword.addEventListener('click', function (e) {
+        const type = loginPasswordField.type === 'password' ? 'text' : 'password';
+        loginPasswordField.type = type;
+        this.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    // Validate form
+    function validateForm() {
+        const dob = document.querySelector('input[name="dob"]').value;
+        const dobDate = new Date(dob);
+        const today = new Date();
+        const age = today.getFullYear() - dobDate.getFullYear();
+
+        if (age < 18) {
+            alert("You must be at least 18 years old to register.");
+            return false;
+        }
+    }
 
     // Show terms and conditions modal
     function showTerms() {
@@ -518,55 +503,54 @@ $conn->close();
         }
     }
 
-        // Check if terms and conditions checkbox is checked
-        const termsCheckbox = document.getElementById('terms');
-        if (!termsCheckbox.checked) {
-            alert("You must agree to the Terms and Conditions to create an account.");
-            return false;
+    // Retrieve data from localStorage when loading the page
+    window.onload = function() {
+        const storedData = JSON.parse(localStorage.getItem('formData'));
+        if (storedData) {
+            document.getElementById('username').value = storedData.username || '';
+            document.getElementById('email').value = storedData.email || '';
         }
-
-        return true;
-    }
+    };
 
     document.addEventListener('DOMContentLoaded', function() {
-    <?php if (isset($_SESSION['message'])): ?>
-        const message = '<?php echo $_SESSION['message']; ?>';
-        const isError = message.includes("Invalid") || message.includes("Error") || message.includes("not approved");
+        <?php if (isset($_SESSION['message'])): ?>
+            const message = '<?php echo $_SESSION['message']; ?>';
+            const isError = message.includes("Invalid") || message.includes("Error") || message.includes("not approved");
 
-        // If the user is locked out
-        if (message.includes('Too many login attempts')) {
-            const remainingTime = <?php echo isset($_SESSION['last_attempt_time']) ? LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']) : 0; ?>;
+            // If the user is locked out
+            if (message.includes('Too many login attempts')) {
+                const remainingTime = <?php echo isset($_SESSION['last_attempt_time']) ? LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']) : 0; ?>;
 
-            // Display SweetAlert with a countdown
-            Swal.fire({
-                icon: 'error',
-                title: 'Too many login attempts!',
-                html: `Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
-                showConfirmButton: false,
-                timer: remainingTime * 1000, // Set the timer duration in milliseconds
-                willOpen: () => {
-                    const countdownElement = document.getElementById('countdown');
-                    let countdown = remainingTime;
-                    const countdownInterval = setInterval(() => {
-                        countdown--;
-                        countdownElement.innerText = countdown;
-                        if (countdown <= 0) {
-                            clearInterval(countdownInterval);
-                        }
-                    }, 1000);
-                }
-            });
-        } else {
-            Swal.fire({
-                icon: isError ? 'error' : 'success',
-                title: isError ? 'Error' : 'Success',
-                text: message,
-                confirmButtonText: 'OK'
-            });
-        }
-        <?php unset($_SESSION['message']); ?>
-    <?php endif; ?>
-});
+                // Display SweetAlert with a countdown
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Too many login attempts!',
+                    html: `Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
+                    showConfirmButton: false,
+                    timer: remainingTime * 1000,
+                    willOpen: () => {
+                        const countdownElement = document.getElementById('countdown');
+                        let countdown = remainingTime;
+                        const countdownInterval = setInterval(() => {
+                            countdown--;
+                            countdownElement.innerText = countdown;
+                            if (countdown <= 0) {
+                                clearInterval(countdownInterval);
+                            }
+                        }, 1000);
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: isError ? 'error' : 'success',
+                    title: isError ? 'Error' : 'Success',
+                    text: message,
+                    confirmButtonText: 'OK'
+                });
+            }
+            <?php unset($_SESSION['message']); ?>
+        <?php endif; ?>
+    });
 
     document.addEventListener('contextmenu', function (e) {
         e.preventDefault();

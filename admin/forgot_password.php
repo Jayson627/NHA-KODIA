@@ -1,3 +1,8 @@
+<?php
+
+session_start();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,34 +90,27 @@
     </div>
   </div>
   <?php
-session_start();
-if (isset($_SESSION["notify"])) {
-    // Determine the type of notification
-    if ($_SESSION["notify"] == "success") {
-        $message = "Your OTP has been sent successfully!";
-        $icon = "success";
-    } elseif ($_SESSION["notify"] == "failed") {
-        $message = "Something went wrong. Please try again.";
-        $icon = "error";
-    } elseif ($_SESSION["notify"] == "invalid") {
-        $message = "Invalid OTP or email. Please check your details.";
-        $icon = "warning";
+    // Check if there's a session message to displays
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']);
+        if (strpos($message, 'A reset link has been sent to your email') !== false) {
+            echo "Swal.fire({
+                title: 'Success',
+                text: '$message',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });";
+        } else {
+            echo "Swal.fire({
+                title: 'Error',
+                text: '$message',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });";
+        }
+        unset($_SESSION['notify']);
     }
-
-    // Show SweetAlert
-    echo "<script>
-        Swal.fire({
-            title: 'Notification',
-            text: '$message',
-            icon: '$icon',
-            confirmButtonText: 'OK'
-        });
-    </script>";
-
-    // Clear session after alert is displayed
-    unset($_SESSION["notify"]);
-}
-?>
+    ?>
 
   
   <script>

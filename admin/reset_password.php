@@ -1,207 +1,116 @@
 <?php
-session_start(); 
-require_once('../admin/connection.php');
-require_once("../initialize.php");
+session_start();
+include 'includes/conn.php';
 
 if (isset($_GET["reset"])) {
     $email = $_GET["email"];
-}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reset Password</title>
-  <!-- Include Bootstrap 5 CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Include Bootstrap Icons CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    .card {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 15px;
-      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-    }
-    .card-header {
-      background-color: #007bff;
-      color: white;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      padding: 1rem;
-    }
-    .card-body {
-      padding: 2rem;
-    }
-    .form-label {
-      font-weight: 500;
-      color: #555;
-    }
-    .form-control {
-      border-radius: 30px;
-      padding: 0.75rem;
-      border: 1px solid #ced4da;
-    }
-    .form-control:focus {
-      box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
-      border-color: #007bff;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #007bff, #0056b3);
-      border: none;
-      border-radius: 30px;
-      padding: 0.75rem;
-      font-size: 1.1rem;
-      width: 100%;
-    }
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #0056b3, #004085);
-    }
-    .input-group-text {
-      border-radius: 0 30px 30px 0;
-      cursor: pointer;
-    }
-    .otp-box {
-      width: 50px;
-      text-align: center;
-      margin-right: 5px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      border: 1px solid #ced4da;
-      outline: none;
-    }
-    .otp-box:focus {
-      border-color: #007bff;
-      box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
-    }
-    @media (max-width: 576px) {
-      .card {
-        margin: 20px;
-      }
-      .otp-box {
-        width: 40px;
-        margin-right: 3px;
-        font-size: 1rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #FBF5DF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .reset-password-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #d32f2f;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #b71c1c;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+<script src="https://www.google.com/recaptcha/api.js?render=6LfuV4sqAAAAAPsjFo7TvYq8CcYwSu0qMf227C6I"></script>
 </head>
 <body>
-  <div class="container d-flex justify-content-center align-items-center h-100">
-    <div class="card">
-      <div class="card-header">Reset Password</div>
-      <div class="card-body">
-        <?php
-          // Check if the email is passed via the URL
-          if (isset($_GET['email'])) {
-            $email = $_GET['email'];
-          } else {
-            // If email is not passed, redirect or display an error
-            echo '<div class="alert alert-danger">Email is missing. Please try again.</div>';
-            exit();
-          }
-        ?>
-        
-        <form action="../admin/funtion" method="post">
-          <div class="form-group mb-3">
-            <label for="otp" class="form-label">OTP Code:</label>
-            <div id="otp-inputs" class="d-flex justify-content-between">
-            <input type="hidden" name="otp" id="otp" value="">
-          </div>
-
-          <!-- New Password Input with Show/Hide Eye and Autofill -->
-          <div class="form-group mb-3">
-            <label for="new_password" class="form-label">New Password:</label>
-            <div class="input-group">
-              <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password" autocomplete="new-password" required>
-              <span class="input-group-text" id="togglePassword">
-                <i class="bi bi-eye-fill" id="eyeIcon"></i>
-              </span>
+    <div class="reset-password-box">
+        <h2 class="reset-password-title">Reset Password</h2>
+        <form action="../admin/function.php" method="post">
+            <div class="form-group has-feedback">
+                <input type="hidden" name="email" class="form-control" name="email" value="<?php echo $email ?>" required readonly>
             </div>
-          </div>
-
-          <!-- Hidden Email Field -->
-          <input type="hidden" name="email" value="<?php echo $email; ?>">
-
-          <!-- Submit Button -->
-          <button type="submit" class="btn-new-password" class="btn btn-primary" name="btn-new-password">Reset Password</button>
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="Set new password" name="password" required>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="OTP Code" name="otp" required>
+            </div>
+            <button type="submit" name="btn-new-password">Set Password</button>
         </form>
-      </div>
     </div>
-  </div>
-  
-  <!-- Include Bootstrap 5 JS Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- JavaScript for Toggling Password Visibility -->
-  <script>
-    const togglePassword = document.querySelector('#togglePassword');
-    const passwordInput = document.querySelector('#password'); // Fixed selector
-    const eyeIcon = document.querySelector('#eyeIcon');
-
-    togglePassword.addEventListener('click', function () {
-      // Toggle the type attribute between password and text
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
-
-      // Toggle the icon between eye and eye-slash
-      eyeIcon.classList.toggle('bi-eye-fill');
-      eyeIcon.classList.toggle('bi-eye-slash-fill');
-    });
-
-    const otpBoxes = document.querySelectorAll('.otp-box');
-    const otpHiddenField = document.getElementById('otp');
-
-    otpBoxes.forEach((box, index) => {
-      // Ensure only numbers can be entered
-      box.addEventListener('input', (e) => {
-        const value = e.target.value;
-        if (!/^\d$/.test(value)) {
-          // Clear the input if it's not a valid number
-          box.value = '';
-          return;
+    <script>
+         <?php
+    // Check if there's a session message to displays
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']);
+        if (strpos($message, 'Your password has been reset successfully') !== false) {
+            echo "Swal.fire({
+                title: 'Success',
+                text: '$message',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });";
+        } else {
+            echo "Swal.fire({
+                title: 'Error',
+                text: '$message',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });";
         }
-
-        // Move to the next box when a valid number is entered
-        if (value.length === 1 && index < otpBoxes.length - 1) {
-          otpBoxes[index + 1].focus();
-        }
-
-        // Update the hidden input field with the OTP
-        let otpValue = '';
-        otpBoxes.forEach((input) => {
-          otpValue += input.value;
-        });
-        otpHiddenField.value = otpValue;
-      });
-
-      // Allow backspacing to go to the previous box
-      box.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && box.value === '' && index > 0) {
-          otpBoxes[index - 1].focus();
-        }
-      });
-
-      // Prevent non-numeric input during keydown
-      box.addEventListener('keypress', (e) => {
-        if (!/^\d$/.test(e.key)) {
-          e.preventDefault();
-        }
-      });
-    });
-  </script>
+        unset($_SESSION['notify']);
+    }
+    ?>
+    </script>
 </body>
 </html>
+<?php
+} else {
+    // handle case when reset is not set
+}
+?>

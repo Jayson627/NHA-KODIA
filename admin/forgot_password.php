@@ -1,33 +1,3 @@
-<?php
-session_start();
-if (isset($_SESSION["notify"])) {
-    // Determine the type of notification
-    if ($_SESSION["notify"] == "success") {
-        $message = "Your OTP has been sent successfully!";
-        $icon = "success";
-    } elseif ($_SESSION["notify"] == "failed") {
-        $message = "Something went wrong. Please try again.";
-        $icon = "error";
-    } elseif ($_SESSION["notify"] == "invalid") {
-        $message = "Invalid OTP or email. Please check your details.";
-        $icon = "warning";
-    }
-
-    // Show SweetAlert
-    echo "<script>
-        Swal.fire({
-            title: 'Notification',
-            text: '$message',
-            icon: '$icon',
-            confirmButtonText: 'OK'
-        });
-    </script>";
-
-    // Clear session after alert is displayed
-    unset($_SESSION["notify"]);
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,48 +72,63 @@ if (isset($_SESSION["notify"])) {
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/funtion" method="post" onsubmit="return validateForm()">
+      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
-          <input type="email" id="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
+          <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
         </div>
         <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
       </form>
     </div>
     <div class="footer-text">
-      <small>Forgot your password? Please enter your email above.</small>
+     
     </div>
   </div>
-
-  <script>
-    // Preventing right-click and F12 developer tools
-    document.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-            e.preventDefault();
-        }
-    });
-
-    // Form validation
-    function validateForm() {
-        const email = document.getElementById('email').value;
-        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-        if (!emailRegex.test(email)) {
-            Swal.fire({
-                title: 'Invalid Email',
-                text: 'Please enter a valid email address.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-            return false;
-        }
-
-        return true;
+  <?php
+session_start();
+if (isset($_SESSION["notify"])) {
+    // Determine the type of notification
+    if ($_SESSION["notify"] == "success") {
+        $message = "Your OTP has been sent successfully!";
+        $icon = "success";
+    } elseif ($_SESSION["notify"] == "failed") {
+        $message = "Something went wrong. Please try again.";
+        $icon = "error";
+    } elseif ($_SESSION["notify"] == "invalid") {
+        $message = "Invalid OTP or email. Please check your details.";
+        $icon = "warning";
     }
-  </script>
+
+    // Show SweetAlert
+    echo "<script>
+        Swal.fire({
+            title: 'Notification',
+            text: '$message',
+            icon: '$icon',
+            confirmButtonText: 'OK'
+        });
+    </script>";
+
+    // Clear session after alert is displayed
+    unset($_SESSION["notify"]);
+}
+?>
+
+  
+  <script>
+
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+    }
+});
+
+
+    </script>
+
 </body>
 </html>

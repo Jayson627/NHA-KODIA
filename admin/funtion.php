@@ -2,7 +2,7 @@
 session_start();
 require_once("mailer");
 require_once('../admin/connection.php');
-require_once("../initialize.php");
+require_once("../initialize");
 
 // CSRF Protection
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

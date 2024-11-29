@@ -1,8 +1,13 @@
 <?php
 session_start();
-require_once("mailer");
-require_once('../admin/connection');
-require_once("../initialize");
+require_once("mailer.php");
+require_once('../admin/connection.php');
+require_once("../initialize.php");
+
+// Enable error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // CSRF Protection
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

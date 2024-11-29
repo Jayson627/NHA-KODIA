@@ -1,10 +1,20 @@
 <?php
-session_start(); 
+session_start();
 require_once('../admin/connection.php');
 require_once("../initialize.php");
 
-if (isset($_GET["reset"])) {
+// Generate CSRF token if not already generated
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Fetch the email if it's passed in the URL
+if (isset($_GET["reset"]) && isset($_GET["email"])) {
     $email = $_GET["email"];
+} else {
+    // If email is missing, handle it
+    echo '<div class="alert alert-danger">Email is missing. Please try again.</div>';
+    exit();
 }
 ?>
 
@@ -104,18 +114,11 @@ if (isset($_GET["reset"])) {
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-        <?php
-          // Check if the email is passed via the URL
-          if (isset($_GET['email'])) {
-            $email = $_GET['email'];
-          } else {
-            // If email is not passed, redirect or display an error
-            echo '<div class="alert alert-danger">Email is missing. Please try again.</div>';
-            exit();
-          }
-        ?>
-        
-        <form action="../admin/funtion" method="post">
+        <form action="../admin/funtion.php" method="post">
+          <!-- CSRF Token -->
+          <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+
+          <!-- OTP Field -->
           <div class="form-group mb-3">
             <label for="otp" class="form-label">OTP Code:</label>
             <div id="otp-inputs" class="d-flex justify-content-between">
@@ -131,7 +134,7 @@ if (isset($_GET["reset"])) {
             <input type="hidden" name="otp" id="otp" value="">
           </div>
 
-          <!-- New Password Input with Show/Hide Eye and Autofill -->
+          <!-- New Password Input -->
           <div class="form-group mb-3">
             <label for="new_password" class="form-label">New Password:</label>
             <div class="input-group">
@@ -143,18 +146,18 @@ if (isset($_GET["reset"])) {
           </div>
 
           <!-- Hidden Email Field -->
-          <input type="hidden" name="email" value="<?php echo $email; ?>">
+          <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
 
           <!-- Submit Button -->
-          <button type="submit" class="btn-new-password" class="btn btn-primary" name="btn-new-password">Reset Password</button>
+          <button type="submit" class="btn btn-primary" name="btn-new-password">Reset Password</button>
         </form>
       </div>
     </div>
   </div>
-  
+
   <!-- Include Bootstrap 5 JS Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
+
   <!-- JavaScript for Toggling Password Visibility -->
   <script>
     const togglePassword = document.querySelector('#togglePassword');
@@ -175,7 +178,6 @@ if (isset($_GET["reset"])) {
     const otpHiddenField = document.getElementById('otp');
 
     otpBoxes.forEach((box, index) => {
-      // Ensure only numbers can be entered
       box.addEventListener('input', (e) => {
         const value = e.target.value;
         if (!/^\d$/.test(value)) {
@@ -197,7 +199,6 @@ if (isset($_GET["reset"])) {
         otpHiddenField.value = otpValue;
       });
 
-      // Allow backspacing to go to the previous box
       box.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace' && box.value === '' && index > 0) {
           otpBoxes[index - 1].focus();

@@ -114,7 +114,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
     <div class="card">
       <div class="card-header">Reset Password</div>
       <div class="card-body">
-        <form action="../admin/funtion.php" method="post">
+        <form action="../admin/funtion" method="post">
           <!-- CSRF Token -->
           <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
 

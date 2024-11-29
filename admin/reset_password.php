@@ -62,7 +62,84 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["btn-new-password"])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    /* Your CSS styling here (same as before) */
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .card {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 15px;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+    .card-header {
+      background-color: #007bff;
+      color: white;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      padding: 1rem;
+    }
+    .card-body {
+      padding: 2rem;
+    }
+    .form-label {
+      font-weight: 500;
+      color: #555;
+    }
+    .form-control {
+      border-radius: 30px;
+      padding: 0.75rem;
+      border: 1px solid #ced4da;
+    }
+    .form-control:focus {
+      box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+      border-color: #007bff;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      border: none;
+      border-radius: 30px;
+      padding: 0.75rem;
+      font-size: 1.1rem;
+      width: 100%;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0056b3, #004085);
+    }
+    .input-group-text {
+      border-radius: 0 30px 30px 0;
+      cursor: pointer;
+    }
+    .otp-box {
+      width: 50px;
+      text-align: center;
+      margin-right: 5px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+      outline: none;
+    }
+    .otp-box:focus {
+      border-color: #007bff;
+      box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+    }
+    @media (max-width: 576px) {
+      .card {
+        margin: 20px;
+      }
+      .otp-box {
+        width: 40px;
+        margin-right: 3px;
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>

@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forgot Password</title>
+  <!-- Include Bootstrap 5 CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Include SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body {
@@ -65,8 +67,6 @@
       color: #555;
     }
   </style>
-
-
 </head>
 <body>
   <div class="card">
@@ -80,34 +80,43 @@
         <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
       </form>
     </div>
-    <div class="footer-text"></div>
+    <div class="footer-text">
+     
+    </div>
   </div>
   <?php
 session_start();
 if (isset($_SESSION["notify"])) {
-    $messages = [
-        "success" => ["Your OTP has been sent successfully!", "success"],
-        "failed" => ["Something went wrong. Please try again.", "error"],
-        "invalid" => ["Invalid OTP or email. Please check your details.", "warning"]
-    ];
-
-    if (isset($messages[$_SESSION["notify"]])) {
-        list($message, $icon) = $messages[$_SESSION["notify"]];
-        echo "<script>
-            Swal.fire({
-                title: 'Notification',
-                text: '$message',
-                icon: '$icon',
-                confirmButtonText: 'OK'
-            });
-        </script>";
+    // Determine the type of notification
+    if ($_SESSION["notify"] == "success") {
+        $message = "Your OTP has been sent successfully!";
+        $icon = "success";
+    } elseif ($_SESSION["notify"] == "failed") {
+        $message = "Something went wrong. Please try again.";
+        $icon = "error";
+    } elseif ($_SESSION["notify"] == "invalid") {
+        $message = "Invalid OTP or email. Please check your details.";
+        $icon = "warning";
     }
 
+    // Show SweetAlert
+    echo "<script>
+        Swal.fire({
+            title: 'Notification',
+            text: '$message',
+            icon: '$icon',
+            confirmButtonText: 'OK'
+        });
+    </script>";
+
+    // Clear session after alert is displayed
     unset($_SESSION["notify"]);
 }
 ?>
 
-<script>
+  
+  <script>
+
 document.addEventListener('contextmenu', function (e) {
     e.preventDefault();
 });
@@ -117,8 +126,9 @@ document.addEventListener('keydown', function (e) {
         e.preventDefault();
     }
 });
-</script>
+
+
+    </script>
 
 </body>
 </html>
-

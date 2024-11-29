@@ -404,6 +404,7 @@ $conn->close();
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
         <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+
     </div>
     <!-- Terms and Conditions Modal -->
 <div id="terms-conditions-modal" class="modal">
@@ -420,7 +421,7 @@ $conn->close();
     </div>
 </div>
 <script>
-        function toggleForm() {
+     function toggleForm() {
             const createAccountForm = document.getElementById('create-account');
             const loginForm = document.getElementById('login');
             const formTitle = document.getElementById('form-title');
@@ -478,6 +479,44 @@ $conn->close();
             document.getElementById('email').value = storedData.email || '';
         }
     };
+       
+
+    document.getElementById('terms-conditions-link').addEventListener('click', function() {
+        document.getElementById('terms-conditions-modal').style.display = 'block';
+    });
+
+    document.getElementById('close-modal').addEventListener('click', function() {
+        document.getElementById('terms-conditions-modal').style.display = 'none';
+    });
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('terms-conditions-modal')) {
+            document.getElementById('terms-conditions-modal').style.display = 'none';
+        }
+    }
+
+   
+
+
+    // Show terms and conditions modal
+    function showTerms() {
+        var modal = document.getElementById('termsModal');
+        modal.style.display = "block";
+    }
+
+    // Close terms and conditions modal
+    function closeTerms() {
+        var modal = document.getElementById('termsModal');
+        modal.style.display = "none";
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        var modal = document.getElementById('termsModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 
         // Check if terms and conditions checkbox is checked
         const termsCheckbox = document.getElementById('terms');
@@ -529,48 +568,19 @@ $conn->close();
     <?php endif; ?>
 });
 
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
 
-
-    </script>
-
-</body>
-</html>
-<script>
-    </script>
-     <body oncontextmenu="return true" onkeydown="return true;" onmousedown="return true;">
-       <script>
-         $(document).bind("contextmenu",function(e) {
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
             e.preventDefault();
-         });
-                        
-         eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('(3(){(3 a(){8{(3 b(2){7((\'\'+(2/2)).6!==1||2%5===0){(3(){}).9(\'4\')()}c{4}b(++2)})(0)}d(e){g(a,f)}})()})();',17,17,'||i|function|debugger|20|length|if|try|constructor|||else|catch||5000|setTimeout'.split('|'),0,{}))
-         window.addEventListener("keydown", function(event) {
-
-
-          if (event.keyCode == 123) {
-              // block F12 (DevTools)
-              event.preventDefault();
-              event.stopPropagation();
-              return false;
-
-          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) {
-              // block Strg+Shift+I (DevTools)
-              event.preventDefault();
-              event.stopPropagation();
-              return false;
-
-          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 74) {
-              // block Strg+Shift+J (Console)
-              event.preventDefault();
-              event.stopPropagation();
-              return false;
-          }
-      });
-              </script>
+        }
+    });
 </script>
 
-
 <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-
+</body>
+</html>
 
 

@@ -4,10 +4,15 @@ require_once('../admin/connection.php');
 require_once("../initialize.php");
 
 if (isset($_GET["reset"])) {
-    $email = $_GET["email"];
+    $email = filter_var($_GET["email"], FILTER_SANITIZE_EMAIL);
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        // Invalid email format
+        $_SESSION["notify"] = "invalid";
+        header("location: ../admin/forgot_password");
+        exit();
+    }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,7 +112,11 @@ if (isset($_GET["reset"])) {
         <?php
           // Check if the email is passed via the URL
           if (isset($_GET['email'])) {
-            $email = $_GET['email'];
+            $email = filter_var($_GET['email'], FILTER_SANITIZE_EMAIL);
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+              echo '<div class="alert alert-danger">Invalid email format. Please try again.</div>';
+              exit();
+            }
           } else {
             // If email is not passed, redirect or display an error
             echo '<div class="alert alert-danger">Email is missing. Please try again.</div>';
@@ -146,7 +155,7 @@ if (isset($_GET["reset"])) {
           <input type="hidden" name="email" value="<?php echo $email; ?>">
 
           <!-- Submit Button -->
-          <button type="submit" class="btn-new-password" class="btn btn-primary" name="btn-new-password">Reset Password</button>
+          <button type="submit" class="btn btn-primary" name="btn-new-password">Reset Password</button>
         </form>
       </div>
     </div>

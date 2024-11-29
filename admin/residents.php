@@ -7,39 +7,24 @@ include_once('connection.php');
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
 
-// Generate CSRF token
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-// Function to sanitize input data
-function sanitize_input($data) {
-    return htmlspecialchars(strip_tags(trim($data)));
-}
-
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Check CSRF token validity
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        die('Invalid CSRF token');
-    }
-
     if (isset($_POST['create_account'])) {
-        // Sanitize and validate inputs
-        $fullname = sanitize_input($_POST['fullname']);
-        $dob = sanitize_input($_POST['dob']);
-        $lot_no = sanitize_input($_POST['lot_no']);
-        $house_no = sanitize_input($_POST['house_no']);
-        $email = filter_var(sanitize_input($_POST['email']), FILTER_SANITIZE_EMAIL);
-        $username = sanitize_input($_POST['username']);
-        $password = password_hash(sanitize_input($_POST['password']), PASSWORD_ARGON2I); // Hashing the password with Argon2i
+        // Account creation code (no changes here)
+        $fullname = $_POST['fullname'];
+        $dob = $_POST['dob'];
+        $lot_no = $_POST['lot_no'];
+        $house_no = $_POST['house_no'];
+        $email = $_POST['email'];
+        $username = $_POST['username'];
         $password = password_hash($_POST['password'], PASSWORD_ARGON2I); // Hashing the password with argon2i
-        $role = sanitize_input($_POST['role']); // Use the selected role from form
+        $role = $_POST['role']; // Use the selected role from form
+    
+       // Insert new user with default 'pending' status
+$stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+$stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
 
-        // Insert new user with default 'pending' status
-        $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-        $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
-
+    
         // Execute and check for success
         if ($stmt->execute()) {
             $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
@@ -49,8 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->close();
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
-    }
-
+    } // Handle login request
     if (isset($_POST['login'])) {
         // Check if the user is locked out
         if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
@@ -65,37 +49,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
         }
-
-        // Sanitize and collect the email and password
-        $email = filter_var(sanitize_input($_POST['email']), FILTER_SANITIZE_EMAIL);
-        $password = sanitize_input($_POST['password']);
-
+    
+        // Collect the email and password
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        
         // Prepare and execute the statement to get the user, role, and status by email
         $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-
+        
         // Check if user exists
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
-
+    
             // Check if the account status is 'approved'
-            if ($status !== 'approved') {
-                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
-            }
+if ($status !== 'approved') {
+    $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
 
+    
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
                 // Reset login attempts on successful login
                 $_SESSION['login_attempts'] = 0;
-
+    
                 // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
-
+    
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
                     header("Location: president"); 
@@ -110,10 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['login_attempts'] = 0;
                 }
                 $_SESSION['login_attempts']++;
-
+    
                 // Store the last attempt time
                 $_SESSION['last_attempt_time'] = time();
-
+    
                 $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
@@ -122,15 +107,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
             $_SESSION['login_attempts']++;
-
+    
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
-
+    
             $_SESSION['message'] = "Invalid email or password!";
         }
-
+    
         $stmt->close();
     }
+    
 }
 
 $conn->close();
@@ -367,47 +353,51 @@ $conn->close();
 <div class="container">
     <h2 id="form-title">Login Portal</h2>
     <div class="form-container" id="create-account">
-        <form method="POST" onsubmit="return validateForm()">
-            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-            <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
-            <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
-            <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
-            <input type="text" name="house_no" placeholder="House No" required pattern="^\d{1,4}$" title="House number should contain 1-4 digits">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="text" name="username" placeholder="Username" required pattern="^[A-Za-z0-9_]{5,20}$" title="Username should be alphanumeric, 5-20 characters, and may include underscores">
-            
-            <!-- Password input with show/hide toggle -->
-            <div class="password-wrapper">
-                <input type="password" id="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
-                <span id="togglePassword" class="eye-icon">&#128065;</span>
-            </div>
-            
-            <select name="role" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
-                <option value="residents">Residents</option>
-                <option value="president">President</option>
-            </select>
-            <div>
+    <form method="POST" onsubmit="return validateForm()">
+        <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
+        <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
+        <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
+        <input type="text" name="house_no" placeholder="House No" required pattern="^\d{1,4}$" title="House number should contain 1-4 digits">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="text" name="username" placeholder="Username" required pattern="^[A-Za-z0-9_]{5,20}$" title="Username should be alphanumeric, 5-20 characters, and may include underscores">
+        
+        <!-- Password input with show/hide toggle -->
+        <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
+            <span id="togglePassword" class="eye-icon">&#128065;</span>
+        </div>
+        
+        <select name="role" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+            <option value="residents">Residents</option>
+            <option value="president">President</option>
+        </select>
+        <div>
                 <input type="checkbox" id="terms" name="terms" required>
                 <label for="terms">I agree to the <span id="terms-conditions-link" class="text-button">Terms and Conditions</span></label>
             </div>
-            <button type="submit" name="create_account">Create Account</button>
-        </form>
-        <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
-    </div>
+
+
+        <button type="submit" name="create_account">Create Account</button>
+    </form>
+    <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
+</div>
     <div class="form-container active" id="login">
         <form method="POST">
-            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-            <input type="email" name="email" placeholder="Email" required>
+            <input type="email" name="email" placeholder="email" required>
+            
+            <!-- Password input with show/hide toggle -->
             <div class="password-wrapper">
-                <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
+                <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
+            
             <button type="submit" name="login">Login</button>
+            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
-    </div>
-</div>
-
+        <p class="forgot-password" style="text-align: center; margin-top: 10px;">
+            <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+        </p>
     </div>
     <!-- Terms and Conditions Modal -->
 <div id="terms-conditions-modal" class="modal">
@@ -423,82 +413,80 @@ $conn->close();
         </ul>
     </div>
 </div>
+    <script>
+        function toggleForm() {
+            const createAccountForm = document.getElementById('create-account');
+            const loginForm = document.getElementById('login');
+            const formTitle = document.getElementById('form-title');
 
-<script>
-    function toggleForm() {
-        const createAccountForm = document.getElementById('create-account');
-        const loginForm = document.getElementById('login');
-        const formTitle = document.getElementById('form-title');
-
-        if (createAccountForm.classList.contains('active')) {
-            createAccountForm.classList.remove('active');
-            loginForm.classList.add('active');
-            formTitle.textContent = 'Login Portal';
-        } else {
-            loginForm.classList.remove('active');
-            createAccountForm.classList.add('active');
-            formTitle.textContent = 'Create Account';
+            if (createAccountForm.classList.contains('active')) {
+                createAccountForm.classList.remove('active');
+                loginForm.classList.add('active');
+                formTitle.textContent = 'Login';
+            } else {
+                loginForm.classList.remove('active');
+                createAccountForm.classList.add('active');
+                formTitle.textContent = 'Create Account';
+            }
         }
-    }
+        document.getElementById('terms-conditions-link').addEventListener('click', function() {
+    document.getElementById('terms-conditions-modal').style.display = 'block';
+});
 
-    document.getElementById('terms-conditions-link').addEventListener('click', function() {
-        document.getElementById('terms-conditions-modal').style.display = 'block';
-    });
+document.getElementById('close-modal').addEventListener('click', function() {
+    document.getElementById('terms-conditions-modal').style.display = 'none';
+});
 
-    document.getElementById('close-modal').addEventListener('click', function() {
+window.onclick = function(event) {
+    if (event.target == document.getElementById('terms-conditions-modal')) {
         document.getElementById('terms-conditions-modal').style.display = 'none';
-    });
-
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('terms-conditions-modal')) {
-            document.getElementById('terms-conditions-modal').style.display = 'none';
-        }
     }
+}
 
-    // Toggle password visibility for account creation
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('password');
-    togglePassword.addEventListener('click', function (e) {
-        const type = passwordField.type === 'password' ? 'text' : 'password';
-        passwordField.type = type;
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
+          // Toggle password visibility for account creation
+          const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        togglePassword.addEventListener('click', function (e) {
+            // Toggle the password type between text and password
+            const type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+            // Change the eye icon
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
 
-    // Toggle password visibility for login
-    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
-    const loginPasswordField = document.getElementById('login-password');
-    toggleLoginPassword.addEventListener('click', function (e) {
-        const type = loginPasswordField.type === 'password' ? 'text' : 'password';
-        loginPasswordField.type = type;
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
+        // Toggle password visibility for login
+        const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+        const loginPasswordField = document.getElementById('login-password');
+        toggleLoginPassword.addEventListener('click', function (e) {
+            // Toggle the password type between text and password
+            const type = loginPasswordField.type === 'password' ? 'text' : 'password';
+            loginPasswordField.type = type;
+            // Change the eye icon
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
 
-    // Validate form
-    function validateForm() {
+        function validateForm() {
         const dob = document.querySelector('input[name="dob"]').value;
         const dobDate = new Date(dob);
         const today = new Date();
         const age = today.getFullYear() - dobDate.getFullYear();
-
+        
+        // Check if user is at least 18 years old
         if (age < 18) {
             alert("You must be at least 18 years old to register.");
             return false;
         }
     }
-
-    // Show terms and conditions modal
     function showTerms() {
         var modal = document.getElementById('termsModal');
         modal.style.display = "block";
     }
 
-    // Close terms and conditions modal
     function closeTerms() {
         var modal = document.getElementById('termsModal');
         modal.style.display = "none";
     }
 
-    // Close modal when clicking outside
     window.onclick = function(event) {
         var modal = document.getElementById('termsModal');
         if (event.target == modal) {
@@ -506,7 +494,7 @@ $conn->close();
         }
     }
 
-    // Retrieve data from localStorage when loading the page
+        // Retrieve data from localStorage when loading the page
     window.onload = function() {
         const storedData = JSON.parse(localStorage.getItem('formData'));
         if (storedData) {
@@ -515,59 +503,67 @@ $conn->close();
         }
     };
 
+       
+
     document.addEventListener('DOMContentLoaded', function() {
-        <?php if (isset($_SESSION['message'])): ?>
-            const message = '<?php echo $_SESSION['message']; ?>';
-            const isError = message.includes("Invalid") || message.includes("Error") || message.includes("not approved");
+    <?php if (isset($_SESSION['message'])): ?>
+        const message = '<?php echo $_SESSION['message']; ?>';
+        const isError = message.includes("Invalid") || message.includes("Error") || message.includes("not approved");
 
-            // If the user is locked out
-            if (message.includes('Too many login attempts')) {
-                const remainingTime = <?php echo isset($_SESSION['last_attempt_time']) ? LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']) : 0; ?>;
+        // If the user is locked out
+        if (message.includes('Too many login attempts')) {
+            const remainingTime = <?php echo isset($_SESSION['last_attempt_time']) ? LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']) : 0; ?>;
 
-                // Display SweetAlert with a countdown
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Too many login attempts!',
-                    html: `Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
-                    showConfirmButton: false,
-                    timer: remainingTime * 1000,
-                    willOpen: () => {
-                        const countdownElement = document.getElementById('countdown');
-                        let countdown = remainingTime;
-                        const countdownInterval = setInterval(() => {
-                            countdown--;
-                            countdownElement.innerText = countdown;
-                            if (countdown <= 0) {
-                                clearInterval(countdownInterval);
-                            }
-                        }, 1000);
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: isError ? 'error' : 'success',
-                    title: isError ? 'Error' : 'Success',
-                    text: message,
-                    confirmButtonText: 'OK'
-                });
-            }
-            <?php unset($_SESSION['message']); ?>
-        <?php endif; ?>
-    });
-
-    document.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-            e.preventDefault();
+            // Display SweetAlert with a countdown
+            Swal.fire({
+                icon: 'error',
+                title: 'Too many login attempts!',
+                html: `Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
+                showConfirmButton: false,
+                timer: remainingTime * 1000, // Set the timer duration in milliseconds
+                willOpen: () => {
+                    const countdownElement = document.getElementById('countdown');
+                    let countdown = remainingTime;
+                    const countdownInterval = setInterval(() => {
+                        countdown--;
+                        countdownElement.innerText = countdown;
+                        if (countdown <= 0) {
+                            clearInterval(countdownInterval);
+                        }
+                    }, 1000);
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: isError ? 'error' : 'success',
+                title: isError ? 'Error' : 'Success',
+                text: message,
+                confirmButtonText: 'OK'
+            });
         }
-    });
-</script>
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
+});
 
-<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+    }
+});
+
+
+
+    </script>
+
 </body>
 </html>
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
+
 
 

@@ -4,84 +4,101 @@ require_once("mailer.php");
 require_once('../admin/connection.php');
 require_once("../initialize.php");
 
-if (isset($_POST["btn-forgotpass"])) {
+// Generate a CSRF token if one doesn't exist
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
-    $email = $_POST["email"];
+// CSRF protection
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('Invalid CSRF token');
+    }
+}
+
+if (isset($_POST["btn-forgotpass"])) {
+    // Sanitize and validate email
+    $email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
+    if (!$email) {
+        $_SESSION["notify"] = "invalid";
+        header("location: ../admin/forgot_password");
+        exit();
+    }
+
     $reset_code = random_int(100000, 999999);
-    
-    $sql = "UPDATE `users` SET `code`='$reset_code' WHERE email='$email'";
- 
-    $query = mysqli_query($conn, $sql);
- 
- 
+
+    // Use prepared statements to prevent SQL injection
+    $stmt = $conn->prepare("UPDATE `users` SET `code` = ? WHERE email = ?");
+    $stmt->bind_param("is", $reset_code, $email);
+    $query = $stmt->execute();
+
     if ($query) {
-        
-        //Set Params 
+        // Set mail parameters
         $mail->SetFrom("alcantarajayson118@gmail.com");
         $mail->AddAddress("$email");
         $mail->Subject = "Reset Password OTP";
-        $mail->Body = "Use this OTP Code to reset your password: ".$reset_code."<br/>".
-        "Click the link to reset password: http://nha-kodia.com/admin/reset_password?reset&email=$email"  //pulihan $reset_coede
-        ;
+        $mail->Body = "Use this OTP Code to reset your password: " . $reset_code . "<br/>" .
+            "Click the link to reset password: https://nha-kodia.com/admin/reset_password?reset&email=$email";
 
-
-        if(!$mail->Send()) {
+        if (!$mail->Send()) {
             echo "Mailer Error: " . $mail->ErrorInfo;
         } else {
             echo "Message has been sent";
         }
 
-        //OTP has been sent please check your email
+        // OTP has been sent, please check your email
         $_SESSION["notify"] = "success";
- 
         header("location: ../admin/forgot_password");
- 
-    }else {
- 
+    } else {
         $_SESSION["notify"] = "failed";
-        
- 
         header("location: ../admin/forgot_password");
- 
- 
     }
- 
- }
- // new password 
- if (isset($_POST["btn-new-password"])) {
 
-    $email = $_POST["email"];
+    $stmt->close();
+}
+
+// New password
+if (isset($_POST["btn-new-password"])) {
+    // Sanitize inputs
+    $email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
     $password = $_POST["password"];
     $otp = $_POST["otp"];
 
-    $sql = "SELECT `code` FROM `users` WHERE email='$email'";
-    $query = mysqli_query($conn, $sql);
+    if (!$email) {
+        $_SESSION["notify"] = "invalid";
+        header("location: ../admin/forgot_password");
+        exit();
+    }
 
-    if (mysqli_num_rows($query) > 0) {
+    // Use prepared statements to prevent SQL injection
+    $stmt = $conn->prepare("SELECT `code` FROM `users` WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        while ($res = mysqli_fetch_assoc($query)) {
-            $get_code = $res["code"];
-        }
+    if ($result->num_rows > 0) {
+        $res = $result->fetch_assoc();
+        $get_code = $res["code"];
 
         if ($otp === $get_code) {
-
             $reset = random_int(100000, 999999);
-            $password = md5($password);
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql = "UPDATE `users` SET `password`='$password', `code`=$reset WHERE email='$email'";
-            $query = mysqli_query($conn, $sql);
+            $stmt = $conn->prepare("UPDATE `users` SET `password` = ?, `code` = ? WHERE email = ?");
+            $stmt->bind_param("sis", $hashed_password, $reset, $email);
+            $query = $stmt->execute();
 
             $_SESSION["notify"] = "success";
             header("location: ../admin/forgot_password");
-
         } else {
             $_SESSION["notify"] = "invalid";
             header("location: ../admin/forgot_password");
         }
-
     } else {
         $_SESSION["notify"] = "invalid";
         header("location: ../admin/forgot_password");
     }
+
+    $stmt->close();
 }
 ?>

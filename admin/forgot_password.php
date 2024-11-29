@@ -72,11 +72,10 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/function" method="post">
+      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
-          <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
         </div>
         <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
       </form>
@@ -87,12 +86,6 @@
   </div>
   <?php
 session_start();
-
-// Generate a CSRF token if one doesn't exist
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
 if (isset($_SESSION["notify"])) {
     // Determine the type of notification
     if ($_SESSION["notify"] == "success") {
@@ -121,7 +114,9 @@ if (isset($_SESSION["notify"])) {
 }
 ?>
 
-<script>
+  
+  <script>
+
 document.addEventListener('contextmenu', function (e) {
     e.preventDefault();
 });
@@ -131,7 +126,9 @@ document.addEventListener('keydown', function (e) {
         e.preventDefault();
     }
 });
-</script>
+
+
+    </script>
 
 </body>
 </html>

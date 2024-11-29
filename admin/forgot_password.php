@@ -70,14 +70,13 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
-        <div class="mb-3">
-          <label for="email" class="form-label">Enter your email address:</label>
-          <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
-        </div>
-        <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
-        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-      </form>
+      <form method="POST" action="../admin/funtion">
+    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+    <!-- Other form inputs -->
+    <input type="email" name="email" required>
+    <input type="submit" name="btn-forgotpass" value="Submit">
+</form>
+
     </div>
     <div class="footer-text">
     </div>

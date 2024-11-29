@@ -400,9 +400,7 @@ $conn->close();
             <input type="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
             <button type="submit" name="login">Login</button>
         </form>
-        <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
-    </div>
-</div>
+   
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
             <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>

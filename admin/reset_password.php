@@ -119,15 +119,6 @@ if (isset($_GET["reset"])) {
           <div class="form-group mb-3">
             <label for="otp" class="form-label">OTP Code:</label>
             <div id="otp-inputs" class="d-flex justify-content-between">
-              <!-- 6 Input Boxes for OTP -->
-              <input type="text" class="form-control otp-box" maxlength="1" required>
-              <input type="text" class="form-control otp-box" maxlength="1" required>
-              <input type="text" class="form-control otp-box" maxlength="1" required>
-              <input type="text" class="form-control otp-box" maxlength="1" required>
-              <input type="text" class="form-control otp-box" maxlength="1" required>
-              <input type="text" class="form-control otp-box" maxlength="1" required>
-            </div>
-            <!-- Hidden field to collect the OTP -->
             <input type="hidden" name="otp" id="otp" value="">
           </div>
 

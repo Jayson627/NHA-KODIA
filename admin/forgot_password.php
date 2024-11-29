@@ -1,8 +1,4 @@
-<?php
 
-session_start();
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,7 +68,6 @@ session_start();
       color: #555;
     }
   </style>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
   <div class="card">

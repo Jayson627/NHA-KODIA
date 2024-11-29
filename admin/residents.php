@@ -19,6 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = $_POST['username'];
         $password = password_hash($_POST['password'], PASSWORD_ARGON2I); // Hashing the password with argon2i
         $role = $_POST['role']; // Use the selected role from form
+        $id = uniqid(); // Generate a random unique ID
+        
     
        // Insert new user with default 'pending' status
 $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
@@ -83,10 +85,10 @@ if ($status !== 'approved') {
     
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
-                    header("Location: president"); 
+                    header("Location: dashboard.php"); 
                     exit();
                 } else if ($role === 'residents') { 
-                    header("Location: people_dashboard");
+                    header("Location: people_dashboard.php");
                     exit();
                 }
             } else {
@@ -233,53 +235,6 @@ $conn->close();
         cursor: pointer;
         font-size: 20px;
     }
- /* Modal styling */
- .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        background-color: white;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 500px;
-        border-radius: 4px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-     /* Style for the Terms and Conditions text button */
-     .text-button {
-        background: none;
-        border: none;
-        color: #007BFF;
-        text-decoration: underline;
-        cursor: pointer;
-        font-size: 14px;
-        padding: 0;
-    }
 
     /* Responsive Design */
     @media (max-width: 768px) {
@@ -347,7 +302,7 @@ $conn->close();
 <header>
     <img src="lo.png" alt="Logo" class="logo">
     <h1 style="margin: 0;">NHA Kodia-IS</h1>
-    <a href="login" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
+    <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
 </header>
 
 <div class="container">
@@ -371,11 +326,12 @@ $conn->close();
             <option value="residents">Residents</option>
             <option value="president">President</option>
         </select>
-        <div>
-                <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">I agree to the <span id="terms-conditions-link" class="text-button">Terms and Conditions</span></label>
-            </div>
 
+        <!-- Terms and Conditions Checkbox -->
+        <div style="margin: 10px 0;">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">I agree to the <a href="terms.php" target="_blank">Terms and Conditions</a></label>
+        </div>
 
         <button type="submit" name="create_account">Create Account</button>
     </form>
@@ -396,23 +352,9 @@ $conn->close();
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-            <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+            <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
-    <!-- Terms and Conditions Modal -->
-<div id="terms-conditions-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="close-modal">&times;</span>
-        <h2>Terms and Conditions</h2>
-        <p>By creating an account, you agree to the following terms and conditions:</p>
-        <ul>
-            <li>You will provide accurate and truthful information.</li>
-            <li>You agree to comply with all community rules and guidelines.</li>
-            <li>Your account may be suspended or terminated if you violate any terms.</li>
-            <li>The community management has the right to approve or reject any account registration.</li>
-        </ul>
-    </div>
-</div>
     <script>
         function toggleForm() {
             const createAccountForm = document.getElementById('create-account');
@@ -429,19 +371,6 @@ $conn->close();
                 formTitle.textContent = 'Create Account';
             }
         }
-        document.getElementById('terms-conditions-link').addEventListener('click', function() {
-    document.getElementById('terms-conditions-modal').style.display = 'block';
-});
-
-document.getElementById('close-modal').addEventListener('click', function() {
-    document.getElementById('terms-conditions-modal').style.display = 'none';
-});
-
-window.onclick = function(event) {
-    if (event.target == document.getElementById('terms-conditions-modal')) {
-        document.getElementById('terms-conditions-modal').style.display = 'none';
-    }
-}
 
           // Toggle password visibility for account creation
           const togglePassword = document.getElementById('togglePassword');
@@ -476,23 +405,6 @@ window.onclick = function(event) {
             alert("You must be at least 18 years old to register.");
             return false;
         }
-    }
-    function showTerms() {
-        var modal = document.getElementById('termsModal');
-        modal.style.display = "block";
-    }
-
-    function closeTerms() {
-        var modal = document.getElementById('termsModal');
-        modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        var modal = document.getElementById('termsModal');
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
 
         // Retrieve data from localStorage when loading the page
     window.onload = function() {
@@ -503,7 +415,15 @@ window.onclick = function(event) {
         }
     };
 
-       
+        // Check if terms and conditions checkbox is checked
+        const termsCheckbox = document.getElementById('terms');
+        if (!termsCheckbox.checked) {
+            alert("You must agree to the Terms and Conditions to create an account.");
+            return false;
+        }
+
+        return true;
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
     <?php if (isset($_SESSION['message'])): ?>
@@ -546,24 +466,9 @@ window.onclick = function(event) {
 });
 
 
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault();
-    }
-});
-
-
 
     </script>
 
 </body>
 </html>
 <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-
-
-
-

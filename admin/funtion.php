@@ -1,87 +1,54 @@
 <?php
 session_start();
-require_once("mailer.php");
+require_once('PHPMailer/src/PHPMailer.php');
+require_once('PHPMailer/src/SMTP.php');
+require_once('PHPMailer/src/Exception.php');
 require_once('../admin/connection.php');
-require_once("../initialize.php");
+
+use PHPMailer\PHPMailer\PHPMailer;
 
 if (isset($_POST["btn-forgotpass"])) {
-
-    $email = $_POST["email"];
-    $reset_code = random_int(100000, 999999);
-    
-    $sql = "UPDATE `users` SET `code`='$reset_code' WHERE email='$email'";
- 
-    $query = mysqli_query($conn, $sql);
- 
- 
-    if ($query) {
-        
-        //Set Params 
-        $mail->SetFrom("alcantarajayson118@gmail.com");
-        $mail->AddAddress("$email");
-        $mail->Subject = "Reset Password OTP";
-        $mail->Body = "Use this OTP Code to reset your password: ".$reset_code."<br/>".
-        "Click the link to reset password: http://nha-kodia.com/admin/reset_password?reset&email=$email"  //pulihan $reset_coede
-        ;
-
-
-        if(!$mail->Send()) {
-            echo "Mailer Error: " . $mail->ErrorInfo;
-        } else {
-            echo "Message has been sent";
-        }
-
-        //OTP has been sent please check your email
-        $_SESSION["notify"] = "success";
- 
-        header("location: ../admin/forgot_password");
- 
-    }else {
- 
-        $_SESSION["notify"] = "failed";
-        
- 
-        header("location: ../admin/forgot_password");
- 
- 
-    }
- 
- }
- // new password 
- if (isset($_POST["btn-new-password"])) {
-
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $otp = $_POST["otp"];
-
-    $sql = "SELECT `code` FROM `users` WHERE email='$email'";
-    $query = mysqli_query($conn, $sql);
-
-    if (mysqli_num_rows($query) > 0) {
-
-        while ($res = mysqli_fetch_assoc($query)) {
-            $get_code = $res["code"];
-        }
-
-        if ($otp === $get_code) {
-
-            $reset = random_int(100000, 999999);
-            $password = md5($password);
-
-            $sql = "UPDATE `users` SET `password`='$password', `code`=$reset WHERE email='$email'";
-            $query = mysqli_query($conn, $sql);
-
-            $_SESSION["notify"] = "success";
-            header("location: ../admin/forgot_password");
-
-        } else {
-            $_SESSION["notify"] = "invalid";
-            header("location: ../admin/forgot_password");
-        }
-
-    } else {
+    $email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
+    if (!$email) {
         $_SESSION["notify"] = "invalid";
-        header("location: ../admin/forgot_password");
+        header("location: forgot_password");
+        exit();
     }
+
+    $reset_code = random_int(100000, 999999);
+
+    $stmt = $conn->prepare("UPDATE `users` SET `code`=? WHERE email=?");
+    $stmt->bind_param('is', $reset_code, $email);
+    $query = $stmt->execute();
+
+    if ($query) {
+        $mail = new PHPMailer();
+        $mail->IsSMTP();
+        $mail->CharSet = "UTF-8";
+        $mail->Host = "smtp.gmail.com";
+        $mail->SMTPDebug = 0; 
+        $mail->Port = 465; 
+        $mail->SMTPSecure = 'ssl';  
+        $mail->SMTPAuth = true; 
+        $mail->IsHTML(true);
+        $mail->Username = "alcantarajayson118@gmail.com";
+        $mail->Password = "xbdldpzpvsdhicxd";
+        $mail->SetFrom("alcantarajayson118@gmail.com");
+        $mail->AddAddress($email);
+        $mail->Subject = "Reset Password OTP";
+        $mail->Body = "Use this OTP Code to reset your password: $reset_code<br/>" .
+                      "Click the link to reset password: http://nha-kodia.com/admin/reset_password?reset&email=$email";
+
+        if (!$mail->Send()) {
+            $_SESSION["notify"] = "failed";
+        } else {
+            $_SESSION["notify"] = "success";
+        }
+    } else {
+        $_SESSION["notify"] = "failed";
+    }
+
+    header("location: forgot_password");
+    exit();
 }
 ?>

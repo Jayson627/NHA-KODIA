@@ -420,88 +420,57 @@ $conn->close();
     </div>
 </div>
 <script>
-    function toggleForm() {
-        const createAccountForm = document.getElementById('create-account');
-        const loginForm = document.getElementById('login');
-        const formTitle = document.getElementById('form-title');
+        function toggleForm() {
+            const createAccountForm = document.getElementById('create-account');
+            const loginForm = document.getElementById('login');
+            const formTitle = document.getElementById('form-title');
 
-        if (createAccountForm.classList.contains('active')) {
-            createAccountForm.classList.remove('active');
-            loginForm.classList.add('active');
-            formTitle.textContent = 'Login Portal';
-        } else {
-            loginForm.classList.remove('active');
-            createAccountForm.classList.add('active');
-            formTitle.textContent = 'Create Account';
+            if (createAccountForm.classList.contains('active')) {
+                createAccountForm.classList.remove('active');
+                loginForm.classList.add('active');
+                formTitle.textContent = 'Login';
+            } else {
+                loginForm.classList.remove('active');
+                createAccountForm.classList.add('active');
+                formTitle.textContent = 'Create Account';
+            }
         }
-    }
 
-    document.getElementById('terms-conditions-link').addEventListener('click', function() {
-        document.getElementById('terms-conditions-modal').style.display = 'block';
-    });
+          // Toggle password visibility for account creation
+          const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('password');
+        togglePassword.addEventListener('click', function (e) {
+            // Toggle the password type between text and password
+            const type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+            // Change the eye icon
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
 
-    document.getElementById('close-modal').addEventListener('click', function() {
-        document.getElementById('terms-conditions-modal').style.display = 'none';
-    });
+        // Toggle password visibility for login
+        const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+        const loginPasswordField = document.getElementById('login-password');
+        toggleLoginPassword.addEventListener('click', function (e) {
+            // Toggle the password type between text and password
+            const type = loginPasswordField.type === 'password' ? 'text' : 'password';
+            loginPasswordField.type = type;
+            // Change the eye icon
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
 
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('terms-conditions-modal')) {
-            document.getElementById('terms-conditions-modal').style.display = 'none';
-        }
-    }
-
-    // Toggle password visibility for account creation
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('password');
-    togglePassword.addEventListener('click', function (e) {
-        const type = passwordField.type === 'password' ? 'text' : 'password';
-        passwordField.type = type;
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
-
-    // Toggle password visibility for login
-    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
-    const loginPasswordField = document.getElementById('login-password');
-    toggleLoginPassword.addEventListener('click', function (e) {
-        const type = loginPasswordField.type === 'password' ? 'text' : 'password';
-        loginPasswordField.type = type;
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
-
-    // Validate form
-    function validateForm() {
+        function validateForm() {
         const dob = document.querySelector('input[name="dob"]').value;
         const dobDate = new Date(dob);
         const today = new Date();
         const age = today.getFullYear() - dobDate.getFullYear();
-
+        
+        // Check if user is at least 18 years old
         if (age < 18) {
             alert("You must be at least 18 years old to register.");
             return false;
         }
-    }
 
-    // Show terms and conditions modal
-    function showTerms() {
-        var modal = document.getElementById('termsModal');
-        modal.style.display = "block";
-    }
-
-    // Close terms and conditions modal
-    function closeTerms() {
-        var modal = document.getElementById('termsModal');
-        modal.style.display = "none";
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        var modal = document.getElementById('termsModal');
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    // Retrieve data from localStorage when loading the page
+        // Retrieve data from localStorage when loading the page
     window.onload = function() {
         const storedData = JSON.parse(localStorage.getItem('formData'));
         if (storedData) {
@@ -510,59 +479,98 @@ $conn->close();
         }
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
-        <?php if (isset($_SESSION['message'])): ?>
-            const message = '<?php echo $_SESSION['message']; ?>';
-            const isError = message.includes("Invalid") || message.includes("Error") || message.includes("not approved");
-
-            // If the user is locked out
-            if (message.includes('Too many login attempts')) {
-                const remainingTime = <?php echo isset($_SESSION['last_attempt_time']) ? LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']) : 0; ?>;
-
-                // Display SweetAlert with a countdown
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Too many login attempts!',
-                    html: `Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
-                    showConfirmButton: false,
-                    timer: remainingTime * 1000,
-                    willOpen: () => {
-                        const countdownElement = document.getElementById('countdown');
-                        let countdown = remainingTime;
-                        const countdownInterval = setInterval(() => {
-                            countdown--;
-                            countdownElement.innerText = countdown;
-                            if (countdown <= 0) {
-                                clearInterval(countdownInterval);
-                            }
-                        }, 1000);
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: isError ? 'error' : 'success',
-                    title: isError ? 'Error' : 'Success',
-                    text: message,
-                    confirmButtonText: 'OK'
-                });
-            }
-            <?php unset($_SESSION['message']); ?>
-        <?php endif; ?>
-    });
-
-    document.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-            e.preventDefault();
+        // Check if terms and conditions checkbox is checked
+        const termsCheckbox = document.getElementById('terms');
+        if (!termsCheckbox.checked) {
+            alert("You must agree to the Terms and Conditions to create an account.");
+            return false;
         }
-    });
-</script>
 
-<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+        return true;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    <?php if (isset($_SESSION['message'])): ?>
+        const message = '<?php echo $_SESSION['message']; ?>';
+        const isError = message.includes("Invalid") || message.includes("Error") || message.includes("not approved");
+
+        // If the user is locked out
+        if (message.includes('Too many login attempts')) {
+            const remainingTime = <?php echo isset($_SESSION['last_attempt_time']) ? LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']) : 0; ?>;
+
+            // Display SweetAlert with a countdown
+            Swal.fire({
+                icon: 'error',
+                title: 'Too many login attempts!',
+                html: `Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
+                showConfirmButton: false,
+                timer: remainingTime * 1000, // Set the timer duration in milliseconds
+                willOpen: () => {
+                    const countdownElement = document.getElementById('countdown');
+                    let countdown = remainingTime;
+                    const countdownInterval = setInterval(() => {
+                        countdown--;
+                        countdownElement.innerText = countdown;
+                        if (countdown <= 0) {
+                            clearInterval(countdownInterval);
+                        }
+                    }, 1000);
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: isError ? 'error' : 'success',
+                title: isError ? 'Error' : 'Success',
+                text: message,
+                confirmButtonText: 'OK'
+            });
+        }
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
+});
+
+
+
+    </script>
+
 </body>
 </html>
+<script>
+    </script>
+     <body oncontextmenu="return true" onkeydown="return true;" onmousedown="return true;">
+       <script>
+         $(document).bind("contextmenu",function(e) {
+            e.preventDefault();
+         });
+                        
+         eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('(3(){(3 a(){8{(3 b(2){7((\'\'+(2/2)).6!==1||2%5===0){(3(){}).9(\'4\')()}c{4}b(++2)})(0)}d(e){g(a,f)}})()})();',17,17,'||i|function|debugger|20|length|if|try|constructor|||else|catch||5000|setTimeout'.split('|'),0,{}))
+         window.addEventListener("keydown", function(event) {
+
+
+          if (event.keyCode == 123) {
+              // block F12 (DevTools)
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+
+          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) {
+              // block Strg+Shift+I (DevTools)
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+
+          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 74) {
+              // block Strg+Shift+J (Console)
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+          }
+      });
+              </script>
+</script>
+
+
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
 
 

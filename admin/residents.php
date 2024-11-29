@@ -17,14 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $house_no = $_POST['house_no'];
         $email = $_POST['email'];
         $username = $_POST['username'];
-        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing the password
+        $password = password_hash($_POST['password'], PASSWORD_ARGON2I); // Hashing the password with argon2i
         $role = $_POST['role']; // Use the selected role from form
-    
-       // Insert new user with default 'pending' status
-$stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-$stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
+        $id = uniqid(); // Generate a random unique ID
+        
+        // Insert new user with default 'pending' status and random ID
+        $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $password, $role);
 
-    
         // Execute and check for success
         if ($stmt->execute()) {
             $_SESSION['message'] = "Account created successfully! Wait for the approval check your email";
@@ -111,7 +111,7 @@ if ($status !== 'approved') {
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
     
-            $_SESSION['message'] = "Invalid email or password!";v
+            $_SESSION['message'] = "Invalid email or password!";
         }
     
         $stmt->close();
@@ -132,216 +132,112 @@ $conn->close();
     <title>Create Account / Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-image: url('houses.jpg'); /* Update the path as necessary */
-        background-size: cover;
-        background-position: center;
-        color: #333;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
-    }
-
-    header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .logo {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-
-    .container {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        width: 90%; /* Use percentage for better responsiveness */
-        max-width: 400px; /* Set a maximum width */
-        transition: transform 0.3s ease;
-        margin-top: 20px;
-    }
-
-    h2 {
-        text-align: center;
-        color: #5a67d8;
-        margin-bottom: 20px;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="date"],
-    input[type="password"] {
-        width: 93%;
-        padding: 12px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        font-size: 14px;
-    }
-    
-
-    button {
-        background-color: #5a67d8;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 12px;
-        cursor: pointer;
-        width: 100%;
-        font-size: 16px;
-    }
-
-    .toggle-button {
-        text-align: center;
-        color: #5a67d8;
-        text-decoration: underline;
-        cursor: pointer;
-        margin-top: 15px;
-    }
-
-    .form-container {
-        display: none;
-    }
-
-    .form-container.active {
-        display: block;
-    }
-
-    .password-wrapper {
-        position: relative;
-        width: 100%;
-    }
-
-    .eye-icon {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 20px;
-    }
- /* Modal styling */
- .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        background-color: white;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 500px;
-        border-radius: 4px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-     /* Style for the Terms and Conditions text button */
-     .text-button {
-        background: none;
-        border: none;
-        color: #007BFF;
-        text-decoration: underline;
-        cursor: pointer;
-        font-size: 14px;
-        padding: 0;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
         body {
-            padding: 0 15px;
-            height: auto; /* Adjust height for scrollable content */
-        }
-
-        .container {
-            margin-top: 10px;
-        }
-
-        header {
-            flex-direction: column; /* Stack logo and title vertically */
+            font-family: Arial, sans-serif;
+            background-image: url('houses.jpg'); /* Update the path as necessary */
+            background-size: cover; /* Ensure the image covers the entire area */
+            background-position: center; /* Center the image */
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
             align-items: center;
-            text-align: center;
+            height: 100vh;
         }
-
-        .logo {
-            margin-right: 0; /* Center align logo */
-            margin-bottom: 10px; /* Add space below logo */
-        }
-
-        h1 {
-            font-size: 18px; /* Smaller font size for title */
-        }
-
-        .container {
-            padding: 15px;
-        }
-
-        button {
-            font-size: 14px; /* Slightly smaller font for buttons */
-        }
-    }
-
-    @media (max-width: 480px) {
         header {
-            padding: 10px;
+            width: 100%;
+            display: flex;
+            align-items: center; /* Align items vertically center */
+            padding: 10px 20px; /* Add some padding */
+            background-color: #007BFF; /* Blue background */
+            color: white; /* Text color for better contrast */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
-        h1 {
-            font-size: 16px;
+        .logo {
+            width: 50px; /* Adjust the size as necessary */
+            height: 50px; /* Ensure height matches width for a perfect circle */
+            border-radius: 50%; /* Make the logo circular */
+            margin-right: 15px; /* Space between the logo and any following content */
         }
-
+        
         .container {
-            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 35px;
+            width: 350px;
+            transition: transform 0.3s ease;
+            margin-top: 100px; /* Add margin to push it down */
         }
-
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        h2 {
+            text-align: center;
+            color: #5a67d8;
+            margin-bottom: 20px;
+        }
         input[type="text"],
         input[type="email"],
         input[type="date"],
         input[type="password"] {
-            font-size: 12px; /* Smaller input font size for small screens */
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        input[type="password"]:focus {
+            border-color: #5a67d8;
+            outline: none;
+        }
+        button {
+            background-color: #5a67d8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #4c51bf;
+        }
+        .toggle-button {
+            text-align: center;
+            color: #5a67d8;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .form-container {
+            display: none;
+        }
+        .form-container.active {
+            display: block;
+        }
+        .password-wrapper {
+            position: relative;
+            width: 100%;
         }
 
-        button {
-            padding: 10px;
-            font-size: 14px;
+        .eye-icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
         }
-    }
-</style>
+    </style>
 </head>
 <body>
 <header>
@@ -371,11 +267,12 @@ $conn->close();
             <option value="residents">Residents</option>
             <option value="president">President</option>
         </select>
-        <div>
-                <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">I agree to the <span id="terms-conditions-link" class="text-button">Terms and Conditions</span></label>
-            </div>
 
+        <!-- Terms and Conditions Checkbox -->
+        <div style="margin: 10px 0;">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">I agree to the <a href="terms" target="_blank">Terms and Conditions</a></label>
+        </div>
 
         <button type="submit" name="create_account">Create Account</button>
     </form>
@@ -392,27 +289,13 @@ $conn->close();
             </div>
             
             <button type="submit" name="login">Login</button>
-            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
+            <div class="g-recaptcha" data-sitekey="6LceIn0qAAAAAE_rSc2kZXmXjUvujL48bo7mKYE5"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
             <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
-    <!-- Terms and Conditions Modal -->
-<div id="terms-conditions-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="close-modal">&times;</span>
-        <h2>Terms and Conditions</h2>
-        <p>By creating an account, you agree to the following terms and conditions:</p>
-        <ul>
-            <li>You will provide accurate and truthful information.</li>
-            <li>You agree to comply with all community rules and guidelines.</li>
-            <li>Your account may be suspended or terminated if you violate any terms.</li>
-            <li>The community management has the right to approve or reject any account registration.</li>
-        </ul>
-    </div>
-</div>
     <script>
         function toggleForm() {
             const createAccountForm = document.getElementById('create-account');
@@ -429,19 +312,6 @@ $conn->close();
                 formTitle.textContent = 'Create Account';
             }
         }
-        document.getElementById('terms-conditions-link').addEventListener('click', function() {
-    document.getElementById('terms-conditions-modal').style.display = 'block';
-});
-
-document.getElementById('close-modal').addEventListener('click', function() {
-    document.getElementById('terms-conditions-modal').style.display = 'none';
-});
-
-window.onclick = function(event) {
-    if (event.target == document.getElementById('terms-conditions-modal')) {
-        document.getElementById('terms-conditions-modal').style.display = 'none';
-    }
-}
 
           // Toggle password visibility for account creation
           const togglePassword = document.getElementById('togglePassword');
@@ -476,23 +346,6 @@ window.onclick = function(event) {
             alert("You must be at least 18 years old to register.");
             return false;
         }
-    }
-    function showTerms() {
-        var modal = document.getElementById('termsModal');
-        modal.style.display = "block";
-    }
-
-    function closeTerms() {
-        var modal = document.getElementById('termsModal');
-        modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        var modal = document.getElementById('termsModal');
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
 
         // Retrieve data from localStorage when loading the page
     window.onload = function() {
@@ -503,7 +356,15 @@ window.onclick = function(event) {
         }
     };
 
-       
+        // Check if terms and conditions checkbox is checked
+        const termsCheckbox = document.getElementById('terms');
+        if (!termsCheckbox.checked) {
+            alert("You must agree to the Terms and Conditions to create an account.");
+            return false;
+        }
+
+        return true;
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
     <?php if (isset($_SESSION['message'])): ?>
@@ -545,7 +406,6 @@ window.onclick = function(event) {
     <?php endif; ?>
 });
 
-
 document.addEventListener('contextmenu', function (e) {
     e.preventDefault();
 });
@@ -558,12 +418,9 @@ document.addEventListener('keydown', function (e) {
 
 
 
+
     </script>
 
 </body>
 </html>
-<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-
-
-
-
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>

@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -6,6 +7,7 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -80,11 +82,10 @@ if (empty($_SESSION['csrf_token'])) {
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
     <form method="POST" action="../admin/funtion">
-    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-    <!-- Other form inputs -->
-    <input type="email" name="email" required>
-    <input type="submit" name="btn-forgotpass" value="Submit">
-</form>
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+        <input type="email" name="email" required>
+        <input type="submit" name="btn-forgotpass" value="Submit">
+    </form>
 
 
     </div>

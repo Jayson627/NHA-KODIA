@@ -86,37 +86,40 @@
   </div>
 
   <script>
-    <?php
-    // Check if there's a session message to display
-    if (isset($_SESSION['notify'])) {
-        $message = addslashes($_SESSION['notify']);
-        if (strpos($message, 'A reset link has been sent to your email') !== false) {
-            echo "Swal.fire({
-                title: 'Success',
-                text: '$message',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });";
-        } else {
-            echo "Swal.fire({
-                title: 'Error',
-                text: '$message',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });";
-        }
-        unset($_SESSION['notify']);
-    }
-    ?>
+    document.addEventListener('DOMContentLoaded', function() {
+      <?php
+      // Check if there's a session message to display
+      if (isset($_SESSION['notify'])) {
+          $message = addslashes($_SESSION['notify']);
+          if (strpos($message, 'A reset link has been sent to your email') !== false) {
+              echo "Swal.fire({
+                  title: 'Success',
+                  text: '$message',
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+              });";
+          } else {
+              echo "Swal.fire({
+                  title: 'Error',
+                  text: '$message',
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+              });";
+          }
+          unset($_SESSION['notify']);
+      }
+      ?>
+    });
 
+    // Disable right-click and certain key combinations
     document.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
+      e.preventDefault();
     });
 
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-            e.preventDefault();
-        }
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+      }
     });
   </script>
 </body>

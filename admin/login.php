@@ -77,6 +77,54 @@
       font-family: 'Poppins', sans-serif;
     }
 
+    /* Push Menu Styles */
+    #push-menu {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: white;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+      z-index: 1000;
+    }
+
+    #push-menu a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: black;
+      display: block;
+      transition: 0.3s;
+    }
+
+    #push-menu a:hover {
+      background-color: blue;
+    }
+
+    #push-menu .close-btn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+      color: red;
+    }
+
+    .open-menu-btn {
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+      display: none;
+      z-index: 1050;
+    }
+
+    .open-menu-btn:hover {
+      color: #007bff;
+    }
+
     /* Login Form */
     #login {
       height: 100vh;
@@ -124,6 +172,77 @@
       background-color: #007bff;
       border-color: #007bff;
     }
+
+    /* Animated Text */
+    .animated-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: #ffffff;
+      white-space: nowrap;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      .navbar-brand h4 {
+        font-size: 1rem;
+      }
+
+      .navbar-brand img {
+        height: 35px;
+        width: 35px;
+      }
+
+      .card {
+        width: 95%;
+        max-width: none;
+      }
+
+      .card-header h4 {
+        font-size: 1.2rem;
+      }
+
+      .navbar-nav .nav-link {
+        display: none !important;
+      }
+
+      /* Show Push Menu only on small screens */
+      #push-menu {
+        width: 0;
+      }
+
+      /* Display the hamburger menu button in mobile */
+      .open-menu-btn {
+        display: block;
+      }
+
+      .navbar-nav {
+        display: none;
+      }
+
+      .open-menu-btn {
+        margin-left: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .animated-text {
+        font-size: 2rem; /* Adjust animated text size for very small screens */
+      }
+
+      .card-header h4 {
+        font-size: 1.1rem;
+      }
+    }
     
   </style>
 
@@ -134,7 +253,9 @@
   <!-- Bootstrap JS -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
   <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
 
   <script>
     let typingInterval;
@@ -185,30 +306,32 @@
       });
 
       $('#login-frm').on('submit', function(e) {
-        const email = $('[name="email"]').val();
-        const emailPattern = /.+@gmail\.com$/;
-        const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
+    const email = $('[name="email"]').val();
+    const emailPattern = /.+@gmail\.com$/;
+    // const password = $('[name="password"]').val();
+    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        // Validate email
-        if (!emailPattern.test(email)) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Email',
-                text: 'Please enter a valid Gmail address.',
-            });
-        } 
-        // Validate reCAPTCHA
-        else if (recaptchaResponse.length === 0) {
-            e.preventDefault(); 
-            Swal.fire({
-                icon: 'error',
-                title: 'reCAPTCHA Required',
-                text: 'Please complete the reCAPTCHA to continue.',
-            });
-        }
-      });
+    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
 
+    // Validate email
+    if (!emailPattern.test(email)) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Email',
+            text: 'Please enter a valid Gmail address.',
+        });
+    } 
+    
+    else if (recaptchaResponse.length === 0) {
+        e.preventDefault(); 
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
+        });
+    }
+});
       $('.open-menu-btn').click(function() {
         $('#push-menu').css('width', '250px'); 
       });
@@ -222,91 +345,74 @@
       type(); 
     };
   </script>
-
-  <script>
-    // Simulating incorrect password response (you'd normally get this from the server)
-    function mockLogin() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      // Simulate checking credentials
-      if (email !== 'test@gmail.com' || password !== 'password123') {
-        // Show SweetAlert for incorrect password
-        Swal.fire({
-          icon: 'error',
-          title: 'Incorrect Credentials',
-          text: 'The email or password you entered is incorrect. Please try again.',
-        });
-      } else {
-        // Proceed with login (redirect, etc.)
-        Swal.fire({
-          icon: 'success',
-          title: 'Login Successful',
-          text: 'You have successfully logged in!',
-        });
-      }
-    }
-
-    // Hook the mock login function to the submit button
-    $('#login-frm').on('submit', function(e) {
-      e.preventDefault();  // Prevent the form from submitting
-      mockLogin();  // Call the mock login function
-    });
-  </script>
-
+  
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
     <a class="navbar-brand" href="#">
-      <img src="lo.png" alt="NHA Kodia Logo">
-      <h4 class="d-inline">NHA Kodia</h4>
+      <img src="lo.png" alt="Logo">
     </a>
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <button class="nav-link btn btn-outline-light" id="login-as-admin">Login as Admin</button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link btn btn-outline-light" id="login-as-resident">Login as Resident</button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link btn btn-outline-light" id="login-as-officer">Login as Officer</button>
-      </li>
-    </ul>
+
+    <span class="open-menu-btn">&#9776;</span>
+
+    <div class="navbar-nav">
+      <a href="about" class="nav-link">About</a>
+      <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
+      <a href="residents" class="nav-link">Login as Resident</a>
+    </div>
+
+    <div id="push-menu">
+      <a href="javascript:void(0)" class="close-btn">&times;</a>
+      <a href="about">About</a>
+      <a href="#" id="login-as-admin"> Admin</a>
+      <a href="residents"> Resident</a>
+    </div>
   </nav>
 
-  <!-- Animated Text -->
-  <div id="animated-text" class="text-center text-white"></div>
+  <div id="animated-text" class="animated-text"></div>
 
-  <!-- Login Form -->
   <div id="login">
     <div class="card">
       <div class="card-header">
-        <h3>Login</h3>
+        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
       </div>
       <div class="card-body">
-        <form id="login-frm">
-          <div class="form-group">
-            <input type="email" class="form-control" name="email" id="email" placeholder="Email address" required>
-          </div>
-          <div class="form-group input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-key"></i></span>
-            </div>
-            <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
-            <div class="input-group-append">
-              <span class="input-group-text" id="togglePassword"><i class="fas fa-eye"></i></span>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="your-site-key-here"></div>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary btn-block">Login</button>
-          </div>
-        </form>
+        <form id="login-frm" action="" method="post">
+    <input type="hidden" name="role" id="role" value="">
+    <div class="form-group input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+        </div>
+        <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
+               pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
+    </div>
+
+    <div class="form-group input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+        </div>
+        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
+        <div class="input-group-append">
+            <span class="input-group-text">
+                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+            </span>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+    </div>
+    <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
+    <div class="form-group text-center">
+        <a href="forgot_password" class="text-primary">Forgot Password?</a>
+    </div>
+    
+</form>
+
       </div>
     </div>
   </div>
 </body>
 </html>
+
+

@@ -80,26 +80,38 @@
         <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
       </form>
     </div>
-    <div class="footer-text">
-     
-    </div>
+    <div class="footer-text"></div>
   </div>
- 
   
-  <script>
-
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault();
+  <?php
+    session_start(); // Ensure session is started
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']);
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'Success' : 'Error')."',
+                text: '$message',
+                icon: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'success' : 'error')."',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>";
+        unset($_SESSION['notify']);
     }
-});
+  ?>
 
+  <script>
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
 
-    </script>
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+  </script>
 
 </body>
 </html>

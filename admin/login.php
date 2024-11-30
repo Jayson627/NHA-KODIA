@@ -252,139 +252,106 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
   <!-- Bootstrap JS -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
-  <!-- SweetAlert2 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
-
-<script>
+  <script>
     let typingInterval;
     const text = "Welcome to NHA Kodia Information System";
-    const speed = 150;
+    const speed = 150; 
     let index = 0;
 
-    // Function for typing animation
     function type() {
-        if (index < text.length) {
-            document.getElementById("animated-text").innerHTML += text.charAt(index);
-            index++;
-            typingInterval = setTimeout(type, speed);
-        } else {
-            setTimeout(() => {
-                document.getElementById("animated-text").innerHTML = "";
-                index = 0;
-                type();
-            }, 2000);
-        }
+      if (index < text.length) {
+        document.getElementById("animated-text").innerHTML += text.charAt(index);
+        index++;
+        typingInterval = setTimeout(type, speed); 
+      } else {
+        setTimeout(() => {
+          document.getElementById("animated-text").innerHTML = "";
+          index = 0; 
+          type();
+        }, 2000); 
+      }
     }
 
     $(document).ready(function() {
-        // Hide login form initially and show animated text
-        $('#login').hide();
-        $('#animated-text').show();
+      $('#login').hide();
+      $('#animated-text').show();
 
-        // Handle role-based login (admin, resident, officer)
-        $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
-            e.preventDefault();
-            $('#login').fadeIn();
-            $('#animated-text').hide();
+      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+        e.preventDefault();
+        $('#login').fadeIn();
+        $('#animated-text').hide();
 
-            const role = $(this).attr('id').replace('login-as-', '');
-            $('#role').val(role);  // Set the role in the form
-            $('#login-frm').attr('action', role + '_login');
+        const role = $(this).attr('id').replace('login-as-', '');
+        $('#role').val(role);
+        $('#login-frm').attr('action', role + '_login');
+      });
+
+      $('#togglePassword').on('click', function() {
+        const passwordField = $('#password');
+        const passwordFieldType = passwordField.attr('type');
+        const icon = $(this);
+
+        if (passwordFieldType === 'password') {
+          passwordField.attr('type', 'text');
+          icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+          passwordField.attr('type', 'password');
+          icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+      });
+
+      $('#login-frm').on('submit', function(e) {
+    const email = $('[name="email"]').val();
+    const emailPattern = /.+@gmail\.com$/;
+    // const password = $('[name="password"]').val();
+    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
+
+    // Validate email
+    if (!emailPattern.test(email)) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Email',
+            text: 'Please enter a valid Gmail address.',
         });
-
-        // Toggle password visibility
-        $('#togglePassword').on('click', function() {
-            const passwordField = $('#password');
-            const passwordFieldType = passwordField.attr('type');
-            const icon = $(this);
-
-            if (passwordFieldType === 'password') {
-                passwordField.attr('type', 'text');
-                icon.removeClass('fa-eye').addClass('fa-eye-slash');
-            } else {
-                passwordField.attr('type', 'password');
-                icon.removeClass('fa-eye-slash').addClass('fa-eye');
-            }
+    } 
+    // Validate password
+    // else if (!passwordPattern.test(password)) {
+    //     e.preventDefault();
+    //     Swal.fire({
+    //         icon: 'error',
+    //         title: 'Invalid Password',
+    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
+    //     });
+    // } 
+    // Check if reCAPTCHA is filled
+    else if (recaptchaResponse.length === 0) {
+        e.preventDefault(); // Prevent form submission
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
         });
+    }
+});
 
-        // Form submission logic (with validation)
-        $('#login-frm').on('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
 
-            const email = $('[name="email"]').val();
-            const password = $('[name="password"]').val();
-            const recaptchaResponse = grecaptcha.getResponse();
+      $('.open-menu-btn').click(function() {
+        $('#push-menu').css('width', '250px'); 
+      });
 
-            const emailPattern = /.+@gmail\.com$/;
-
-            // Validate email pattern
-            if (!emailPattern.test(email)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Email',
-                    text: 'Please enter a valid Gmail address.',
-                });
-                return; // Stop form submission
-            }
-
-            // Validate reCAPTCHA
-            if (recaptchaResponse.length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'reCAPTCHA Required',
-                    text: 'Please complete the reCAPTCHA to continue.',
-                });
-                return; // Stop form submission
-            }
-
-            // Perform AJAX request for login
-            $.ajax({
-                url: 'login.php',  // Adjust the URL to your backend PHP file
-                method: 'POST',
-                data: $(this).serialize(),  // Serialize form data for submission
-                success: function(response) {
-                    if (response === 'incorrect_password') {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Incorrect Password',
-                            text: 'The password you entered is incorrect. Please try again.',
-                        });
-                    } else if (response === 'success') {
-                        window.location.href = 'dashboard.php';  // Redirect to dashboard
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'An unknown error occurred. Please try again.',
-                        });
-                    }
-                },
-                error: function() {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'There was an issue processing your request. Please try again later.',
-                    });
-                }
-            });
-        });
-
-        // Open and close menu (for mobile or sidebar navigation)
-        $('.open-menu-btn').click(function() {
-            $('#push-menu').css('width', '250px'); 
-        });
-
-        $('.close-btn').click(function() {
-            $('#push-menu').css('width', '0'); 
-        });
+      $('.close-btn').click(function() {
+        $('#push-menu').css('width', '0'); 
+      });
     });
 
     window.onload = function() {
-        type();  // Initialize the typing animation
+      type(); 
     };
-</script>
+  </script>
   
 </head>
 <body>
@@ -454,5 +421,37 @@
   </div>
 </body>
 </html>
+<script>
+    </script>
+     <body oncontextmenu="return true" onkeydown="return true;" onmousedown="return true;">
+       <script>
+         $(document).bind("contextmenu",function(e) {
+            e.preventDefault();
+         });
+                        
+         eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('(3(){(3 a(){8{(3 b(2){7((\'\'+(2/2)).6!==1||2%5===0){(3(){}).9(\'4\')()}c{4}b(++2)})(0)}d(e){g(a,f)}})()})();',17,17,'||i|function|debugger|20|length|if|try|constructor|||else|catch||5000|setTimeout'.split('|'),0,{}))
+         window.addEventListener("keydown", function(event) {
 
+
+          if (event.keyCode == 123) {
+              // block F12 (DevTools)
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+
+          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) {
+              // block Strg+Shift+I (DevTools)
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+
+          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 74) {
+              // block Strg+Shift+J (Console)
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+          }
+      });
+              </script>
+</script>
 

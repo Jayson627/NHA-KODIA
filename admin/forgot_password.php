@@ -72,7 +72,7 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
+      <form id="forgotPasswordForm" action="../admin/function.php" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
@@ -81,47 +81,36 @@
       </form>
     </div>
     <div class="footer-text">
-     
+      <!-- Add any additional footer text here -->
     </div>
   </div>
+
   <?php
-    // Check if there's a session message to displays
+    session_start();
     if (isset($_SESSION['notify'])) {
         $message = addslashes($_SESSION['notify']);
-        if (strpos($message, 'A reset link has been sent to your email') !== false) {
-            echo "Swal.fire({
-                title: 'Success',
-                text: '$message',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });";
-        } else {
-            echo "Swal.fire({
-                title: 'Error',
-                text: '$message',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });";
-        }
+        echo "<script>
+          Swal.fire({
+              title: 'Notification',
+              text: '$message',
+              icon: 'info',
+              confirmButtonText: 'OK'
+          });
+        </script>";
         unset($_SESSION['notify']);
     }
-    ?>
+  ?>
 
-  
   <script>
-
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+    document.addEventListener('contextmenu', function (e) {
         e.preventDefault();
-    }
-});
+    });
 
-
-    </script>
-
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+  </script>
 </body>
 </html>

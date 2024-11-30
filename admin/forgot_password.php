@@ -80,60 +80,42 @@
         <button type="submit" name="btn-forgotpass" class="btn btn-primary w-100">Submit</button>
       </form>
     </div>
-    <div class="footer-text">
-     
-    </div>
+    <div class="footer-text"></div>
   </div>
-  
+
   <script>
+    <?php
+      // Check if there's a session message to display
+      if (isset($_SESSION['notify'])) {
+          $message = addslashes($_SESSION['notify']);
+          if (strpos($message, 'A reset link has been sent to your email') !== false) {
+              echo "Swal.fire({
+                  title: 'Success',
+                  text: '$message',
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+              });";
+          } else {
+              echo "Swal.fire({
+                  title: 'Error',
+                  text: '$message',
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+              });";
+          }
+          unset($_SESSION['notify']);
+      }
+    ?>
+
     document.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
+        e.preventDefault();
     });
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault();
-      }
-    });
-
-    document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const form = e.target;
-      const formData = new FormData(form);
-
-      fetch(form.action, {
-        method: form.method,
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Email Sent',
-            text: 'A password reset link has been sent to your email address.',
-            confirmButtonColor: '#007bff'
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong. Please try again.',
-            confirmButtonColor: '#007bff'
-          });
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
         }
-      })
-      .catch(error => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'An error occurred. Please try again later.',
-          confirmButtonColor: '#007bff'
-        });
-      });
     });
   </script>
-
 </body>
 </html>

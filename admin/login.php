@@ -1,3 +1,53 @@
+<?php
+session_start();
+
+define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
+define('LOCK_TIME', 900); // Lock time in seconds (15 minutes)
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Assuming you are checking for correct login details:
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Replace these with your actual database check
+    $correctEmail = 'admin@example.com';
+    $correctPassword = 'password123'; // This should be a hashed password in real applications
+
+    // Check if the number of failed login attempts exceeds the limit
+    if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
+        if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
+            if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
+                $remainingTime = LOCK_TIME - (time() - $_SESSION['last_failed_login']);
+                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.']);
+                exit();
+            } else {
+                // Reset failed attempts after the lock time has passed
+                unset($_SESSION['failed_attempts']);
+                unset($_SESSION['last_failed_login']);
+            }
+        }
+    }
+
+    // Check if email and password are correct
+    if ($email === $correctEmail && password_verify($password, $correctPassword)) {
+        // Successful login, reset failed attempts
+        unset($_SESSION['failed_attempts']);
+        unset($_SESSION['last_failed_login']);
+        echo json_encode(['status' => 'success', 'message' => 'Login successful']);
+    } else {
+        // Increment failed attempts counter
+        if (!isset($_SESSION['failed_attempts'])) {
+            $_SESSION['failed_attempts'] = 0;
+        }
+        $_SESSION['failed_attempts']++;
+        $_SESSION['last_failed_login'] = time();
+
+        echo json_encode(['status' => 'incorrect_password', 'message' => 'The password you entered is incorrect. Please try again.']);
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once('../config.php'); ?>
@@ -307,65 +357,68 @@
 
         // Form submission logic (with validation)
         $('#login-frm').on('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
+    e.preventDefault(); // Prevent the default form submission
 
-            const email = $('[name="email"]').val();
-            const password = $('[name="password"]').val();
-            const recaptchaResponse = grecaptcha.getResponse();
+    const email = $('[name="email"]').val();
+    const password = $('[name="password"]').val();
+    const recaptchaResponse = grecaptcha.getResponse();
 
-            const emailPattern = /.+@gmail\.com$/;
+    const emailPattern = /.+@gmail\.com$/;
 
-            // Validate email pattern
-            if (!emailPattern.test(email)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Email',
-                    text: 'Please enter a valid Gmail address.',
-                });
-                return; // Stop form submission
-            }
-
-            // Validate reCAPTCHA
-            if (recaptchaResponse.length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'reCAPTCHA Required',
-                    text: 'Please complete the reCAPTCHA to continue.',
-                });
-                return; // Stop form submission
-            }
-
-            // Perform AJAX request for login
-            $.ajax({
-                url: 'login.php',  // Adjust the URL to your backend PHP file
-                method: 'POST',
-                data: $(this).serialize(),  // Serialize form data for submission
-                success: function(response) {
-                    if (response === 'incorrect_password') {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Incorrect Password',
-                            text: 'The password you entered is incorrect. Please try again.',
-                        });
-                    } else if (response === 'success') {
-                        window.location.href = 'admin.php';  // Redirect to dashboard
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Incorrect Password',
-                            text: 'The password you entered is incorrect. Please try again.',
-                        });
-                    }
-                },
-                error: function() {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'There was an issue processing your request. Please try again later.',
-                    });
-                }
-            });
+    // Validate email pattern
+    if (!emailPattern.test(email)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Email',
+            text: 'Please enter a valid Gmail address.',
         });
+        return; // Stop form submission
+    }
+
+    // Validate reCAPTCHA
+    if (recaptchaResponse.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
+        });
+        return; // Stop form submission
+    }
+
+    // Perform AJAX request for login
+    $.ajax({
+        url: 'login.php',  // Adjust the URL to your backend PHP file
+        method: 'POST',
+        data: $(this).serialize(),  // Serialize form data for submission
+        success: function(response) {
+            const data = JSON.parse(response);  // Parse the JSON response from the backend
+
+            if (data.status === 'incorrect_password') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Incorrect Password',
+                    text: data.message,  // Use the message from the backend
+                });
+            } else if (data.status === 'success') {
+                window.location.href = 'admin.php';  // Redirect to the dashboard
+            } else if (data.status === 'locked') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Account Locked',
+                    text: data.message,  // Display the lockout message
+                });
+            }
+        },
+        error: function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was an issue processing your request. Please try again later.',
+            });
+        }
+    });
+});
+
 
         // Open and close menu (for mobile or sidebar navigation)
         $('.open-menu-btn').click(function() {

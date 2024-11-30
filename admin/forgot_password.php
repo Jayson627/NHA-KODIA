@@ -96,15 +96,41 @@
       }
     });
 
-    // SweetAlert2 example
     document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      // Assume AJAX call here, and on success:
-      Swal.fire({
-        icon: 'success',
-        title: 'Email Sent',
-        text: 'A password reset link has been sent to your email address.',
-        confirmButtonColor: '#007bff'
+
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: form.method,
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Email Sent',
+            text: 'A password reset link has been sent to your email address.',
+            confirmButtonColor: '#007bff'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Something went wrong. Please try again.',
+            confirmButtonColor: '#007bff'
+          });
+        }
+      })
+      .catch(error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An error occurred. Please try again later.',
+          confirmButtonColor: '#007bff'
+        });
       });
     });
   </script>

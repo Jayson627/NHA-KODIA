@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,44 +84,30 @@ session_start();
      
     </div>
   </div>
-  <?php
-    // Check if there's a session message to displays
-    if (isset($_SESSION['notify'])) {
-        $message = addslashes($_SESSION['notify']);
-        if (strpos($message, 'A reset link has been sent to your email') !== false) {
-            echo "Swal.fire({
-                title: 'Success',
-                text: '$message',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });";
-        } else {
-            echo "Swal.fire({
-                title: 'Error',
-                text: '$message',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });";
-        }
-        unset($_SESSION['notify']);
-    }
-    ?>
-
   
   <script>
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+    });
 
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
         e.preventDefault();
-    }
-});
+      }
+    });
 
-
-    </script>
+    // SweetAlert2 example
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Assume AJAX call here, and on success:
+      Swal.fire({
+        icon: 'success',
+        title: 'Email Sent',
+        text: 'A password reset link has been sent to your email address.',
+        confirmButtonColor: '#007bff'
+      });
+    });
+  </script>
 
 </body>
 </html>

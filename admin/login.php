@@ -400,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     text: data.message,  // Use the message from the backend
                 });
             } else if (data.status === 'success') {
-                window.location.href = 'admin.php';  // Redirect to the dashboard
+                window.location.href = '../admin';  // Redirect to the dashboard
             } else if (data.status === 'locked') {
                 Swal.fire({
                     icon: 'error',

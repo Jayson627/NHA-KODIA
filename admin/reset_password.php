@@ -110,7 +110,7 @@ if (isset($_GET["reset"])) {
 
     <script>
         <?php
-        // Check if there's a session message to display
+        session_start(); // Ensure session is started
         if (isset($_SESSION['notify'])) {
             $message = addslashes($_SESSION['notify']);
             if (strpos($message, 'Your password has been reset successfully') !== false) {

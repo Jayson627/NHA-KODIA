@@ -352,7 +352,7 @@
                             text: 'The password you entered is incorrect. Please try again.',
                         });
                     } else if (response === 'success') {
-                        window.location.href = 'login.php';  // Redirect to dashboard
+                        window.location.href = 'dashboard.php';  // Redirect to dashboard
                     } else {
                         Swal.fire({
                             icon: 'error',

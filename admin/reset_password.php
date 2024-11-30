@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'includes/conn.php';
+include 'includes/conn';
 
 if (isset($_GET["reset"])) {
     $email = $_GET["email"];

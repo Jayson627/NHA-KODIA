@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once("mailer.php");
-require_once('../admin/connection.php');
-require_once("../initialize.php");
+require_once("mailer");
+require_once('../admin/connection');
+require_once("../initialize");
 
 // Helper function to send reset email
 function sendResetEmail($email, $reset_code) {

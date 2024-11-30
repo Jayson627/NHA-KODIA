@@ -393,10 +393,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         success: function(response) {
             const data = JSON.parse(response);  // Parse the JSON response from the backend
 
-            if (data.status === 'incorrect_password') {
+            if (data.status === 'sayup ang passsword') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Incorrect Password',
+                    title: 'sayup ang password',
                     text: data.message,  // Use the message from the backend
                 });
             } else if (data.status === 'success') {

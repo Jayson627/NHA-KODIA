@@ -352,8 +352,8 @@
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error',
-                            text: 'An unknown error occurred. Please try again.',
+                            title: 'Incorrect Password',
+                            text: 'The password you entered is incorrect. Please try again.',
                         });
                     }
                 },

@@ -2,7 +2,7 @@
 <html lang="en">
 <?php require_once('../config.php'); ?>
 <?php require_once('inc/header.php'); ?>
-<Chead>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login</title>

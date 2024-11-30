@@ -75,16 +75,16 @@ if (isset($_POST["btn-new-password"])) {
 
             // Direct SQL query to update the password and reset code
             $update_sql = "UPDATE `users` SET `password` = '$hashed_password', `code` = '$reset' WHERE email = '$email'";
+
             if ($conn->query($update_sql) === TRUE) {
                 $_SESSION["notify"] = "Your password has been reset successfully.";
-                header("location: ../admin/forgot_password");
-                exit();
-            } else {
-                $_SESSION["notify"] = "Failed to update the reset code. Please try again.";
-                header("location: ../admin/forgot_password");
+                   header("location: ../admin/forgot_password");
                 exit();
             }
-            
+        } else {
+            $_SESSION["notify"] = "Invalid OTP. Please try again.";
+              header("location: ../admin/reset_password");
+            exit();
         }
     } else {
         $_SESSION["notify"] = "No user found with this email. Please try again.";

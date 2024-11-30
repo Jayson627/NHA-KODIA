@@ -400,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     text: data.message,  // Use the message from the backend
                 });
             } else if (data.status === 'success') {
-                window.location.href = '../admin';  // Redirect to the dashboard
+                window.location.href = 'admin.php';  // Redirect to the dashboard
             } else if (data.status === 'locked') {
                 Swal.fire({
                     icon: 'error',
@@ -412,8 +412,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error: function() {
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: 'There was an issue processing your request. Please try again later.',
+                title: 'Incorrect PASSWORD',
+                text: 'SAYUP ANG PASSWORD BOY.',
             });
         }
     });

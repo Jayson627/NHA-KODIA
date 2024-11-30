@@ -1,203 +1,441 @@
-<?php
-session_start(); // Start a session
-include_once('connection.php'); 
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve and sanitize form data
-    $house_no = htmlspecialchars(trim($_POST['house_no']));
-    $lot_no = htmlspecialchars(trim($_POST['lot_no']));
-    $block_no = htmlspecialchars(trim($_POST['block_no']));
-    $fullname = htmlspecialchars(trim($_POST['fullname']));
-
-    // Strong validation: Check if inputs are numeric
-    if (!preg_match('/^\d+$/', $house_no)) {
-        $error_message = "House No must be a valid number.";
-    } elseif (!preg_match('/^\d+$/', $lot_no)) {
-        $error_message = "Lot No must be a valid number.";
-    } elseif (!preg_match('/^\d+$/', $block_no)) {
-        $error_message = "Block No must be a valid number.";
-    } elseif (empty($fullname)) {
-        $error_message = "Full Name is required.";
-    } else {
-        // Query to check if the data exists
-        $qry = $conn->prepare("SELECT * FROM `student_list` WHERE `roll` = ? AND `block_no` = ? AND `lot_no` = ? AND CONCAT(lastname, ', ', firstname, ' ', middlename) = ?");
-        $qry->bind_param("ssss", $house_no, $block_no, $lot_no, $fullname);
-        $qry->execute();
-        $result = $qry->get_result();
-
-        if ($result->num_rows > 0) {
-            // Match found, fetch first name and set success message
-            $row = $result->fetch_assoc();
-            $first_name = htmlspecialchars($row['firstname']);
-            $success_message = "Welcome, $first_name!";
-        } else {
-            $error_message = "No matching household found.";
-        }
-
-        $qry->close();
-    }
-}
-
-$conn->close();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
+<?php require_once('../config.php'); ?>
+<?php require_once('inc/header.php'); ?>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>People Information Form</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: url('nha.jpg') no-repeat center center fixed;
-            background-size: cover;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <!-- Google Fonts - Roboto -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+  <style>
+    /* General Styles */
+    body {
+      height: 100vh;
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: url('houses.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #343a40;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    }
+
+    .navbar-brand img {
+      border-radius: 50%;
+      height: 80px;
+      width: 80px;
+    }
+
+    .navbar-brand h4 {
+      font-size: 1.5rem;
+      margin-left: 10px;
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    .navbar-nav {
+      display: flex;
+      justify-content: flex-end;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+
+    .navbar-nav .nav-link {
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-left: 20px;
+      padding: 8px 15px;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #f0f0f0;
+      background-color: #007bff;
+      padding: 8px 20px;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Push Menu Styles */
+    #push-menu {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: white;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+      z-index: 1000;
+    }
+
+    #push-menu a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: black;
+      display: block;
+      transition: 0.3s;
+    }
+
+    #push-menu a:hover {
+      background-color: blue;
+    }
+
+    #push-menu .close-btn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+      color: red;
+    }
+
+    .open-menu-btn {
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+      display: none;
+      z-index: 1050;
+    }
+
+    .open-menu-btn:hover {
+      color: #007bff;
+    }
+
+    /* Login Form */
+    #login {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      width: 90%;
+      max-width: 400px;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      background-color: #ffffff;
+    }
+
+    .card-header {
+      background-color: #007bff;
+      color: white;
+      text-align: center;
+      border-bottom: none;
+      padding: 15px 0;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .input-group-text {
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+
+    .form-control {
+      border-radius: 0 20px 20px 0;
+    }
+
+    .btn-primary {
+      border-radius: 20px;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    /* Animated Text */
+    .animated-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: #ffffff;
+      white-space: nowrap;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      .navbar-brand h4 {
+        font-size: 1rem;
+      }
+
+      .navbar-brand img {
+        height: 35px;
+        width: 35px;
+      }
+
+      .card {
+        width: 95%;
+        max-width: none;
+      }
+
+      .card-header h4 {
+        font-size: 1.2rem;
+      }
+
+      .navbar-nav .nav-link {
+        display: none !important;
+      }
+
+      /* Show Push Menu only on small screens */
+      #push-menu {
+        width: 0;
+      }
+
+      /* Display the hamburger menu button in mobile */
+      .open-menu-btn {
+        display: block;
+      }
+
+      .navbar-nav {
+        display: none;
+      }
+
+      .open-menu-btn {
+        margin-left: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .animated-text {
+        font-size: 2rem; /* Adjust animated text size for very small screens */
+      }
+
+      .card-header h4 {
+        font-size: 1.1rem;
+      }
+    }
+    
+  </style>
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <!-- Popper.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+  <script>
+    let typingInterval;
+    const text = "Welcome to NHA Kodia Information System";
+    const speed = 150; 
+    let index = 0;
+
+    function type() {
+      if (index < text.length) {
+        document.getElementById("animated-text").innerHTML += text.charAt(index);
+        index++;
+        typingInterval = setTimeout(type, speed); 
+      } else {
+        setTimeout(() => {
+          document.getElementById("animated-text").innerHTML = "";
+          index = 0; 
+          type();
+        }, 2000); 
+      }
+    }
+
+    let loginAttempts = 0;
+    const maxAttempts = 3;
+    const lockoutTime = 60; // Lockout time in seconds
+
+    $(document).ready(function() {
+      $('#login').hide();
+      $('#animated-text').show();
+
+      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+        e.preventDefault();
+        $('#login').fadeIn();
+        $('#animated-text').hide();
+
+        const role = $(this).attr('id').replace('login-as-', '');
+        $('#role').val(role);
+        $('#login-frm').attr('action', role + '_login');
+      });
+
+      $('#togglePassword').on('click', function() {
+        const passwordField = $('#password');
+        const passwordFieldType = passwordField.attr('type');
+        const icon = $(this);
+
+        if (passwordFieldType === 'password') {
+          passwordField.attr('type', 'text');
+          icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+          passwordField.attr('type', 'password');
+          icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+      });
+
+      $('#login-frm').on('submit', function(e) {
+        const email = $('[name="email"]').val();
+        const emailPattern = /.+@gmail\.com$/i;
+
+        if (!emailPattern.test(email)) {
+          e.preventDefault();
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid Email',
+            text: 'Please enter a valid Gmail address.',
+          });
+          return;
         }
 
-        .header {
-            width: 100%;
-            background-color: #007bff;
-            padding: 10px 0;
-            text-align: center;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            position: fixed;
-            top: 0;
-            left: 0;
+        if (loginAttempts >= maxAttempts) {
+          e.preventDefault();
+          return;
         }
 
-        .form-container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        // Increment login attempts on submission
+        loginAttempts++;
+        if (loginAttempts >= maxAttempts) {
+          disableLoginButton();
         }
+      });
+    });
 
-        .form-container h1 {
-            text-align: center;
-            color: #007bff;
-            margin-bottom: 20px;
-        }
+    function disableLoginButton() {
+      const loginButton = $('#login-frm button[type="submit"]');
+      loginButton.prop('disabled', true);
+      let countdown = lockoutTime;
+      const countdownElement = $('<span id="countdown" style="margin-left: 10px;"></span>');
+      loginButton.parent().append(countdownElement);
 
-        label {
-            color: #555;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
+      const interval = setInterval(() => {
+        countdown--;
+        countdownElement.text(`(${countdown}s)`);
+        if (countdown <= 0) {
+          clearInterval(interval);
+          loginAttempts = 0;
+          loginButton.prop('disabled', false);
+          countdownElement.remove();
         }
+      }, 1000);
+    }
 
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
+    function openMenu() {
+      document.getElementById("push-menu").style.width = "250px";
+    }
 
-        input[type="submit"] {
-            width: 120px;
-            background-color: #007bff;
-            color: white;
-            padding: 8px;
-            font-size: 14px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    function closeMenu() {
+      document.getElementById("push-menu").style.width = "0";
+    }
 
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
+    $(document).ready(function() {
+      $('.open-menu-btn').on('click', function() {
+        openMenu();
+      });
 
-        .error-message {
-            color: red;
-            text-align: center;
-            margin-bottom: 15px;
-        }
+      $('.close-btn').on('click', function() {
+        closeMenu();
+      });
+    });
 
-        .success-message {
-            color: green;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .logo {
-            height: 40px;
-            width: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-    </style>
+    $(document).ready(function() {
+      type();
+    });
+  </script>
 </head>
 <body>
-
-<div class="header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: #007bff;">
-    <div style="display: flex; align-items: center;">
-        <img src="lo.png" alt="Logo" class="logo" style="height: 50px; width: auto; margin-right: 10px;">
-        <span style="color: white; font-size: 24px;">NHA Residents Login Portal</span>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.php">
+        <img src="uploads/nhalogo.png" alt="NHA Kodia Logo">
+        <h4>NHA Kodia Information System</h4>
+      </a>
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="officer">Officer</a></li>
+        <li class="nav-item"><a class="nav-link" href="admin">Admin</a></li>
+        <li class="nav-item"><a class="nav-link" href="resident">Resident</a></li>
+      </ul>
+      <span class="open-menu-btn" onclick="openMenu()">&#9776;</span>
     </div>
-    <a href="about.php" style="padding: 14px; color: white; text-decoration: none; font-size: 20px;">Home</a>
-</div>
+  </nav>
 
-<div class="form-container">
-    <h1>Login Form</h1>
-    <?php if (!empty($error_message)): ?>
-        <p class="error-message"><?php echo htmlspecialchars($error_message); ?></p>
-    <?php endif; ?>
+  <!-- Push Menu -->
+  <div id="push-menu">
+    <a href="javascript:void(0)" class="close-btn" onclick="closeMenu()">&times;</a>
+    <a href="index.php">Home</a>
+    <a href="officer">Officer</a>
+    <a href="admin">Admin</a>
+    <a href="resident">Resident</a>
+  </div>
 
-    <form method="post" action="">
-        <label for="house_no">House No:</label>
-        <input type="text" id="house_no" name="house_no" placeholder="Enter House Number" required pattern="\d+">
+  <!-- Animated Text -->
+  <div id="animated-text" class="animated-text"></div>
 
-        <label for="lot_no">Lot No:</label>
-        <input type="text" id="lot_no" name="lot_no" placeholder="Enter Lot Number" required pattern="\d+">
-
-        <label for="block_no">Block No:</label>
-        <input type="text" id="block_no" name="block_no" placeholder="Enter Block Number" required pattern="\d+">
-
-        <label for="fullname">Full Name:</label>
-        <input type="text" id="fullname" name="fullname" placeholder="Enter Full Name" required>
-
-        <div class="submit-container" style="text-align: center; margin-top: 15px;">
-            <input type="submit" value="Submit">
-        </div>
-    </form>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        <?php if (!empty($success_message)): ?>
-            Swal.fire({
-                title: 'Success!',
-                text: '<?php echo addslashes($success_message); ?>',
-                icon: 'success',
-                timer: 3000,
-                showConfirmButton: false
-            }).then(() => {
-                window.location.href = 'people_dashboard.php';
-            });
-        <?php elseif (!empty($error_message)): ?>
-            Swal.fire({
-                title: 'Error!',
-                text: '<?php echo addslashes($error_message); ?>',
-                icon: 'error',
-                confirmButtonText: 'Okay'
-            });
-        <?php endif; ?>
-    });
-</script>
+  <!-- Login Form -->
+  <section id="login">
+    <div class="card">
+      <div class="card-header">
+        <h4>Login</h4>
+      </div>
+      <div class="card-body">
+        <form id="login-frm" action="" method="POST">
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+              </div>
+              <input type="email" name="email" class="form-control" placeholder="Email" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+              </div>
+              <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fa fa-eye" id="togglePassword" style="cursor: pointer;"></i></span>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="role" name="role" value="">
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+      </div>
+    </div>
+  </section>
 </body>
 </html>

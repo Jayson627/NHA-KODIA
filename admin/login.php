@@ -273,6 +273,10 @@
       }
     }
 
+    let loginAttempts = 0;
+    const maxAttempts = 3;
+    const lockoutTime = 60; // Lockout time in seconds
+
     $(document).ready(function() {
       $('#login').hide();
       $('#animated-text').show();
@@ -302,156 +306,136 @@
       });
 
       $('#login-frm').on('submit', function(e) {
-    const email = $('[name="email"]').val();
-    const emailPattern = /.+@gmail\.com$/;
-    // const password = $('[name="password"]').val();
-    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const email = $('[name="email"]').val();
+        const emailPattern = /.+@gmail\.com$/i;
 
-    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
-
-    // Validate email
-    if (!emailPattern.test(email)) {
-        e.preventDefault();
-        Swal.fire({
+        if (!emailPattern.test(email)) {
+          e.preventDefault();
+          Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
             text: 'Please enter a valid Gmail address.',
-        });
-    } 
-    // Validate password
-    // else if (!passwordPattern.test(password)) {
-    //     e.preventDefault();
-    //     Swal.fire({
-    //         icon: 'error',
-    //         title: 'Invalid Password',
-    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-    //     });
-    // } 
-    // Check if reCAPTCHA is filled
-    else if (recaptchaResponse.length === 0) {
-        e.preventDefault(); // Prevent form submission
-        Swal.fire({
-            icon: 'error',
-            title: 'reCAPTCHA Required',
-            text: 'Please complete the reCAPTCHA to continue.',
-        });
-    }
-});
+          });
+          return;
+        }
 
+        if (loginAttempts >= maxAttempts) {
+          e.preventDefault();
+          return;
+        }
 
-      $('.open-menu-btn').click(function() {
-        $('#push-menu').css('width', '250px'); 
-      });
-
-      $('.close-btn').click(function() {
-        $('#push-menu').css('width', '0'); 
+        // Increment login attempts on submission
+        loginAttempts++;
+        if (loginAttempts >= maxAttempts) {
+          disableLoginButton();
+        }
       });
     });
 
-    window.onload = function() {
-      type(); 
-    };
+    function disableLoginButton() {
+      const loginButton = $('#login-frm button[type="submit"]');
+      loginButton.prop('disabled', true);
+      let countdown = lockoutTime;
+      const countdownElement = $('<span id="countdown" style="margin-left: 10px;"></span>');
+      loginButton.parent().append(countdownElement);
+
+      const interval = setInterval(() => {
+        countdown--;
+        countdownElement.text(`(${countdown}s)`);
+        if (countdown <= 0) {
+          clearInterval(interval);
+          loginAttempts = 0;
+          loginButton.prop('disabled', false);
+          countdownElement.remove();
+        }
+      }, 1000);
+    }
+
+    function openMenu() {
+      document.getElementById("push-menu").style.width = "250px";
+    }
+
+    function closeMenu() {
+      document.getElementById("push-menu").style.width = "0";
+    }
+
+    $(document).ready(function() {
+      $('.open-menu-btn').on('click', function() {
+        openMenu();
+      });
+
+      $('.close-btn').on('click', function() {
+        closeMenu();
+      });
+    });
+
+    $(document).ready(function() {
+      type();
+    });
   </script>
-  
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
-    <a class="navbar-brand" href="#">
-      <img src="lo.png" alt="Logo">
-    </a>
-
-    <span class="open-menu-btn">&#9776;</span>
-
-    <div class="navbar-nav">
-      <a href="about" class="nav-link">About</a>
-      <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
-      <a href="residents" class="nav-link">Login as Resident</a>
-    </div>
-
-    <div id="push-menu">
-      <a href="javascript:void(0)" class="close-btn">&times;</a>
-      <a href="about">About</a>
-      <a href="#" id="login-as-admin"> Admin</a>
-      <a href="residents"> Resident</a>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.php">
+        <img src="uploads/nhalogo.png" alt="NHA Kodia Logo">
+        <h4>NHA Kodia Information System</h4>
+      </a>
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="officer">Officer</a></li>
+        <li class="nav-item"><a class="nav-link" href="admin">Admin</a></li>
+        <li class="nav-item"><a class="nav-link" href="resident">Resident</a></li>
+      </ul>
+      <span class="open-menu-btn" onclick="openMenu()">&#9776;</span>
     </div>
   </nav>
 
+  <!-- Push Menu -->
+  <div id="push-menu">
+    <a href="javascript:void(0)" class="close-btn" onclick="closeMenu()">&times;</a>
+    <a href="index.php">Home</a>
+    <a href="officer">Officer</a>
+    <a href="admin">Admin</a>
+    <a href="resident">Resident</a>
+  </div>
+
+  <!-- Animated Text -->
   <div id="animated-text" class="animated-text"></div>
 
-  <div id="login">
+  <!-- Login Form -->
+  <section id="login">
     <div class="card">
       <div class="card-header">
-        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
+        <h4>Login</h4>
       </div>
       <div class="card-body">
-        <form id="login-frm" action="" method="post">
-    <input type="hidden" name="role" id="role" value="">
-    <div class="form-group input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-user"></i></span>
-        </div>
-        <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
-               pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
-    </div>
-
-    <div class="form-group input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-        </div>
-        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
-        <div class="input-group-append">
-            <span class="input-group-text">
-                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
-            </span>
-        </div>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-    </div>
-    <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
-    <div class="form-group text-center">
-        <a href="forgot_password" class="text-primary">Forgot Password?</a>
-    </div>
-    
-</form>
-
+        <form id="login-frm" action="" method="POST">
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+              </div>
+              <input type="email" name="email" class="form-control" placeholder="Email" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+              </div>
+              <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="fa fa-eye" id="togglePassword" style="cursor: pointer;"></i></span>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="role" name="role" value="">
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
       </div>
     </div>
-  </div>
+  </section>
 </body>
 </html>
-<script>
-    </script>
-     <body oncontextmenu="return true" onkeydown="return true;" onmousedown="return true;">
-       <script>
-         $(document).bind("contextmenu",function(e) {
-            e.preventDefault();
-         });
-                        
-         eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('(3(){(3 a(){8{(3 b(2){7((\'\'+(2/2)).6!==1||2%5===0){(3(){}).9(\'4\')()}c{4}b(++2)})(0)}d(e){g(a,f)}})()})();',17,17,'||i|function|debugger|20|length|if|try|constructor|||else|catch||5000|setTimeout'.split('|'),0,{}))
-         window.addEventListener("keydown", function(event) {
-
-
-          if (event.keyCode == 123) {
-              // block F12 (DevTools)
-              event.preventDefault();
-              event.stopPropagation();
-              return false;
-
-          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) {
-              // block Strg+Shift+I (DevTools)
-              event.preventDefault();
-              event.stopPropagation();
-              return false;
-
-          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 74) {
-              // block Strg+Shift+J (Console)
-              event.preventDefault();
-              event.stopPropagation();
-              return false;
-          }
-      });
-              </script>
-</script>
-

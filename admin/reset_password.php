@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include 'includes/conn.php';
 
 if (isset($_GET["reset"])) {
@@ -14,7 +14,6 @@ if (isset($_GET["reset"])) {
   
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    
-
     <!-- Styling for the page -->
     <style>
         body {
@@ -94,7 +93,7 @@ if (isset($_GET["reset"])) {
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/funtion.php" method="post">
+        <form action="../admin/function.php" method="post">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo $email ?>" required readonly>
             </div>
@@ -110,7 +109,7 @@ if (isset($_GET["reset"])) {
 
     <script>
         <?php
-        // Check if there's a session message to display
+        session_start(); // Ensure session is started
         if (isset($_SESSION['notify'])) {
             $message = addslashes($_SESSION['notify']);
             if (strpos($message, 'Your password has been reset successfully') !== false) {

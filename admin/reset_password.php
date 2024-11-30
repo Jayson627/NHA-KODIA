@@ -93,7 +93,7 @@ if (isset($_GET["reset"])) {
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/function" method="post">
+        <form action="../admin/funtion" method="post">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo $email ?>" required readonly>
             </div>

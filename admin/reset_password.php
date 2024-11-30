@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include 'includes/conn.php';
 
 if (isset($_GET["reset"])) {
@@ -14,6 +14,7 @@ if (isset($_GET["reset"])) {
   
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
    
+
     <!-- Styling for the page -->
     <style>
         body {
@@ -93,7 +94,7 @@ if (isset($_GET["reset"])) {
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/funtion" method="post">
+        <form action="../admin/funtion.php" method="post">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo $email ?>" required readonly>
             </div>
@@ -108,29 +109,36 @@ if (isset($_GET["reset"])) {
     </div>
 
     <script>
-        <?php
-        session_start(); // Ensure session is started
-        if (isset($_SESSION['notify'])) {
-            $message = addslashes($_SESSION['notify']);
-            if (strpos($message, 'Your password has been reset successfully') !== false) {
-                echo "Swal.fire({
-                    title: 'Success',
-                    text: '$message',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });";
-            } else {
-                echo "Swal.fire({
-                    title: 'Error',
-                    text: '$message',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });";
-            }
-            unset($_SESSION['notify']);
+    <?php
+    // Check if there's a session message to display
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']);
+        
+        // Check if the message contains 'Your password has been reset successfully'
+        if (strpos($message, 'Your password has been reset successfully') !== false) {
+            // Success message
+            echo "Swal.fire({
+                title: 'Success',
+                text: '$message',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });";
+        } else {
+            // Error message
+            echo "Swal.fire({
+                title: 'Error',
+                text: '$message',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });";
         }
-        ?>
-    </script>
+        
+        // Unset the session variable after displaying the message
+        unset($_SESSION['notify']);
+    }
+    ?>
+</script>
+
 </body>
 </html>
 <?php

@@ -84,8 +84,10 @@
      
     </div>
   </div>
-  <?php
-    // Check if there's a session message to displays
+
+  <script>
+    <?php
+    // Check if there's a session message to display
     if (isset($_SESSION['notify'])) {
         $message = addslashes($_SESSION['notify']);
         if (strpos($message, 'A reset link has been sent to your email') !== false) {
@@ -107,21 +109,15 @@
     }
     ?>
 
-  
-  <script>
-
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+    document.addEventListener('contextmenu', function (e) {
         e.preventDefault();
-    }
-});
+    });
 
-
-    </script>
-
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+  </script>
 </body>
 </html>

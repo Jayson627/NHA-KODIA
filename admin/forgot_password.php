@@ -72,7 +72,7 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
+      <form id="forgotPasswordForm" action="../admin/funtion.php" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
@@ -85,7 +85,6 @@
 
   <script>
     <?php
-      // Check if there's a session message to display
       if (isset($_SESSION['notify'])) {
           $message = addslashes($_SESSION['notify']);
           if (strpos($message, 'A reset link has been sent to your email') !== false) {

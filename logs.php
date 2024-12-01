@@ -1,7 +1,7 @@
 <?php
 // Include database connection
-require_once('admin/connection.php');
-require_once("initialize.php");
+// require_once('admin/connection.php');
+// require_once("initialize.php");
 
 // Query to fetch all logs
 $query = "SELECT id, user_email, status, message, ip_address FROM logs";

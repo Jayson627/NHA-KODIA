@@ -9,6 +9,7 @@ class Users extends DBConnection {
         $this->settings = $_settings;
         parent::__construct();
     }
+}
 
     public function __destruct(){
         parent::__destruct();
@@ -141,11 +142,11 @@ class Users extends DBConnection {
         } else {
             $resp['status'] = 'failed';
         }
-        return json_encode($resp); tulug anay ako pre sara kuna tiwasun cge pre oo pre
+        return json_encode($resp); 
 
     public function save_employee(){
         if(!empty($_POST['password'])){
-            $_POST['password'] = password_hash($_POST['password'], PASSWORD_ARGON2I);  // Hash password  wala na unta ka nag argon2 pre dili namn ma decrpy ang bcrypt hahamd5
+            $_POST['password'] = password_hash($_POST['password'], PASSWORD_ARGON2I);  
         } else {
             unset($_POST['password']);
         }

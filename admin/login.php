@@ -1,13 +1,15 @@
 <?php
+
 session_start();
 
 define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
 define('LOCK_TIME', 900); // Lock time in seconds (15 minutes)
 
-// Include database connection (make sure this is set correctly in your system)
+// Include database connection
 // require_once('../admin/connection.php');
 // require_once("../initialize.php");
 
+// Function to log to database
 function logToDatabase($userEmail, $status, $message) {
     global $conn; // Use the global database connection
     $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
@@ -64,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 
 
 <!DOCTYPE html>
@@ -344,65 +345,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $(document).ready(function() {
-    // Form submission logic (with validation)
-    $('#login-frm').on('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission
+        // Hide login form initially and show animated text
+        $('#login').hide();
+        $('#animated-text').show();
 
-        const email = $('[name="email"]').val();
-        const password = $('[name="password"]').val();
-        const recaptchaResponse = grecaptcha.getResponse();
+        // Handle role-based login (admin, resident, officer)
+        $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+            e.preventDefault();
+            $('#login').fadeIn();
+            $('#animated-text').hide();
 
-        const emailPattern = /.+@gmail\.com$/;
+            const role = $(this).attr('id').replace('login-as-', '');
+            $('#role').val(role);  // Set the role in the form
+            $('#login-frm').attr('action', role + '_login');
+        });
 
-        // Validate email pattern
-        if (!emailPattern.test(email)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Email',
-                text: 'Please enter a valid Gmail address.',
-            });
-            return; // Stop form submission
-        }
+        // Toggle password visibility
+        $('#togglePassword').on('click', function() {
+            const passwordField = $('#password');
+            const passwordFieldType = passwordField.attr('type');
+            const icon = $(this);
 
-        // Validate reCAPTCHA
-        if (recaptchaResponse.length === 0) {
-            Swal.fire({
-                icon: 'error',
-                title: 'reCAPTCHA Required',
-                text: 'Please complete the reCAPTCHA to continue.',
-            });
-            return; // Stop form submission
-        }
+            if (passwordFieldType === 'password') {
+                passwordField.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordField.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
 
-        // Perform AJAX request for login
-        $.ajax({
-            url: 'login.php',  // Adjust the URL to your backend PHP file
-            method: 'POST',
-            data: $(this).serialize(),  // Serialize form data for submission
-            success: function(response) {
-                const data = JSON.parse(response);  // Parse the JSON response from the backend
+        // Form submission logic (with validation)
+        $('#login-frm').on('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
 
-                if (data.status === 'incorrect_password') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Incorrect Password',
-                        text: data.message,  // Use the message from the backend
-                    });
-                } else if (data.status === 'success') {
-                    window.location.href = 'admin.php';  // Redirect to the dashboard
-                } else if (data.status === 'locked') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Account Locked',
-                        text: data.message,  // Display the lockout message
-                    });
-                }
-            },
-            error: function() {
+    const email = $('[name="email"]').val();
+    const password = $('[name="password"]').val();
+    const recaptchaResponse = grecaptcha.getResponse();
+
+    const emailPattern = /.+@gmail\.com$/;
+
+    // Validate email pattern
+    if (!emailPattern.test(email)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Email',
+            text: 'Please enter a valid Gmail address.',
+        });
+        return; // Stop form submission
+    }
+
+    // Validate reCAPTCHA
+    if (recaptchaResponse.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
+        });
+        return; // Stop form submission
+    }
+
+    // Perform AJAX request for login
+    $.ajax({
+        url: 'login.php',  // Adjust the URL to your backend PHP file
+        method: 'POST',
+        data: $(this).serialize(),  // Serialize form data for submission
+        success: function(response) {
+            const data = JSON.parse(response);  // Parse the JSON response from the backend
+
+            if (data.status === 'sayup ang passsword') {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred. Please try again.'
+                    title: 'The password you entered is incorrect. Please try again.',
+                    text: data.message,  // Use the message from the backend
+                });
+            } else if (data.status === 'success') {
+                window.location.href = 'admin.php';  // Redirect to the dashboard
+            } else if (data.status === 'locked') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Account Locked',
+                    text: data.message,  // Display the lockout message
+                });
+            }
+        },
+        error: function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'error',
+                text: 'The password you entered is incorrect. Please try again..',
             });
         }
     });

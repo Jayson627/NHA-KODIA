@@ -19,14 +19,25 @@ function logToDatabase($userEmail, $status, $message) {
     $stmt->close();
 }
 
+// Helper function to validate email format
+function isValidEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get login inputs
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    // Check if email format is valid
+    if (!isValidEmail($email)) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid email format.']);
+        exit();
+    }
+
     // Replace these with your actual database check (for illustration, we are using static values)
     $correctEmail = 'alcantarajay555@gmail.com';
-    $correctPassword = 'password123'; // This should be a hashed password in real applications
+    $correctPasswordHash = '$2y$10$N9qo8uLOlU5NUPdXWYq27uQ9RPLjRLhCp6esHed0OXiXg0aa3QLC6'; // Example hash for "password123"
 
     // Check if the number of failed login attempts exceeds the limit
     if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
@@ -46,10 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Check if email and password are correct
-    if ($email === $correctEmail && password_verify($password, $correctPassword)) {
+    if ($email === $correctEmail && password_verify($password, $correctPasswordHash)) {
         // Successful login, reset failed attempts
         unset($_SESSION['failed_attempts']);
         unset($_SESSION['last_failed_login']);
+        session_regenerate_id(true); // Regenerate session ID to prevent session fixation
         logToDatabase($email, 'success', 'Login successful');
         echo json_encode(['status' => 'success', 'message' => 'Login successful']);
     } else {
@@ -66,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>

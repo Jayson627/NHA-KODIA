@@ -345,97 +345,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $(document).ready(function() {
-        // Hide login form initially and show animated text
-        $('#login').hide();
-        $('#animated-text').show();
+    // Form submission logic (with validation)
+    $('#login-frm').on('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission
 
-        // Handle role-based login (admin, resident, officer)
-        $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
-            e.preventDefault();
-            $('#login').fadeIn();
-            $('#animated-text').hide();
+        const email = $('[name="email"]').val();
+        const password = $('[name="password"]').val();
+        const recaptchaResponse = grecaptcha.getResponse();
 
-            const role = $(this).attr('id').replace('login-as-', '');
-            $('#role').val(role);  // Set the role in the form
-            $('#login-frm').attr('action', role + '_login');
-        });
+        const emailPattern = /.+@gmail\.com$/;
 
-        // Toggle password visibility
-        $('#togglePassword').on('click', function() {
-            const passwordField = $('#password');
-            const passwordFieldType = passwordField.attr('type');
-            const icon = $(this);
-
-            if (passwordFieldType === 'password') {
-                passwordField.attr('type', 'text');
-                icon.removeClass('fa-eye').addClass('fa-eye-slash');
-            } else {
-                passwordField.attr('type', 'password');
-                icon.removeClass('fa-eye-slash').addClass('fa-eye');
-            }
-        });
-
-        // Form submission logic (with validation)
-        $('#login-frm').on('submit', function(e) {
-    e.preventDefault(); // Prevent the default form submission
-
-    const email = $('[name="email"]').val();
-    const password = $('[name="password"]').val();
-    const recaptchaResponse = grecaptcha.getResponse();
-
-    const emailPattern = /.+@gmail\.com$/;
-
-    // Validate email pattern
-    if (!emailPattern.test(email)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Email',
-            text: 'Please enter a valid Gmail address.',
-        });
-        return; // Stop form submission
-    }
-
-    // Validate reCAPTCHA
-    if (recaptchaResponse.length === 0) {
-        Swal.fire({
-            icon: 'error',
-            title: 'reCAPTCHA Required',
-            text: 'Please complete the reCAPTCHA to continue.',
-        });
-        return; // Stop form submission
-    }
-
-    // Perform AJAX request for login
-    $.ajax({
-        url: 'login.php',  // Adjust the URL to your backend PHP file
-        method: 'POST',
-        data: $(this).serialize(),  // Serialize form data for submission
-        success: function(response) {
-            const data = JSON.parse(response);  // Parse the JSON response from the backend
-
-            if (data.status === 'sayup ang passsword') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'sayup ang password',
-                    text: data.message,  // Use the message from the backend
-                });
-            } else if (data.status === 'success') {
-                window.location.href = 'admin.php';  // Redirect to the dashboard
-            } else if (data.status === 'locked') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Account Locked',
-                    text: data.message,  // Display the lockout message
-                });
-            }
-        },
-        error: function() {
+        // Validate email pattern
+        if (!emailPattern.test(email)) {
             Swal.fire({
                 icon: 'error',
-                title: 'sayuo ayaw pag sudla',
-                text: 'SAYUP ANG PASSWORD BOY.',
+                title: 'Invalid Email',
+                text: 'Please enter a valid Gmail address.',
             });
+            return; // Stop form submission
         }
+
+        // Validate reCAPTCHA
+        if (recaptchaResponse.length === 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'reCAPTCHA Required',
+                text: 'Please complete the reCAPTCHA to continue.',
+            });
+            return; // Stop form submission
+        }
+
+        // Perform AJAX request for login
+        $.ajax({
+            url: 'login.php',  // Adjust the URL to your backend PHP file
+            method: 'POST',
+            data: $(this).serialize(),  // Serialize form data for submission
+            success: function(response) {
+                const data = JSON.parse(response);  // Parse the JSON response from the backend
+
+                if (data.status === 'Incorrect Email or Password') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Incorrect Password',
+                        text: data.message,  // Use the message from the backend
+                    });
+                } else if (data.status === 'success') {
+                    window.location.href = 'admin.php';  // Redirect to the dashboard
+                } else if (data.status === 'locked') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Account Locked',
+                        text: data.message,  // Display the lockout message
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Incorrect Email or Password.',
+                });
+            }
+        });
     });
 });
 
@@ -448,7 +419,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $('.close-btn').click(function() {
             $('#push-menu').css('width', '0'); 
         });
-    });
+  
 
     window.onload = function() {
         type();  // Initialize the typing animation

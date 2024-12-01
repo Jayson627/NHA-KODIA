@@ -1,15 +1,30 @@
 <?php
+
 session_start();
 
 define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
 define('LOCK_TIME', 900); // Lock time in seconds (15 minutes)
 
+// Include database connection
+// require_once('../admin/connection.php');
+// require_once("../initialize.php");
+
+// Function to log to database
+function logToDatabase($userEmail, $status, $message) {
+    global $conn; // Use the global database connection
+    $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
+    $stmt = $conn->prepare("INSERT INTO logs (user_email, status, message, ip_address) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $userEmail, $status, $message, $ipAddress);
+    $stmt->execute();
+    $stmt->close();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Assuming you are checking for correct login details:
+    // Get login inputs
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Replace these with your actual database check
+    // Replace these with your actual database check (for illustration, we are using static values)
     $correctEmail = 'admin@example.com';
     $correctPassword = 'password123'; // This should be a hashed password in real applications
 
@@ -18,7 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
             if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
                 $remainingTime = LOCK_TIME - (time() - $_SESSION['last_failed_login']);
-                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.']);
+                $message = 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.';
+                logToDatabase($email, 'locked', $message);
+                echo json_encode(['status' => 'locked', 'message' => $message]);
                 exit();
             } else {
                 // Reset failed attempts after the lock time has passed
@@ -33,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Successful login, reset failed attempts
         unset($_SESSION['failed_attempts']);
         unset($_SESSION['last_failed_login']);
+        logToDatabase($email, 'success', 'Login successful');
         echo json_encode(['status' => 'success', 'message' => 'Login successful']);
     } else {
         // Increment failed attempts counter
@@ -42,7 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['failed_attempts']++;
         $_SESSION['last_failed_login'] = time();
 
-        echo json_encode(['status' => 'incorrect_password', 'message' => 'The password you entered is incorrect. Please try again.']);
+        $message = 'The password you entered is incorrect. Please try again.';
+        logToDatabase($email, 'failed', $message);
+        echo json_encode(['status' => 'incorrect_password', 'message' => $message]);
     }
 }
 ?>

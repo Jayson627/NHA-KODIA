@@ -353,7 +353,7 @@ $conn->close();
                 <input type="password" id="login_password" name="password" placeholder="Password" required>
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
-            <button type="submit" name="login">Login</button>
+            <button type="submit" name="login">Logssin</button>
             <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>

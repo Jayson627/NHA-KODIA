@@ -412,7 +412,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error: function() {
             Swal.fire({
                 icon: 'error',
-                title: 'Incorrect PASSWORD',
+                title: 'sayuo ayaw pag sudla',
                 text: 'SAYUP ANG PASSWORD BOY.',
             });
         }

@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     // Replace these with your actual database check (for illustration, we are using static values)
-    $correctEmail = 'admin@example.com';
+    $correctEmail = 'alcantarajay555@gmail.com';
     $correctPassword = 'password123'; // This should be a hashed password in real applications
 
     // Check if the number of failed login attempts exceeds the limit

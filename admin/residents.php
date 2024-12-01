@@ -315,7 +315,7 @@ $conn->close();
 </header>
 
 <div class="container">
-    <h2 id="form-title">Login Portalss</h2>
+    <h2 id="form-title">Login Portal</h2>
     <div class="form-container" id="create-account">
     <form method="POST" onsubmit="return validateForm()">
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">

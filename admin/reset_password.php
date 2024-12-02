@@ -11,10 +11,7 @@ if (isset($_GET["reset"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
-  
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   
-
     <!-- Styling for the page -->
     <style>
         body {
@@ -110,8 +107,7 @@ if (isset($_GET["reset"])) {
 
     <script>
         <?php
-         session_start();
-        
+        // Check if there's a session message to display
         if (isset($_SESSION['notify'])) {
             $message = addslashes($_SESSION['notify']);
             if (strpos($message, 'Your password has been reset successfully') !== false) {
@@ -137,6 +133,6 @@ if (isset($_GET["reset"])) {
 </html>
 <?php
 } else {
-    // Handle case when reset is not set
+    echo "Invalid reset request.";
 }
 ?>

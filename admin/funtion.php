@@ -39,7 +39,7 @@ if (isset($_POST["btn-forgotpass"])) {
             } else {
                 $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
             }
-            header("location: ../admin/");
+            header("location: ../admin/forgot_password");
             exit();
         } else {
             $_SESSION["notify"] = "Failed to update the reset code. Please try again.";

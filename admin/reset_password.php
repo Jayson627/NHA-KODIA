@@ -109,29 +109,24 @@ if (isset($_GET["reset"])) {
     </div>
 
     <script>
+      
         <?php
-        session_start();
-        // Check if there's a session message to display
-        if (isset($_SESSION['notify'])) {
-            $message = addslashes($_SESSION['notify']);
-            if (strpos($message, 'Your password has been reset successfully') !== false) {
-                echo "Swal.fire({
-                    title: 'Success',
-                    text: '$message',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });";
-            } else {
-                echo "Swal.fire({
-                    title: 'Error',
-                    text: '$message',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });";
-            }
-            unset($_SESSION['notify']);
-        }
-        ?>
+    session_start(); // Ensure session is started
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']);
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: '".(strpos($message, 'Your password has been reset successfully') !== false ? 'Success' : 'Error')."',
+                text: '$message',
+                icon: '".(strpos($message, 'Your password has been reset successfully') !== false ? 'success' : 'error')."',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>";
+        unset($_SESSION['notify']);
+    }
+  ?>
     </script>
 </body>
 </html>

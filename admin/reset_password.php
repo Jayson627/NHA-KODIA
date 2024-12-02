@@ -110,6 +110,7 @@ if (isset($_GET["reset"])) {
 
     <script>
         <?php
+        session_start();
         // Check if there's a session message to display
         if (isset($_SESSION['notify'])) {
             $message = addslashes($_SESSION['notify']);

@@ -134,4 +134,8 @@ if (isset($_GET["reset"])) {
     </script>
 </body>
 </html>
-
+<?php
+} else {
+    // Handle case when reset is not set
+}
+?>

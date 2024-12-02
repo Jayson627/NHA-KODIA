@@ -2,8 +2,8 @@
 session_start();
 include 'includes/conn.php';
 
-if (isset($_GET["reset"]) || isset($_GET["success"])) {
-    $email = isset($_GET["email"]) ? $_GET["email"] : '';
+if (isset($_GET["reset"])) {
+    $email = $_GET["email"];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +11,10 @@ if (isset($_GET["reset"]) || isset($_GET["success"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
+  
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+
     <!-- Styling for the page -->
     <style>
         body {
@@ -91,7 +94,7 @@ if (isset($_GET["reset"]) || isset($_GET["success"])) {
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/function" method="post">
+        <form action="../admin/funtion" method="post">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo $email ?>" required readonly>
             </div>
@@ -110,16 +113,21 @@ if (isset($_GET["reset"]) || isset($_GET["success"])) {
         // Check if there's a session message to display
         if (isset($_SESSION['notify'])) {
             $message = addslashes($_SESSION['notify']);
-            $isSuccess = isset($_GET["success"]);
-            $title = $isSuccess ? 'Success' : 'Error';
-            $icon = $isSuccess ? 'success' : 'error';
-
-            echo "Swal.fire({
-                title: '$title',
-                text: '$message',
-                icon: '$icon',
-                confirmButtonText: 'OK'
-            });";
+            if (strpos($message, 'Your password has been reset successfully') !== false) {
+                echo "Swal.fire({
+                    title: 'Success',
+                    text: '$message',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });";
+            } else {
+                echo "Swal.fire({
+                    title: 'Error',
+                    text: '$message',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });";
+            }
             unset($_SESSION['notify']);
         }
         ?>
@@ -128,14 +136,6 @@ if (isset($_GET["reset"]) || isset($_GET["success"])) {
 </html>
 <?php
 } else {
-    // Handle invalid reset request case
-    echo "<script>
-        Swal.fire({
-            title: 'Error',
-            text: 'Invalid reset request.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-    </script>";
+    // Handle case when reset is not set
 }
 ?>

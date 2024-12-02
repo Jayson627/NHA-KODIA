@@ -8,5 +8,3 @@ if(!defined('DB_USERNAME')) define('DB_USERNAME',"u510162695_sis_db");
 if(!defined('DB_PASSWORD')) define('DB_PASSWORD',"1Sis_dbpassword");
 if(!defined('DB_NAME')) define('DB_NAME',"u510162695_sis_db");
 ?>
-
-

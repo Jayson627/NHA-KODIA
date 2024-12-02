@@ -1,72 +1,3 @@
-<?php
-session_start();
-
-define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
-define('LOCK_TIME', 900); // Lock time in seconds (15 minutes)
-
-// Include database connection (make sure this is set correctly in your system)
-// require_once('../admin/connection.php');
-// require_once("../initialize.php");
-
-function logToDatabase($userEmail, $status, $message) {
-    global $conn; // Use the global database connection
-    $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
-    $stmt = $conn->prepare("INSERT INTO logs (user_email, status, message, ip_address) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $userEmail, $status, $message, $ipAddress);
-    $stmt->execute();
-    $stmt->close();
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get login inputs
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    // Replace these with your actual database check (for illustration, we are using static values)
-    $correctEmail = 'admin@example.com';
-    $correctPassword = 'password123'; // This should be a hashed password in real applications
-
-    // Check if the number of failed login attempts exceeds the limit
-    if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
-        if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
-            if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
-                $remainingTime = LOCK_TIME - (time() - $_SESSION['last_failed_login']);
-                $message = 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.';
-                logToDatabase($email, 'locked', $message);
-                echo json_encode(['status' => 'locked', 'message' => $message]);
-                exit();
-            } else {
-                // Reset failed attempts after the lock time has passed
-                unset($_SESSION['failed_attempts']);
-                unset($_SESSION['last_failed_login']);
-            }
-        }
-    }
-
-    // Check if email and password are correct
-    if ($email === $correctEmail && password_verify($password, $correctPassword)) {
-        // Successful login, reset failed attempts
-        unset($_SESSION['failed_attempts']);
-        unset($_SESSION['last_failed_login']);
-        logToDatabase($email, 'success', 'Login successful');
-        echo json_encode(['status' => 'success', 'message' => 'Login successful']);
-    } else {
-        // Increment failed attempts counter
-        if (!isset($_SESSION['failed_attempts'])) {
-            $_SESSION['failed_attempts'] = 0;
-        }
-        $_SESSION['failed_attempts']++;
-        $_SESSION['last_failed_login'] = time();
-
-        $message = 'The password you entered is incorrect. Please try again.';
-        logToDatabase($email, 'failed', $message);
-        echo json_encode(['status' => 'incorrect_password', 'message' => $message]);
-    }
-}
-?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once('../config.php'); ?>
@@ -325,105 +256,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script>
     let typingInterval;
     const text = "Welcome to NHA Kodia Information System";
-    const speed = 150;
+    const speed = 150; 
     let index = 0;
 
-    // Function for typing animation
     function type() {
-        if (index < text.length) {
-            document.getElementById("animated-text").innerHTML += text.charAt(index);
-            index++;
-            typingInterval = setTimeout(type, speed);
-        } else {
-            setTimeout(() => {
-                document.getElementById("animated-text").innerHTML = "";
-                index = 0;
-                type();
-            }, 2000);
-        }
+      if (index < text.length) {
+        document.getElementById("animated-text").innerHTML += text.charAt(index);
+        index++;
+        typingInterval = setTimeout(type, speed); 
+      } else {
+        setTimeout(() => {
+          document.getElementById("animated-text").innerHTML = "";
+          index = 0; 
+          type();
+        }, 2000); 
+      }
     }
 
     $(document).ready(function() {
-    // Form submission logic (with validation)
-    $('#login-frm').on('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission
+      $('#login').hide();
+      $('#animated-text').show();
 
-        const email = $('[name="email"]').val();
-        const password = $('[name="password"]').val();
-        const recaptchaResponse = grecaptcha.getResponse();
+      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+        e.preventDefault();
+        $('#login').fadeIn();
+        $('#animated-text').hide();
 
-        const emailPattern = /.+@gmail\.com$/;
+        const role = $(this).attr('id').replace('login-as-', '');
+        $('#role').val(role);
+        $('#login-frm').attr('action', role + '_login');
+      });
 
-        // Validate email pattern
-        if (!emailPattern.test(email)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Email',
-                text: 'Please enter a valid Gmail address.',
-            });
-            return; // Stop form submission
+      $('#togglePassword').on('click', function() {
+        const passwordField = $('#password');
+        const passwordFieldType = passwordField.attr('type');
+        const icon = $(this);
+
+        if (passwordFieldType === 'password') {
+          passwordField.attr('type', 'text');
+          icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+          passwordField.attr('type', 'password');
+          icon.removeClass('fa-eye-slash').addClass('fa-eye');
         }
+      });
 
-        // Validate reCAPTCHA
-        if (recaptchaResponse.length === 0) {
-            Swal.fire({
-                icon: 'error',
-                title: 'reCAPTCHA Required',
-                text: 'Please complete the reCAPTCHA to continue.',
-            });
-            return; // Stop form submission
-        }
+      $('#login-frm').on('submit', function(e) {
+    const email = $('[name="email"]').val();
+    const emailPattern = /.+@gmail\.com$/;
+    // const password = $('[name="password"]').val();
+    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        // Perform AJAX request for login
-        $.ajax({
-            url: 'login.php',  // Adjust the URL to your backend PHP file
-            method: 'POST',
-            data: $(this).serialize(),  // Serialize form data for submission
-            success: function(response) {
-                const data = JSON.parse(response);  // Parse the JSON response from the backend
+    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
 
-                if (data.status === 'incorrect_password') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Incorrect Password',
-                        text: data.message,  // Use the message from the backend
-                    });
-                } else if (data.status === 'success') {
-                    window.location.href = 'admin.php';  // Redirect to the dashboard
-                } else if (data.status === 'locked') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Account Locked',
-                        text: data.message,  // Display the lockout message
-                    });
-                }
-            },
-            error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred. Please try again.'
-            });
-        }
-    });
+    // Validate email
+    if (!emailPattern.test(email)) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Email',
+            text: 'Please enter a valid Gmail address.',
+        });
+    } 
+    // Validate password
+    // else if (!passwordPattern.test(password)) {
+    //     e.preventDefault();
+    //     Swal.fire({
+    //         icon: 'error',
+    //         title: 'Invalid Password',
+    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
+    //     });
+    // } 
+    // Check if reCAPTCHA is filled
+    else if (recaptchaResponse.length === 0) {
+        e.preventDefault(); // Prevent form submission
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
+        });
+    }
 });
 
 
-        // Open and close menu (for mobile or sidebar navigation)
-        $('.open-menu-btn').click(function() {
-            $('#push-menu').css('width', '250px'); 
-        });
+      $('.open-menu-btn').click(function() {
+        $('#push-menu').css('width', '250px'); 
+      });
 
-        $('.close-btn').click(function() {
-            $('#push-menu').css('width', '0'); 
-        });
+      $('.close-btn').click(function() {
+        $('#push-menu').css('width', '0'); 
+      });
     });
 
     window.onload = function() {
-        type();  // Initialize the typing animation
+      type(); 
     };
-</script>
-
+  </script>
+  
 </head>
 <body>
   <!-- Navbar -->
@@ -490,7 +419,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     </div>
   </div>
-</body>JJJ
+</body>
 </html>
 <script>
     </script>

@@ -5,13 +5,12 @@ define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
 define('LOCK_TIME', 900); // Lock time in seconds (15 minutes)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Assuming you are checking for correct login details:
     $email = $_POST['email'];
     $password = $_POST['password'];
 
     // Replace these with your actual database check
     $correctEmail = 'admin@example.com';
-    $correctPassword = 'password123'; // This should be a hashed password in real applications
+    $correctPassword = password_hash('password123', PASSWORD_DEFAULT); // Use a hashed password
 
     // Check if the number of failed login attempts exceeds the limit
     if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
@@ -42,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['failed_attempts']++;
         $_SESSION['last_failed_login'] = time();
 
-        echo json_encode(['status' => 'incorrect_password', 'message' => 'The password you entered is incorrect. Please try again.']);
+        echo json_encode(['status' => 'error', 'message' => 'The email or password you entered is incorrect. Please try again.']);
     }
 }
 ?>
@@ -385,40 +384,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return; // Stop form submission
     }
 
-    // Perform AJAX request for login
     $.ajax({
-        url: 'login.php',  // Adjust the URL to your backend PHP file
-        method: 'POST',
-        data: $(this).serialize(),  // Serialize form data for submission
-        success: function(response) {
-            const data = JSON.parse(response);  // Parse the JSON response from the backend
+                    url: 'login.php',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        const data = JSON.parse(response);
 
-            if (data.status === 'sayup ang passsword') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'sayup ang password',
-                    text: data.message,  // Use the message from the backend
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Login Successful',
+                                text: data.message
+                            }).then(() => {
+                                window.location.href = 'admin.php';
+                            });
+                        } else if (data.status === 'error') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Login Failed',
+                                text: data.message
+                            });
+                        } else if (data.status === 'locked') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Account Locked',
+                                text: data.message
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while processing your request.'
+                        });
+                    }
                 });
-            } else if (data.status === 'success') {
-                window.location.href = 'admin.php';  // Redirect to the dashboard
-            } else if (data.status === 'locked') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Account Locked',
-                    text: data.message,  // Display the lockout message
-                });
-            }
-        },
-        error: function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'sayuo ayaw pag sudla',
-                text: 'SAYUP ANG PASSWORD BOY.',
             });
-        }
-    });
-});
-
 
         // Open and close menu (for mobile or sidebar navigation)
         $('.open-menu-btn').click(function() {

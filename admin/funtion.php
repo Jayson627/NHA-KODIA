@@ -76,7 +76,7 @@ if (isset($_POST["btn-new-password"])) {
             // Direct SQL query to update the password and reset code
             $update_sql = "UPDATE `users` SET `password` = '$hashed_password', `code` = '$reset' WHERE email = '$email'";
 
-            if ($conn->query($update_sql) === FALSE) {
+            if ($conn->query($update_sql) === TRUE) {
                 $_SESSION["notify"] = "Your password has been reset successfully.";
                    header("location: ../admin/forgot_password");
                 exit();

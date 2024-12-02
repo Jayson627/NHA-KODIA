@@ -2,7 +2,7 @@
 session_start();
 
 define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
-define('LOCK_TIME', 60); // Lock time in seconds (1 minute)
+define('LOCK_TIME', 60); // Lock time in seconds (15 minutes)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -384,51 +385,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $.ajax({
-          type: 'POST',
-          url: 'login.php',
-          data: $(this).serialize(),
-          dataType: 'json',
-          success: function(response) {
-            if (response.status === 'success') {
-              Swal.fire({
-                icon: 'success',
-                title: 'Login Successful',
-                text: response.message,
-                showConfirmButton: false,
-                timer: 2000
-              }).then(() => {
-                window.location.href = 'dashboard.php';
-              });
-            } else if (response.status === 'locked') {
-              Swal.fire({
-                icon: 'error',
-                title: 'Account Locked',
-                text: response.message,
-                showConfirmButton: false,
-                timer: 3000
-              });
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Login Failed',
-                text: response.message,
-                showConfirmButton: false,
-                timer: 2000
-              });
-            }
-          },
-          error: function() {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'An error occurred. Please try again later.',
-              showConfirmButton: false,
-              timer: 2000
+                    url: 'login.php',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        const data = JSON.parse(response);
+
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Login Successful',
+                                text: data.message
+                            }).then(() => {
+                                window.location.href = 'admin.php';
+                            });
+                        } else if (data.status === 'error') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Login Failed',
+                                text: data.message
+                            });
+                        } else if (data.status === 'locked') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Account Locked',
+                                text: data.message
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while processing your request.'
+                        });
+                    }
+                });
             });
-          }
-        });
-      });
-    });
 
         // Open and close menu (for mobile or sidebar navigation)
         $('.open-menu-btn').click(function() {

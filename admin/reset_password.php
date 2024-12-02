@@ -2,8 +2,8 @@
 session_start();
 include 'includes/conn.php';
 
-if (isset($_GET["reset"])) {
-    $email = $_GET["email"];
+if (isset($_GET["reset"]) || isset($_GET["success"])) {
+    $email = isset($_GET["email"]) ? $_GET["email"] : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,7 +91,7 @@ if (isset($_GET["reset"])) {
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/funtion" method="post">
+        <form action="../admin/function" method="post">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo $email ?>" required readonly>
             </div>
@@ -110,21 +110,16 @@ if (isset($_GET["reset"])) {
         // Check if there's a session message to display
         if (isset($_SESSION['notify'])) {
             $message = addslashes($_SESSION['notify']);
-            if (strpos($message, 'Your password has been reset successfully') !== false) {
-                echo "Swal.fire({
-                    title: 'Success',
-                    text: '$message',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });";
-            } else {
-                echo "Swal.fire({
-                    title: 'Error',
-                    text: '$message',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });";
-            }
+            $isSuccess = isset($_GET["success"]);
+            $title = $isSuccess ? 'Success' : 'Error';
+            $icon = $isSuccess ? 'success' : 'error';
+
+            echo "Swal.fire({
+                title: '$title',
+                text: '$message',
+                icon: '$icon',
+                confirmButtonText: 'OK'
+            });";
             unset($_SESSION['notify']);
         }
         ?>
@@ -133,6 +128,14 @@ if (isset($_GET["reset"])) {
 </html>
 <?php
 } else {
-    echo "Invalid reset request.";
+    // Handle invalid reset request case
+    echo "<script>
+        Swal.fire({
+            title: 'Error',
+            text: 'Invalid reset request.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    </script>";
 }
 ?>

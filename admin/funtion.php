@@ -77,21 +77,21 @@ if (isset($_POST["btn-new-password"])) {
 
             if ($conn->query($update_sql) === TRUE) {
                 $_SESSION["notify"] = "Your password has been reset successfully.";
-                header("Location: ../admin/forgot_password");
+                header("Location: ../admin/reset_password?success=true");
                 exit();
             } else {
                 $_SESSION["notify"] = "Failed to reset the password. Please try again.";
-                header("Location: ../admin/reset_password");
+                header("Location: ../admin/reset_password?reset&email=$email");
                 exit();
             }
         } else {
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-            header("Location: ../admin/reset_password");
+            header("Location: ../admin/reset_password?reset&email=$email");
             exit();
         }
     } else {
         $_SESSION["notify"] = "No user found with this email. Please try again.";
-        header("Location: ../admin/reset_password");
+        header("Location: ../admin/reset_password?reset&email=$email");
         exit();
     }
 }

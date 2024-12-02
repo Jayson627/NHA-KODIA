@@ -77,7 +77,7 @@ if (isset($_POST["btn-new-password"])) {
 
             if ($conn->query($update_sql) === TRUE) {
                 $_SESSION["notify"] = "Your password has been reset successfully.";
-                header("Location: ../admin/reset_password.php?success=true");
+                header("Location: ../admin/reset_password?success=true");
                 exit();
             } else {
                 $_SESSION["notify"] = "Failed to reset the password. Please try again.";

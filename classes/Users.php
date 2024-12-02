@@ -13,7 +13,7 @@ class Users extends DBConnection {
     public function __destruct(){
         parent::__destruct();
     }
-
+}
     public function save_users(){
         if(!isset($_POST['status']) && $this->settings->userdata('login_type') == 1){
             $_POST['status'] = 1;
@@ -141,8 +141,7 @@ class Users extends DBConnection {
         } else {
             $resp['status'] = 'failed';
         }
-        return json_encode($resp);
-    } 
+        return json_encode($resp); tulug anay ako pre sara kuna tiwasun cge pre oo pre
 
     public function save_employee(){
         if(!empty($_POST['password'])){

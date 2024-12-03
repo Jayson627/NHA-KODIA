@@ -1,15 +1,21 @@
+<?php
+session_start();
+include 'includes/conn.php';
+
+if (isset($_GET["reset"])) {
+    $email = $_GET["email"];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
-    <!-- SweetAlert CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
-    <!-- SweetAlert JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <!-- Add SweetAlert CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
-        /* Your existing styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -20,6 +26,7 @@
             align-items: center;
             height: 100vh;
         }
+
         .reset-password-box {
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -29,15 +36,18 @@
             padding: 30px;
             box-sizing: border-box;
         }
+
         .reset-password-title {
             text-align: center;
             font-size: 24px;
             color: #333;
             margin-bottom: 20px;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-control {
             width: 100%;
             padding: 10px;
@@ -46,10 +56,12 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
+
         .form-control:focus {
             outline: none;
             border-color: #5cb85c;
         }
+
         button {
             width: 100%;
             padding: 10px;
@@ -61,16 +73,9 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #4cae4c;
-        }
-        @media (max-width: 600px) {
-            .reset-password-box {
-                padding: 20px;
-            }
-            .reset-password-title {
-                font-size: 20px;
-            }
         }
     </style>
 </head>
@@ -90,19 +95,25 @@
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
-    <!-- SweetAlert Script -->
-    <script>
-        <?php 
-        session_start(); 
-        if(isset($_SESSION["notify"])): ?>
+
+    <?php if (isset($_SESSION['notify'])) { ?>
+        <script>
             Swal.fire({
-                title: 'Notification',
-                text: '<?php echo $_SESSION["notify"]; ?>',
                 icon: 'success',
-                confirmButtonText: 'OK'
+                title: 'Success!',
+                text: '<?php echo $_SESSION['notify']; ?>',
+                showConfirmButton: false,
+                timer: 3000
             });
-            <?php unset($_SESSION["notify"]); ?>
-        <?php endif; ?>
-    </script>
+        </script>
+        <?php unset($_SESSION['notify']); ?>
+    <?php } ?>
+
 </body>
 </html>
+
+<?php
+} else {
+    // Handle case when reset is not set
+}
+?>

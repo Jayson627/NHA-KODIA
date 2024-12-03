@@ -1,9 +1,11 @@
 <?php
+
 session_start();
 require_once("mailer.php");
 require_once('../admin/connection.php');
 require_once("../initialize.php");
 
+// Helper function to send reset email
 function sendResetEmail($email, $reset_code) {
     global $mail;
     $mail->SetFrom("alcantarajayson118@gmail.com");
@@ -15,14 +17,19 @@ function sendResetEmail($email, $reset_code) {
     return $mail->send();
 }
 
+// Handle forgotten password (generate OTP)
 if (isset($_POST["btn-forgotpass"])) {
     $email = $_POST["email"];
     
+    // Query the database to check if the email exists
     $sql = "SELECT * FROM `users` WHERE email = '$email'";
     $result = $conn->query($sql);
 
     if ($result && $result->num_rows > 0) {
+        // Email exists, generate OTP and send the reset email
         $reset_code = random_int(100000, 999999);
+        
+        // Direct SQL query to update the reset code
         $update_sql = "UPDATE `users` SET `code` = '$reset_code' WHERE email = '$email'";
         
         if ($conn->query($update_sql) === TRUE) {
@@ -39,17 +46,20 @@ if (isset($_POST["btn-forgotpass"])) {
             exit();
         }
     } else {
+        // If the email does not exist in the database
         $_SESSION["notify"] = "No user found with this email. Please try again.";
         header("location: ../admin/forgot_password");
         exit();
     }
 }
 
+// Handle new password submission (validate OTP and reset password)
 if (isset($_POST["btn-new-password"])) {
     $email = $_POST["email"];
     $password = $_POST["password"];
     $otp = $_POST["otp"];
 
+    // Direct SQL query to get the code from the database
     $sql = "SELECT `code` FROM `users` WHERE email = '$email'";
     $result = $conn->query($sql);
 
@@ -57,9 +67,12 @@ if (isset($_POST["btn-new-password"])) {
         $row = $result->fetch_assoc();
         $get_code = $row['code'];
 
+        // Validate OTP
         if ($get_code && $otp === $get_code) {
             $reset = random_int(100000, 999999);
             $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+
+            // Direct SQL query to update the password and reset code
             $update_sql = "UPDATE `users` SET `password` = '$hashed_password', `code` = '$reset' WHERE email = '$email'";
 
             if ($conn->query($update_sql) === TRUE) {

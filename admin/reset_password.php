@@ -104,6 +104,19 @@ if (isset($_GET["reset"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
+    <?php
+    if (isset($_SESSION["notify"])) {
+        echo "<script>
+        Swal.fire({
+            title: 'Notification',
+            text: '" . $_SESSION["notify"] . "',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+        </script>";
+        unset($_SESSION["notify"]);
+    }
+    ?>
 </body>
 </html>
 <?php

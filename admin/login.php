@@ -446,7 +446,7 @@
               return false;
 
           } else if (event.ctrlKey && event.shiftKey && event.keyCode == 74) {
-              // block Strg+Shift+J (Console)
+             // // block Strg+Shift+J (Console)
               event.preventDefault();
               event.stopPropagation();
               return false;

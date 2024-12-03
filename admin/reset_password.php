@@ -5,6 +5,11 @@ include 'includes/conn.php';
 if (isset($_GET["reset"])) {
     $email = $_GET["email"];
 ?>
+<?php
+} else {
+    // Handle case when reset is not set
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,11 +113,7 @@ if (isset($_GET["reset"])) {
         </form>
     </div>
     <script>
-        <?php
-} else {
-    // Handle case when reset is not set
-}
-?>
+        
     <?php
     // Check if there's a session message to display
     if (isset($_SESSION['notify'])) {

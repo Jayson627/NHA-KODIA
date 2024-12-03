@@ -34,17 +34,23 @@ if (isset($_POST["btn-forgotpass"])) {
         
         if ($conn->query($update_sql) === TRUE) {
             if (sendResetEmail($email, $reset_code)) {
-                $_SESSION["notify"] = "A reset link has been sent to your email.";
+                $_SESSION["notify"] = "success";
+                $_SESSION["message"] = "A reset link has been sent to your email.";
             } else {
-                $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
+                $_SESSION["notify"] = "error";
+                $_SESSION["message"] = "Mailer Error: " . $mail->ErrorInfo;
             }
             header("location: ../admin/forgot_password");
             exit();
         } else {
+            $_SESSION["notify"] = "error";
+            $_SESSION["message"] = "Failed to update reset code.";
             header("location: ../admin/forgot_password");
             exit();
         }
     } else {
+        $_SESSION["notify"] = "error";
+        $_SESSION["message"] = "Email does not exist.";
         header("location: ../admin/forgot_password");
         exit();
     }
@@ -73,14 +79,25 @@ if (isset($_POST["btn-new-password"])) {
             $update_sql = "UPDATE `users` SET `password` = '$hashed_password', `code` = '$reset' WHERE email = '$email'";
 
             if ($conn->query($update_sql) === TRUE) {
-                header("location: ../admin/forgot_password");
+                $_SESSION["notify"] = "success";
+                $_SESSION["message"] = "Password reset successful.";
+                header("location: ../admin/reset_password");
+                exit();
+            } else {
+                $_SESSION["notify"] = "error";
+                $_SESSION["message"] = "Failed to update password.";
+                header("location: ../admin/reset_password");
                 exit();
             }
         } else {
+            $_SESSION["notify"] = "error";
+            $_SESSION["message"] = "Invalid OTP.";
             header("location: ../admin/reset_password");
             exit();
         }
     } else {
+        $_SESSION["notify"] = "error";
+        $_SESSION["message"] = "Email does not exist.";
         header("location: ../admin/reset_password");
         exit();
     }

@@ -89,7 +89,9 @@
         <button type="submit" name="btn-new-password">Set Password</button>
     </form>
 </div>
-<?php if(isset($_SESSION['notify'])): ?>
+<?php 
+ session_start();
+if(isset($_SESSION['notify'])): ?>
     <script>
         swal({
             title: "Notification",

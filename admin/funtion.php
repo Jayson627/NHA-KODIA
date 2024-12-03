@@ -1,8 +1,10 @@
 <?php
+
 session_start();
 require_once("mailer.php");
 require_once('../admin/connection.php');
 require_once("../initialize.php");
+
 
 // Helper function to send reset email
 function sendResetEmail($email, $reset_code) {
@@ -34,22 +36,22 @@ if (isset($_POST["btn-forgotpass"])) {
         if ($conn->query($update_sql) === TRUE) {
             if (sendResetEmail($email, $reset_code)) {
                 $_SESSION["notify"] = "A reset link has been sent to your email.";
-                $_SESSION["notify_type"] = "success";
             } else {
                 $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
-                $_SESSION["notify_type"] = "error";
             }
+            header("location: ../admin/forgot_password");
+            exit();
         } else {
             $_SESSION["notify"] = "Failed to update the reset code. Please try again.";
-            $_SESSION["notify_type"] = "error";
+                 header("location: ../admin/forgot_password");
+            exit();
         }
     } else {
         // If the email does not exist in the database
         $_SESSION["notify"] = "No user found with this email. Please try again.";
-        $_SESSION["notify_type"] = "error";
+          header("location: ../admin/forgot_password");
+        exit();
     }
-    header("location: ../admin/forgot_password");
-    exit();
 }
 
 // Handle new password submission (validate OTP and reset password)
@@ -69,27 +71,25 @@ if (isset($_POST["btn-new-password"])) {
         // Validate OTP
         if ($get_code && $otp === $get_code) {
             $reset = random_int(100000, 999999);
-            $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+            $hashed_password = password_hash($password,  PASSWORD_ARGON2I);
 
             // Direct SQL query to update the password and reset code
             $update_sql = "UPDATE `users` SET `password` = '$hashed_password', `code` = '$reset' WHERE email = '$email'";
 
             if ($conn->query($update_sql) === TRUE) {
                 $_SESSION["notify"] = "Your password has been reset successfully.";
-                $_SESSION["notify_type"] = "success";
-            } else {
-                $_SESSION["notify"] = "There was an error resetting your password. Please try again.";
-                $_SESSION["notify_type"] = "error";
+                   header("location: ../admin/forgot_password");
+                exit();
             }
         } else {
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-            $_SESSION["notify_type"] = "error";
+              header("location: ../admin/reset_password");
+            exit();
         }
     } else {
         $_SESSION["notify"] = "No user found with this email. Please try again.";
-        $_SESSION["notify_type"] = "error";
+             header("location: ../admin/reset_password");
+        exit();
     }
-    header("location: ../admin/reset_password");
-    exit();
 }
 ?>

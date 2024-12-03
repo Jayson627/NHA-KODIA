@@ -113,7 +113,7 @@ if (isset($_GET["reset"])) {
         // Check if there's a session message to display
         if (isset($_SESSION['notify'])) {
             $message = addslashes($_SESSION['notify']);
-            if (strpos($message, 'kabudlay na sini oy malooy kamo') !== false) {
+            if (strpos($message, 'kabudlay na sini oy ') !== false) {
                 echo "Swal.fire({
                     title: 'Success',
                     text: '$message',
@@ -122,9 +122,9 @@ if (isset($_GET["reset"])) {
                 });";
             } else {
                 echo "Swal.fire({
-                    title: 'Error',
+                    title: 'Success',
                     text: '$message',
-                    icon: 'error',
+                    icon: 'success',
                     confirmButtonText: 'OK'
                 });";
             }

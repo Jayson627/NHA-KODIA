@@ -107,14 +107,14 @@ if (isset($_GET["reset"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
-
     <script>
     <?php
     // Check if there's a session message to display
     if (isset($_SESSION['notify'])) {
         $message = addslashes($_SESSION['notify']['message']);
-        $status = $_SESSION['notify']['status'];
+        $status = $_SESSION['notify']['status']; // Get the status (success/error)
 
+        // Determine the SweetAlert icon based on the status
         if ($status === 'success') {
             echo "Swal.fire({
                 title: 'Success',
@@ -131,10 +131,12 @@ if (isset($_GET["reset"])) {
             });";
         }
 
+        // Unset the session message after showing it
         unset($_SESSION['notify']);
     }
     ?>
 </script>
+
 </body>
 </html>
 <?php

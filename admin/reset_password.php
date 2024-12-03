@@ -107,7 +107,6 @@ if (isset($_GET["reset"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
-
     <script>
     <?php
     // Check if there's a session message to display

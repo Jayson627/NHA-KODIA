@@ -73,7 +73,7 @@ if (isset($_POST["btn-new-password"])) {
             exit();
         }
     } else {
-        $_SESSION["notify"] = "No user found with this email. Please try again.";
+        $_SESSION["notify"] = "Your password has been reset successfully.";
         header("location: ../admin/reset_password");
         exit();
     }

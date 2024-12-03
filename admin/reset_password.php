@@ -114,7 +114,7 @@ if (isset($_GET["reset"])) {
     if (isset($_SESSION['notify'])) {
         $message = addslashes($_SESSION['notify']);
         
-        // Check if the message contains success message
+        // Check if the message contains "Your password has been reset successfully" for success
         if (strpos($message, 'Your password has been reset successfully') !== false) {
             echo "Swal.fire({
                 title: 'Success',
@@ -123,7 +123,7 @@ if (isset($_GET["reset"])) {
                 confirmButtonText: 'OK'
             });";
         } else {
-            // If not, show as error
+            // If the message doesn't indicate success, show as error
             echo "Swal.fire({
                 title: 'Error',
                 text: '$message',

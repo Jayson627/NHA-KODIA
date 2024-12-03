@@ -122,7 +122,7 @@ if (isset($_GET["reset"])) {
                 });";
             } else {
                 echo "Swal.fire({
-                    title: 'Error',
+                    title: 'Success',
                     text: '$message',
                     icon: 'error',
                     confirmButtonText: 'OK'

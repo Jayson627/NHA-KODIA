@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include 'includes/conn.php';
 
 if (isset($_GET["reset"])) {
@@ -110,6 +110,7 @@ if (isset($_GET["reset"])) {
 
     <script>
         <?php
+        session_start();
 if (isset($_SESSION["notify"]) && isset($_SESSION["message"])) {
     $notify = $_SESSION["notify"];
     $message = $_SESSION["message"];

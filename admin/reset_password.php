@@ -96,7 +96,7 @@
         session_start(); 
         if(isset($_SESSION["notify"])): ?>
             Swal.fire({
-                title: 'Notification',
+                title: 'Success',
                 text: '<?php echo $_SESSION["notify"]; ?>',
                 icon: 'success',
                 confirmButtonText: 'OK'

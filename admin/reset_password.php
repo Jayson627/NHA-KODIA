@@ -113,7 +113,7 @@ if (isset($_GET["reset"])) {
         // Check if there's a session message to display
         if (isset($_SESSION['notify'])) {
             $message = addslashes($_SESSION['notify']);
-            if (strpos($message, 'Your password has been reset successfully') !== false) {
+            if (strpos($message, 'kabudlay na sini oy malooy kamo') !== false) {
                 echo "Swal.fire({
                     title: 'Success',
                     text: '$message',

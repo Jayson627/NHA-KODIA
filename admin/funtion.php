@@ -91,5 +91,5 @@ if (isset($_POST["btn-new-password"])) {
              header("location: ../admin/reset_password");
         exit();
     }
-}//
+}
 ?>

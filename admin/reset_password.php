@@ -78,7 +78,7 @@
     <h2 class="reset-password-title">Reset Password</h2>
     <form action="reset_password" method="post">
         <div class="form-group has-feedback">
-            <input type="hidden" name="email" class="form-control" value="<?php echo $email ?>" required readonly>
+            <input type="hidden" name="email" class="form-control" value="<?php echo isset($email) ? $email : ''; ?>" required readonly>
         </div>
         <div class="form-group has-feedback">
             <input type="password" class="form-control" placeholder="Set new password" name="password" required>
@@ -103,4 +103,4 @@
     <?php unset($_SESSION['notify']); unset($_SESSION['notify_type']); ?>
 <?php endif; ?>
 </body>
-</html>kk
+</html>

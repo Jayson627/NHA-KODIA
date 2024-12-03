@@ -92,7 +92,9 @@
     </div>
     <!-- SweetAlert Script -->
     <script>
-        <?php if(isset($_SESSION["notify"])): ?>
+        <?php 
+        session_start(); 
+        if(isset($_SESSION["notify"])): ?>
             Swal.fire({
                 title: 'Notification',
                 text: '<?php echo $_SESSION["notify"]; ?>',

@@ -1,3 +1,52 @@
+<?php
+session_start();
+
+define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
+define('LOCK_TIME', 60); // Lock time in seconds (15 minutes)
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Replace these with your actual database check
+    $correctEmail = 'admin@example.com';
+    $correctPassword = password_hash('password123', PASSWORD_DEFAULT); // Use a hashed password
+
+    // Check if the number of failed login attempts exceeds the limit
+    if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
+        if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
+            if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
+                $remainingTime = LOCK_TIME - (time() - $_SESSION['last_failed_login']);
+                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.']);
+                exit();
+            } else {
+                // Reset failed attempts after the lock time has passed
+                unset($_SESSION['failed_attempts']);
+                unset($_SESSION['last_failed_login']);
+            }
+        }
+    }
+
+    // Check if email and password are correct
+    if ($email === $correctEmail && password_verify($password, $correctPassword)) {
+        // Successful login, reset failed attempts
+        unset($_SESSION['failed_attempts']);
+        unset($_SESSION['last_failed_login']);
+        echo json_encode(['status' => 'success', 'message' => 'Login successful']);
+    } else {
+        // Increment failed attempts counter
+        if (!isset($_SESSION['failed_attempts'])) {
+            $_SESSION['failed_attempts'] = 0;
+        }
+        $_SESSION['failed_attempts']++;
+        $_SESSION['last_failed_login'] = time();
+
+        echo json_encode(['status' => 'error', 'message' => 'The email or password you entered is incorrect. Please try again.']);
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once('../config.php'); ?>
@@ -256,103 +305,139 @@
   <script>
     let typingInterval;
     const text = "Welcome to NHA Kodia Information System";
-    const speed = 150; 
+    const speed = 150;
     let index = 0;
 
+    // Function for typing animation
     function type() {
-      if (index < text.length) {
-        document.getElementById("animated-text").innerHTML += text.charAt(index);
-        index++;
-        typingInterval = setTimeout(type, speed); 
-      } else {
-        setTimeout(() => {
-          document.getElementById("animated-text").innerHTML = "";
-          index = 0; 
-          type();
-        }, 2000); 
-      }
-    }//
+        if (index < text.length) {
+            document.getElementById("animated-text").innerHTML += text.charAt(index);
+            index++;
+            typingInterval = setTimeout(type, speed);
+        } else {
+            setTimeout(() => {
+                document.getElementById("animated-text").innerHTML = "";
+                index = 0;
+                type();
+            }, 2000);
+        }
+    }
 
     $(document).ready(function() {
-      $('#login').hide();
-      $('#animated-text').show();
+        // Hide login form initially and show animated text
+        $('#login').hide();
+        $('#animated-text').show();
 
-      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
-        e.preventDefault();
-        $('#login').fadeIn();
-        $('#animated-text').hide();
+        // Handle role-based login (admin, resident, officer)
+        $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+            e.preventDefault();
+            $('#login').fadeIn();
+            $('#animated-text').hide();
 
-        const role = $(this).attr('id').replace('login-as-', '');
-        $('#role').val(role);
-        $('#login-frm').attr('action', role + '_login');
-      });
+            const role = $(this).attr('id').replace('login-as-', '');
+            $('#role').val(role);  // Set the role in the form
+            $('#login-frm').attr('action', role + '_login');
+        });
 
-      $('#togglePassword').on('click', function() {
-        const passwordField = $('#password');
-        const passwordFieldType = passwordField.attr('type');
-        const icon = $(this);
+        // Toggle password visibility
+        $('#togglePassword').on('click', function() {
+            const passwordField = $('#password');
+            const passwordFieldType = passwordField.attr('type');
+            const icon = $(this);
 
-        if (passwordFieldType === 'password') {
-          passwordField.attr('type', 'text');
-          icon.removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-          passwordField.attr('type', 'password');
-          icon.removeClass('fa-eye-slash').addClass('fa-eye');
-        }
-      });
+            if (passwordFieldType === 'password') {
+                passwordField.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordField.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
 
-      $('#login-frm').on('submit', function(e) {
+        // Form submission logic (with validation)
+        $('#login-frm').on('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
     const email = $('[name="email"]').val();
+    const password = $('[name="password"]').val();
+    const recaptchaResponse = grecaptcha.getResponse();
+
     const emailPattern = /.+@gmail\.com$/;
-    // const password = $('[name="password"]').val();
-    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
-
-    // Validate email
+    // Validate email pattern
     if (!emailPattern.test(email)) {
-        e.preventDefault();
         Swal.fire({
             icon: 'error',
             title: 'Invalid Email',
             text: 'Please enter a valid Gmail address.',
         });
-    } 
-    // Validate password
-    // else if (!passwordPattern.test(password)) {
-    //     e.preventDefault();
-    //     Swal.fire({
-    //         icon: 'error',
-    //         title: 'Invalid Password',
-    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-    //     });
-    // } 
-    // Check if reCAPTCHA is filled
-    else if (recaptchaResponse.length === 0) {
-        e.preventDefault(); // Prevent form submission
+        return; // Stop form submission
+    }
+
+    // Validate reCAPTCHA
+    if (recaptchaResponse.length === 0) {
         Swal.fire({
             icon: 'error',
             title: 'reCAPTCHA Required',
             text: 'Please complete the reCAPTCHA to continue.',
         });
+        return; // Stop form submission
     }
-});
 
+    $.ajax({
+                    url: 'login.php',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        const data = JSON.parse(response);
 
-      $('.open-menu-btn').click(function() {
-        $('#push-menu').css('width', '250px'); 
-      });
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Login Successful',
+                                text: data.message
+                            }).then(() => {
+                                window.location.href = 'admin.php';
+                            });
+                        } else if (data.status === 'error') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Login Failed',
+                                text: data.message
+                            });
+                        } else if (data.status === 'locked') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Account Locked',
+                                text: data.message
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while processing your request.'
+                        });
+                    }
+                });
+            });
 
-      $('.close-btn').click(function() {
-        $('#push-menu').css('width', '0'); 
-      });
+        // Open and close menu (for mobile or sidebar navigation)
+        $('.open-menu-btn').click(function() {
+            $('#push-menu').css('width', '250px'); 
+        });
+
+        $('.close-btn').click(function() {
+            $('#push-menu').css('width', '0'); 
+        });
     });
 
     window.onload = function() {
-      type(); 
+        type();  // Initialize the typing animation
     };
-  </script>
-  
+</script>
+
 </head>
 <body>
   <!-- Navbar -->

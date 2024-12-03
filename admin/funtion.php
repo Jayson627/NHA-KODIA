@@ -18,7 +18,7 @@ function sendResetEmail($email, $reset_code) {
     return $mail->send();
 }
 
-// Handle forgotten password (generate OTP)
+////// Handle forgotten password (generate OTP)
 if (isset($_POST["btn-forgotpass"])) {
     $email = $_POST["email"];
     

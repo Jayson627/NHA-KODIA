@@ -107,7 +107,11 @@ if (isset($_GET["reset"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
-
+    <?php
+} else {
+    // Handle case when reset is not set
+}
+?>
 
         <?php
         // Check if there's a session message to display
@@ -122,21 +126,16 @@ if (isset($_GET["reset"])) {
                 });";
             } else {
                 echo "Swal.fire({
-                    title: 'Success',
-                   
+                    title: 'Error',
                     text: '$message',
-                    icon: 'success',
+                    icon: 'error',
                     confirmButtonText: 'OK'
                 });";
             }
             unset($_SESSION['notify']);
         }
         ?>
-  
+ 
 </body>
 </html>
-<?php
-} else {
-    // Handle case when reset is not set
-}
-?>
+

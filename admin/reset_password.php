@@ -6,7 +6,6 @@
     <title>Reset Password</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-    <!-- Styling for the page -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -62,7 +61,6 @@
         button:hover {
             background-color: #4cae4c;
         }
-        /* Responsive design */
         @media (max-width: 600px) {
             .reset-password-box {
                 padding: 20px;
@@ -78,7 +76,7 @@
     <h2 class="reset-password-title">Reset Password</h2>
     <form action="reset_password" method="post">
         <div class="form-group has-feedback">
-            <input type="hidden" name="email" class="form-control" value="<?php echo isset($email) ? $email : ''; ?>" required readonly>
+            <input type="hidden" name="email" class="form-control" value="<?php echo isset($_GET['email']) ? $_GET['email'] : ''; ?>" required readonly>
         </div>
         <div class="form-group has-feedback">
             <input type="password" class="form-control" placeholder="Set new password" name="password" required>
@@ -89,9 +87,7 @@
         <button type="submit" name="btn-new-password">Set Password</button>
     </form>
 </div>
-<?php 
- session_start();
-if(isset($_SESSION['notify'])): ?>
+<?php if(isset($_SESSION['notify'])): ?>
     <script>
         swal({
             title: "Notification",

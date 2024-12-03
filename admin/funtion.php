@@ -1,10 +1,8 @@
 <?php
-
 session_start();
 require_once("mailer.php");
 require_once('../admin/connection.php');
 require_once("../initialize.php");
-
 
 // Helper function to send reset email
 function sendResetEmail($email, $reset_code) {
@@ -36,22 +34,22 @@ if (isset($_POST["btn-forgotpass"])) {
         if ($conn->query($update_sql) === TRUE) {
             if (sendResetEmail($email, $reset_code)) {
                 $_SESSION["notify"] = "A reset link has been sent to your email.";
+                $_SESSION["notify_type"] = "success";
             } else {
                 $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
+                $_SESSION["notify_type"] = "error";
             }
-            header("location: ../admin/forgot_password");
-            exit();
         } else {
             $_SESSION["notify"] = "Failed to update the reset code. Please try again.";
-                 header("location: ../admin/forgot_password");
-            exit();
+            $_SESSION["notify_type"] = "error";
         }
     } else {
         // If the email does not exist in the database
         $_SESSION["notify"] = "No user found with this email. Please try again.";
-          header("location: ../admin/forgot_password");
-        exit();
+        $_SESSION["notify_type"] = "error";
     }
+    header("location: ../admin/forgot_password");
+    exit();
 }
 
 // Handle new password submission (validate OTP and reset password)

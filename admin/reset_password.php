@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include 'includes/conn.php';
 
 if (isset($_GET["reset"])) {
@@ -108,25 +108,22 @@ if (isset($_GET["reset"])) {
         </form>
     </div>
 
-    <script>
-        <?php
-        session_start();
-if (isset($_SESSION["notify"]) && isset($_SESSION["message"])) {
-    $notify = $_SESSION["notify"];
-    $message = $_SESSION["message"];
-    echo "<script>
-        Swal.fire({
-            icon: '$notify',
-            title: '$message',
-            showConfirmButton: true
-        });
-    </script>";
-    unset($_SESSION["notify"]);
-    unset($_SESSION["message"]);
-}
-?>
-
-    </script>
+    <!-- SweetAlert Notifications -->
+    <?php
+    if (isset($_SESSION["notify"]) && isset($_SESSION["message"])) {
+        $notify = $_SESSION["notify"];
+        $message = $_SESSION["message"];
+        echo "<script>
+            Swal.fire({
+                icon: '$notify',
+                title: '$message',
+                showConfirmButton: true
+            });
+        </script>";
+        unset($_SESSION["notify"]);
+        unset($_SESSION["message"]);
+    }
+    ?>
 </body>
 </html>
 <?php

@@ -17,45 +17,6 @@ function sendResetEmail($email, $reset_code) {
     return $mail->send();
 }
 
-// Handle forgotten password (generate OTP)
-if (isset($_POST["btn-forgotpass"])) {
-    $email = $_POST["email"];
-    
-    // Query the database to check if the email exists
-    $sql = "SELECT * FROM `users` WHERE email = '$email'";
-    $result = $conn->query($sql);
-
-    if ($result && $result->num_rows > 0) {
-        // Email exists, generate OTP and send the reset email
-        $reset_code = random_int(100000, 999999);
-        
-        // Direct SQL query to update the reset code
-        $update_sql = "UPDATE `users` SET `code` = '$reset_code' WHERE email = '$email'";
-        
-        if ($conn->query($update_sql) === TRUE) {
-            if (sendResetEmail($email, $reset_code)) {
-                $_SESSION["notify"] = "success";
-                $_SESSION["message"] = "A reset link has been sent to your email.";
-            } else {
-                $_SESSION["notify"] = "error";
-                $_SESSION["message"] = "Mailer Error: " . $mail->ErrorInfo;
-            }
-            header("location: ../admin/forgot_password");
-            exit();
-        } else {
-            $_SESSION["notify"] = "error";
-            $_SESSION["message"] = "Failed to update reset code.";
-            header("location: ../admin/forgot_password");
-            exit();
-        }
-    } else {
-        $_SESSION["notify"] = "error";
-        $_SESSION["message"] = "Email does not exist.";
-        header("location: ../admin/forgot_password");
-        exit();
-    }
-}
-
 // Handle new password submission (validate OTP and reset password)
 if (isset($_POST["btn-new-password"])) {
     $email = $_POST["email"];

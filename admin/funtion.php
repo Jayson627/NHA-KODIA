@@ -68,7 +68,7 @@ if (isset($_POST["btn-new-password"])) {
         $row = $result->fetch_assoc();
         $get_code = $row['code'];
 
-        // Validate OTP
+        // /Validate OTP
         if ($get_code && $otp === $get_code) {
             $reset = random_int(100000, 999999);
             $hashed_password = password_hash($password,  PASSWORD_ARGON2I);

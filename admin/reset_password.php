@@ -11,9 +11,12 @@ if (isset($_GET["reset"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
+  
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+
+    <!-- Styling for the page -->
     <style>
-        /* Styling for the page */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -91,14 +94,14 @@ if (isset($_GET["reset"])) {
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="reset_password" method="post">
-            <div class="form-group">
-                <input type="hidden" name="email" class="form-control" value="<?php echo $email; ?>" required readonly>
+        <form action="../admin/funtion" method="post">
+            <div class="form-group has-feedback">
+                <input type="hidden" name="email" class="form-control" value="<?php echo $email ?>" required readonly>
             </div>
-            <div class="form-group">
+            <div class="form-group has-feedback">
                 <input type="password" class="form-control" placeholder="Set new password" name="password" required>
             </div>
-            <div class="form-group">
+            <div class="form-group has-feedback">
                 <input type="text" class="form-control" placeholder="OTP Code" name="otp" required>
             </div>
             <button type="submit" name="btn-new-password">Set Password</button>
@@ -106,29 +109,36 @@ if (isset($_GET["reset"])) {
     </div>
 
     <script>
-        <?php
-        // Check if there's a session message to display
-        if (isset($_SESSION['notify'])) {
-            $message = addslashes($_SESSION['notify']);
-            $messageType = strpos($message, 'successfully') !== false ? 'success' : 'error';
-            
+    <?php
+    // Check if there's a session message to display
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']);
+        
+        // Check if the message contains success message
+        if (strpos($message, 'Your password has been reset successfully') !== false) {
             echo "Swal.fire({
-                title: '" . ucfirst($messageType) . "',
+                title: 'Success',
                 text: '$message',
-                icon: '$messageType',
+                icon: 'success',
                 confirmButtonText: 'OK'
             });";
-            
-            unset($_SESSION['notify']); // Clear the session message after displaying
+        } else {
+            // If not, show as error
+            echo "Swal.fire({
+                title: 'Error',
+                text: '$message',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });";
         }
-        ?>
-    </script>
+        unset($_SESSION['notify']);
+    }
+    ?>
+</script>
 </body>
 </html>
 <?php
 } else {
-    // Redirect or handle the case when reset is not set
-    header("Location: login.php"); // Adjust the redirect as per your flow
-    exit();
+    // Handle case when reset is not set
 }
 ?>

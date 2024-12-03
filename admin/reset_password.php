@@ -11,8 +11,6 @@ if (isset($_GET["reset"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
-  
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Styling for the page -->
     <style>
@@ -106,31 +104,6 @@ if (isset($_GET["reset"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
-
-    <script>
-        <?php
-        // Check if there's a session message to display
-        if (isset($_SESSION['notify'])) {
-            $message = addslashes($_SESSION['notify']);
-            if (strpos($message, 'Your password has been reset successfully') !== false) {
-                echo "Swal.fire({
-                    title: 'Success',
-                    text: '$message',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });";
-            } else {
-                echo "Swal.fire({
-                    title: 'Error',
-                    text: '$message',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });";
-            }
-            unset($_SESSION['notify']);
-        }
-        ?>
-    </script>
 </body>
 </html>
 <?php

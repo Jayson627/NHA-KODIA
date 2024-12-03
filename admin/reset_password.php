@@ -113,14 +113,14 @@ if (isset($_GET["reset"])) {
         </form>
     </div>
     <script>
-        
     <?php
     // Check if there's a session message to display
     if (isset($_SESSION['notify'])) {
         $message = addslashes($_SESSION['notify']);
         
-        // Check if the message indicates success
+        // Check if the message indicates success (contains the specific success text)
         if (strpos($message, 'Your password has been reset successfully') !== false) {
+            // Success message
             echo "Swal.fire({
                 title: 'Success',
                 text: '$message',
@@ -128,6 +128,7 @@ if (isset($_GET["reset"])) {
                 confirmButtonText: 'OK'
             });";
         } else {
+            // Error message
             echo "Swal.fire({
                 title: 'Error',
                 text: '$message',
@@ -136,7 +137,7 @@ if (isset($_GET["reset"])) {
             });";
         }
         
-        // Clear the session message
+        // Clear the session message after showing the alert
         unset($_SESSION['notify']);
     }
     ?>

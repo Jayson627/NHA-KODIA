@@ -108,7 +108,8 @@ if (isset($_GET["reset"])) {
         </form>
     </div>
 
-    <?php
+    <script>
+        <?php
 if (isset($_SESSION["notify"]) && isset($_SESSION["message"])) {
     $notify = $_SESSION["notify"];
     $message = $_SESSION["message"];
@@ -124,6 +125,7 @@ if (isset($_SESSION["notify"]) && isset($_SESSION["message"])) {
 }
 ?>
 
+    </script>
 </body>
 </html>
 <?php

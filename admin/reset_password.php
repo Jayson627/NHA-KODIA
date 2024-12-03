@@ -120,16 +120,7 @@ if (isset($_GET["reset"])) {
                     icon: 'success',
                     confirmButtonText: 'OK'
                 });";
-            } else {
-                echo "Swal.fire({
-                    title: 'Error',
-                    text: '$message',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });";
-            }
-            unset($_SESSION['notify']);
-        }
+          
         ?>
     </script>
 </body>

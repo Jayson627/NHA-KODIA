@@ -271,7 +271,7 @@
           type();
         }, 2000); 
       }
-    }
+    }//
 
     $(document).ready(function() {
       $('#login').hide();

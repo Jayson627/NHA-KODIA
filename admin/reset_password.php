@@ -13,7 +13,6 @@ if (isset($_GET["reset"])) {
     <title>Reset Password</title>
   
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   
 
     <!-- Styling for the page -->
     <style>

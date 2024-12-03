@@ -35,33 +35,21 @@ if (isset($_POST["btn-forgotpass"])) {
         
         if ($conn->query($update_sql) === TRUE) {
             if (sendResetEmail($email, $reset_code)) {
-                $_SESSION["notify"] = [
-                    'message' => "A reset link has been sent to your email.",
-                    'status' => 'success'  // Status is 'success'
-                ];
+                $_SESSION["notify"] = "A reset link has been sent to your email.";
             } else {
-                $_SESSION["notify"] = [
-                    'message' => "Mailer Error: " . $mail->ErrorInfo,
-                    'status' => 'error'  // Status is 'error' in case of mail failure
-                ];
+                $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
             }
             header("location: ../admin/forgot_password");
             exit();
         } else {
-            $_SESSION["notify"] = [
-                'message' => "Failed to update the reset code. Please try again.",
-                'status' => 'error'  // Status is 'error'
-            ];
-            header("location: ../admin/forgot_password");
+            $_SESSION["notify"] = "Failed to update the reset code. Please try again.";
+                 header("location: ../admin/forgot_password");
             exit();
         }
     } else {
         // If the email does not exist in the database
-        $_SESSION["notify"] = [
-            'message' => "No user found with this email. Please try again.",
-            'status' => 'error'  // Status is 'error'
-        ];
-        header("location: ../admin/forgot_password");
+        $_SESSION["notify"] = "No user found with this email. Please try again.";
+          header("location: ../admin/forgot_password");
         exit();
     }
 }
@@ -80,43 +68,27 @@ if (isset($_POST["btn-new-password"])) {
         $row = $result->fetch_assoc();
         $get_code = $row['code'];
 
-        // Validate OTP
+        // /Validate OTP
         if ($get_code && $otp === $get_code) {
             $reset = random_int(100000, 999999);
-            $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+            $hashed_password = password_hash($password,  PASSWORD_ARGON2I);
 
             // Direct SQL query to update the password and reset code
             $update_sql = "UPDATE `users` SET `password` = '$hashed_password', `code` = '$reset' WHERE email = '$email'";
 
             if ($conn->query($update_sql) === TRUE) {
-                $_SESSION["notify"] = [
-                    'message' => "Your password has been reset successfully.",
-                    'status' => 'success'  // Status is 'success'
-                ];
-                header("location: ../admin/forgot_password");
-                exit();
-            } else {
-                $_SESSION["notify"] = [
-                    'message' => "Failed to update password. Please try again.",
-                    'status' => 'error'  // Status is 'error' if update failed
-                ];
-                header("location: ../admin/reset_password");
+                $_SESSION["notify"] = "Your password has been reset successfully.";
+                   header("location: ../admin/forgot_password");
                 exit();
             }
         } else {
-            $_SESSION["notify"] = [
-                'message' => "Invalid OTP. Please try again.",
-                'status' => 'error'  // Status is 'error' if OTP validation fails
-            ];
-            header("location: ../admin/reset_password");
+            $_SESSION["notify"] = "Invalid OTP. Please try again.";
+              header("location: ../admin/reset_password");
             exit();
         }
     } else {
-        $_SESSION["notify"] = [
-            'message' => "No user found with this email. Please try again.",
-            'status' => 'error'  // Status is 'error' if email is not found
-        ];
-        header("location: ../admin/reset_password");
+        $_SESSION["notify"] = "No user found with this email. Please try again.";
+             header("location: ../admin/reset_password");
         exit();
     }
 }

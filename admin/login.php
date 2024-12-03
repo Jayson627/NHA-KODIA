@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       font-family: 'Poppins', sans-serif;
     }
 
-    /* Push Menu Styles */
+    /* Push Menu Styles *///
     #push-menu {
       height: 100%;
       width: 0;

@@ -53,6 +53,7 @@ if (isset($_POST["btn-forgotpass"])) {
         exit();
     }
 }
+
 // Handle new password submission (validate OTP and reset password)
 if (isset($_POST["btn-new-password"])) {
     $email = $_POST["email"];
@@ -69,35 +70,26 @@ if (isset($_POST["btn-new-password"])) {
 
         // Validate OTP
         if ($get_code && $otp === $get_code) {
-            $reset = random_int(100000, 999999); // Generate a new reset code
-            $hashed_password = password_hash($password, PASSWORD_ARGON2I); // Hash the new password
+            $reset = random_int(100000, 999999);
+            $hashed_password = password_hash($password,  PASSWORD_ARGON2I);
 
             // Direct SQL query to update the password and reset code
             $update_sql = "UPDATE `users` SET `password` = '$hashed_password', `code` = '$reset' WHERE email = '$email'";
 
-            if ($conn->query($update_sql) === FALSE) {
-                // If the update is successful, set a success message
+            if ($conn->query($update_sql) === TRUE) {
                 $_SESSION["notify"] = "Your password has been reset successfully.";
-                header("location: ../admin/forgot_password"); // Redirect after success
-                exit();
-            } else {
-                // If the query failed, set an error message
-                $_SESSION["notify"] = "There was an error resetting your password. Please try again.";
-                header("location: ../admin/reset_password"); // Redirect in case of failure
+                   header("location: ../admin/forgot_password");
                 exit();
             }
         } else {
-            // If OTP is invalid, set an error message
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-            header("location: ../admin/reset_password"); // Redirect back with error message
+              header("location: ../admin/reset_password");
             exit();
         }
     } else {
-        // If no user is found with the given email, set an error message
         $_SESSION["notify"] = "No user found with this email. Please try again.";
-        header("location: ../admin/reset_password"); // Redirect back with error message
+             header("location: ../admin/reset_password");
         exit();
     }
 }
-
 ?>

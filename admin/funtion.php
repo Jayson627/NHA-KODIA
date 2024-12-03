@@ -1,10 +1,8 @@
 <?php
-
 session_start();
 require_once("mailer.php");
 require_once('../admin/connection.php');
 require_once("../initialize.php");
-
 
 // Helper function to send reset email
 function sendResetEmail($email, $reset_code) {
@@ -39,19 +37,15 @@ if (isset($_POST["btn-forgotpass"])) {
             } else {
                 $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
             }
-            header("location: ../admin/forgot_password");
-            exit();
         } else {
             $_SESSION["notify"] = "Failed to update the reset code. Please try again.";
-                 header("location: ../admin/forgot_password");
-            exit();
         }
     } else {
         // If the email does not exist in the database
         $_SESSION["notify"] = "No user found with this email. Please try again.";
-          header("location: ../admin/forgot_password");
-        exit();
     }
+    header("location: ../admin/forgot_password");
+    exit();
 }
 
 // Handle new password submission (validate OTP and reset password)
@@ -68,7 +62,7 @@ if (isset($_POST["btn-new-password"])) {
         $row = $result->fetch_assoc();
         $get_code = $row['code'];
 
-        // /Validate OTP
+        // Validate OTP
         if ($get_code && $otp === $get_code) {
             $reset = random_int(100000, 999999);
             $hashed_password = password_hash($password,  PASSWORD_ARGON2I);
@@ -78,18 +72,39 @@ if (isset($_POST["btn-new-password"])) {
 
             if ($conn->query($update_sql) === TRUE) {
                 $_SESSION["notify"] = "Your password has been reset successfully.";
-                   header("location: ../admin/forgot_password");
-                exit();
             }
         } else {
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-              header("location: ../admin/reset_password");
-            exit();
         }
     } else {
         $_SESSION["notify"] = "No user found with this email. Please try again.";
-             header("location: ../admin/reset_password");
-        exit();
     }
+    header("location: ../admin/reset_password");
+    exit();
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset Notifications</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+<body>
+    <?php
+    if (isset($_SESSION["notify"])) {
+        echo "<script>
+        Swal.fire({
+            title: 'Notification',
+            text: '" . $_SESSION["notify"] . "',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+        </script>";
+        unset($_SESSION["notify"]);
+    }
+    ?>
+</body>
+</html>

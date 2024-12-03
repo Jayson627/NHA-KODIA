@@ -124,3 +124,40 @@ if (isset($_GET["reset"])) {
     // Handle case when reset is not set
 }
 ?>
+
+<?php
+if (isset($_POST["btn-new-password"])) {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+    $otp = $_POST["otp"];
+
+    $sql = "SELECT `code` FROM `users` WHERE email = '$email'";
+    $result = $conn->query($sql);
+
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $get_code = $row['code'];
+
+        if ($get_code && $otp === $get_code) {
+            $reset = random_int(100000, 999999);
+            $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+
+            $update_sql = "UPDATE `users` SET `password` = '$hashed_password', `code` = '$reset' WHERE email = '$email'";
+
+            if ($conn->query($update_sql) === TRUE) {
+                $_SESSION["notify"] = "Your password has been reset successfully.";
+                header("Location: reset_password?reset=true&email=$email");
+                exit();
+            }
+        } else {
+            $_SESSION["notify"] = "Invalid OTP. Please try again.";
+            header("Location: reset_password?reset=true&email=$email");
+            exit();
+        }
+    } else {
+        $_SESSION["notify"] = "No user found with this email. Please try again.";
+        header("Location: reset_password?reset=true&email=$email");
+        exit();
+    }
+}
+?>

@@ -1,31 +1,3 @@
-<?php
-session_start(); // Ensure session is started
-if (isset($_SESSION['notify'])) {
-    // Extract the message type and content from the session
-    $notify = $_SESSION['notify'];
-    $message = htmlspecialchars($notify['message']);
-    $type = $notify['type']; // 'success' or 'error'
-
-    // Check for a success message based on a specific string (you can adjust this condition)
-    $title = ($type == 'success') ? 'Success' : 'Error';
-    $icon = ($type == 'success') ? 'success' : 'error';
-
-    echo "<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        Swal.fire({
-            title: '$title',
-            text: '$message',
-            icon: '$icon',
-            confirmButtonText: 'OK'
-        });
-    });
-    </script>";
-
-    // Clear the session after displaying the message
-    unset($_SESSION['notify']);
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,6 +82,46 @@ if (isset($_SESSION['notify'])) {
     </div>
     <div class="footer-text"></div>
   </div>
+  
+  <?php
+    session_start(); // Ensure session is started
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']);
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'Success' : 'Error')."',
+                text: '$message',
+                icon: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'success' : 'error')."',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>";
+        unset($_SESSION['notify']);
+    }
+  ?>
+   <?php
+        // Check if there's a session message to display
+        if (isset($_SESSION['notify'])) {
+            $message = addslashes($_SESSION['notify']);
+            if (strpos($message, 'Your password has been reset successfully') !== false) {
+                echo "Swal.fire({
+                    title: 'Success',
+                    text: '$message',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });";
+            } else {
+                echo "Swal.fire({
+                    title: 'Error',
+                    text: '$message',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });";
+            }
+            unset($_SESSION['notify']);
+        }
+        ?>
 
   <script>
     document.addEventListener('contextmenu', function (e) {

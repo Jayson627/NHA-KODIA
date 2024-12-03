@@ -11,10 +11,11 @@ if (isset($_GET["reset"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
-
-    <!-- Add SweetAlert CDN -->
+  
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
 
+    <!-- Styling for the page -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -77,6 +78,17 @@ if (isset($_GET["reset"])) {
         button:hover {
             background-color: #4cae4c;
         }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .reset-password-box {
+                padding: 20px;
+            }
+
+            .reset-password-title {
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -96,22 +108,35 @@ if (isset($_GET["reset"])) {
         </form>
     </div>
 
-    <?php if (isset($_SESSION['notify'])) { ?>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '<?php echo $_SESSION['notify']; ?>',
-                showConfirmButton: false,
-                timer: 3000
-            });
-        </script>
-        <?php unset($_SESSION['notify']); ?>
-    <?php } ?>
+    <script>
+    <?php
+    // Check if there's a session message to display
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']['message']);
+        $status = $_SESSION['notify']['status'];
 
+        if ($status === 'success') {
+            echo "Swal.fire({
+                title: 'Success',
+                text: '$message',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });";
+        } else {
+            echo "Swal.fire({
+                title: 'Error',
+                text: '$message',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });";
+        }
+
+        unset($_SESSION['notify']);
+    }
+    ?>
+</script>
 </body>
 </html>
-
 <?php
 } else {
     // Handle case when reset is not set

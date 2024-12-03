@@ -96,10 +96,17 @@ if (isset($_GET["reset"])) {
 
     <?php if (isset($_SESSION['notify'])): ?>
         <script>
+            let message = '<?php echo $_SESSION["notify"]; ?>';
+            let iconType = 'success';
+            
+            if (message.toLowerCase().includes('error') || message.toLowerCase().includes('invalid')) {
+                iconType = 'error';
+            }
+
             Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: '<?php echo $_SESSION["notify"]; ?>'
+                icon: iconType,
+                title: iconType.charAt(0).toUpperCase() + iconType.slice(1),
+                text: message
             });
             <?php unset($_SESSION['notify']); ?>
         </script>

@@ -107,12 +107,8 @@ if (isset($_GET["reset"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
-    <?php
-} else {
-    // Handle case when reset is not set
-}
-?>
 
+    <script>
         <?php
         // Check if there's a session message to display
         if (isset($_SESSION['notify'])) {
@@ -135,7 +131,11 @@ if (isset($_GET["reset"])) {
             unset($_SESSION['notify']);
         }
         ?>
- 
+    </script>
 </body>
 </html>
-
+<?php
+} else {
+    // Handle case when reset is not set
+}
+?>

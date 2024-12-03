@@ -83,7 +83,7 @@ if (isset($_POST["btn-new-password"])) {
             }
         } else {
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-              header("location: ../admin/reset_password.");
+              header("location: ../admin/reset_password");
             exit();
         }
     } else {

@@ -11,7 +11,11 @@ if (isset($_GET["reset"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
+  
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+
+    <!-- Styling for the page -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,6 +27,7 @@ if (isset($_GET["reset"])) {
             align-items: center;
             height: 100vh;
         }
+
         .reset-password-box {
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -32,15 +37,18 @@ if (isset($_GET["reset"])) {
             padding: 30px;
             box-sizing: border-box;
         }
+
         .reset-password-title {
             text-align: center;
             font-size: 24px;
             color: #333;
             margin-bottom: 20px;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-control {
             width: 100%;
             padding: 10px;
@@ -49,10 +57,12 @@ if (isset($_GET["reset"])) {
             border-radius: 5px;
             box-sizing: border-box;
         }
+
         .form-control:focus {
             outline: none;
             border-color: #5cb85c;
         }
+
         button {
             width: 100%;
             padding: 10px;
@@ -64,13 +74,17 @@ if (isset($_GET["reset"])) {
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #4cae4c;
         }
+
+        /* Responsive design */
         @media (max-width: 600px) {
             .reset-password-box {
                 padding: 20px;
             }
+
             .reset-password-title {
                 font-size: 20px;
             }
@@ -94,23 +108,30 @@ if (isset($_GET["reset"])) {
         </form>
     </div>
 
-    <?php if (isset($_SESSION['notify'])): ?>
-        <script>
-            let message = '<?php echo $_SESSION["notify"]; ?>';
-            let iconType = 'success';
-            
-            if (message.toLowerCase().includes('error') || message.toLowerCase().includes('invalid')) {
-                iconType = 'error';
+    <script>
+        <?php
+        // Check if there's a session message to display
+        if (isset($_SESSION['notify'])) {
+            $message = addslashes($_SESSION['notify']);
+            if (strpos($message, 'Your password has been reset successfully') !== false) {
+                echo "Swal.fire({
+                    title: 'Success',
+                    text: '$message',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });";
+            } else {
+                echo "Swal.fire({
+                    title: 'Error',
+                    text: '$message',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });";
             }
-
-            Swal.fire({
-                icon: iconType,
-                title: iconType.charAt(0).toUpperCase() + iconType.slice(1),
-                text: message
-            });
-            <?php unset($_SESSION['notify']); ?>
-        </script>
-    <?php endif; ?>
+            unset($_SESSION['notify']);
+        }
+        ?>
+    </script>
 </body>
 </html>
 <?php

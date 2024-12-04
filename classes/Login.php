@@ -18,7 +18,7 @@ class Login extends DBConnection {
     public function index(){
         echo "<h1>Access Denied</h1> <a href='".base_url."'>Go Back.</a>";
     }
-
+}
     public function login(){
         extract($_POST);
         // Use prepared statement to fetch user by email

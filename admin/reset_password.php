@@ -112,21 +112,13 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
     <!-- Include SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Check for success or error parameter in the URL and show the sweet alert
+        // Check for success parameter in the URL and show the sweet alert
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('success')) {
             Swal.fire({
                 title: 'Success!',
                 text: 'Your password has been reset successfully! Have a wonderful day!',
                 icon: 'success',
-                confirmButtonText: 'OK'
-            });
-        } else if (urlParams.has('error')) {
-            const errorMessage = urlParams.get('error');
-            Swal.fire({
-                title: 'Error',
-                text: errorMessage,
-                icon: 'error',
                 confirmButtonText: 'OK'
             });
         }

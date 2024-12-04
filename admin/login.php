@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-define('MAX_LOGIN_ATTEMPTS', 3); 
-define('LOCK_TIME', 60); 
+define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
+define('LOCK_TIME', 60); // Lock time in seconds (15 minutes)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
@@ -10,40 +10,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Replace these with your actual database check
     $correctEmail = 'admin@example.com';
-    $correctPassword = password_hash('password123', PASSWORD_DEFAULT);
+    $correctPassword = password_hash('password123', PASSWORD_DEFAULT); // Use a hashed password
 
-    // Session management - protect against brute force login attempts
+    // Check if the number of failed login attempts exceeds the limit
     if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
         if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
             if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
                 $remainingTime = LOCK_TIME - (time() - $_SESSION['last_failed_login']);
-                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Try again in ' . ceil($remainingTime / 60) . ' minutes.']);
+                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.']);
                 exit();
             } else {
+                // Reset failed attempts after the lock time has passed
                 unset($_SESSION['failed_attempts']);
                 unset($_SESSION['last_failed_login']);
             }
         }
     }
 
+    // Check if email and password are correct
     if ($email === $correctEmail && password_verify($password, $correctPassword)) {
-        // Successful login, store user info in session
-        $_SESSION['user_email'] = $email;
-        $_SESSION['logged_in'] = true;
+        // Successful login, reset failed attempts
         unset($_SESSION['failed_attempts']);
         unset($_SESSION['last_failed_login']);
         echo json_encode(['status' => 'success', 'message' => 'Login successful']);
     } else {
-        // Increment failed attempts
+        // Increment failed attempts counter
         if (!isset($_SESSION['failed_attempts'])) {
             $_SESSION['failed_attempts'] = 0;
         }
         $_SESSION['failed_attempts']++;
         $_SESSION['last_failed_login'] = time();
-        echo json_encode(['status' => 'error', 'message' => 'Incorrect email or password.']);
+
+        echo json_encode(['status' => 'error', 'message' => 'The email or password you entered is incorrect. Please try again.']);
     }
 }
-
 ?>
 
 

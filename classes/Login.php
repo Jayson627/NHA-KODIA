@@ -54,15 +54,11 @@ class Login extends DBConnection {
         }
     }
 
- 
-    public function logout() {
-        if ($this->settings->sess_des()) {
-            // Redirect to login page
-            header("Location: " . base_url . 'admin/login.php');
-            exit();
+    public function logout(){
+        if($this->settings->sess_des()){
+            redirect('admin/login.php');
         }
     }
-    
 
     public function employee_login(){
         extract($_POST);

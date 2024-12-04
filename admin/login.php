@@ -1,30 +1,18 @@
 <?php
 session_start();
 
-define('MAX_LOGIN_ATTEMPTS', 3);
-define('LOCK_TIME', 60);
-
-function generateToken() {
-    return bin2hex(random_bytes(16)); // Generates a random token
-}
-
-function storeToken($email, $token) {
-    // Store the token in a file
-    file_put_contents("tokens/{$email}.token", $token);
-}
-
-function getToken($email) {
-    $tokenFile = "tokens/{$email}.token";
-    return file_exists($tokenFile) ? file_get_contents($tokenFile) : null;
-}
+define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
+define('LOCK_TIME', 60); // Lock time in seconds (15 minutes)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    // Replace these with your actual database check
     $correctEmail = 'admin@example.com';
-    $correctPassword = password_hash('password123', PASSWORD_DEFAULT);
+    $correctPassword = password_hash('password123', PASSWORD_DEFAULT); // Use a hashed password
 
+    // Check if the number of failed login attempts exceeds the limit
     if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
         if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
             if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
@@ -36,20 +24,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
                 exit();
             } else {
+                // Reset failed attempts after the lock time has passed
                 unset($_SESSION['failed_attempts']);
                 unset($_SESSION['last_failed_login']);
             }
         }
     }
 
+    // Check if email and password are correct
     if ($email === $correctEmail && password_verify($password, $correctPassword)) {
-        $token = generateToken();
-        $_SESSION['email'] = $email;
-        $_SESSION['token'] = $token;
-        storeToken($email, $token);
-
+        // Successful login, reset failed attempts
+        unset($_SESSION['failed_attempts']);
+        unset($_SESSION['last_failed_login']);
         echo json_encode(['status' => 'success', 'message' => 'Login successful']);
     } else {
+        // Increment failed attempts counter
         if (!isset($_SESSION['failed_attempts'])) {
             $_SESSION['failed_attempts'] = 0;
         }
@@ -60,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 
 
 

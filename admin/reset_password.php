@@ -119,12 +119,13 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/funtion" method="post">
+        <form action="../admin/funtion" method="post" onsubmit="return validatePassword();">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
             </div>
             <div class="form-group has-feedback">
-                <input type="password" class="form-control" placeholder="Set new password" name="password" required>
+                <input type="password" id="new-password" class="form-control" placeholder="Set new password" name="password" required>
+                <small id="password-help" style="color: #888; font-size: 12px;">Password must be at least 8 characters long and contain at least one uppercase letter.</small>
             </div>
             <div class="form-group has-feedback otp-box">
                 <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
@@ -180,6 +181,22 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
                 otpValue += input.value;
             });
             otpHiddenInput.value = otpValue;
+        }
+
+        // Password validation function
+        function validatePassword() {
+            const password = document.getElementById('new-password').value;
+            const passwordPattern = /^(?=.*[A-Z]).{8,}$/; // At least 8 characters with at least one uppercase letter
+            if (!passwordPattern.test(password)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Password must be at least 8 characters long and contain at least one uppercase letter.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return false; // Prevent form submission if the validation fails
+            }
+            return true; // Allow form submission if validation passes
         }
     </script>
 </body>

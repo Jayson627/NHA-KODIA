@@ -55,10 +55,15 @@ class Login extends DBConnection {
     }
 
     public function logout(){
-        if($this->settings->sess_des()){
-            redirect('admin/login.php');
-        }
+        // Clear session data
+        session_unset();
+        session_destroy();
+    
+        // Redirect to login page
+        header('Location: admin/login.php');
+        exit(); // Ensure the script ends after the redirect
     }
+    
 
     public function employee_login(){
         extract($_POST);
@@ -99,21 +104,16 @@ class Login extends DBConnection {
 
         return json_encode($resp);
     }
-
     public function employee_logout(){
-        if($this->settings->sess_des()){
-            redirect('./login.php');
-        }
+        // Clear session data
+        session_unset();
+        session_destroy();
+    
+        // Redirect to login page
+        header('Location: ./login.php');
+        exit(); // Ensure the script ends after the redirect
     }
-}
-
-
-if (isset($_POST['logout'])) {
-    session_unset();  // Clear all session variables
-    session_destroy();  // Destroy the session
-    header('Location: login.php'); // Redirect to login page
-    exit();
-}
+    
 
 // Handling actions
 $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);

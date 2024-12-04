@@ -358,8 +358,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 icon.removeClass('fa-eye-slash').addClass('fa-eye');
             }
         });
-// Form submission logic (with validation)
-$('#login-frm').on('submit', function(e) {
+
+    // Form submission logic (with validation)
+    $('#login-frm').on('submit', function(e) {
         e.preventDefault(); // Prevent the default form submission
 
         const email = $('[name="email"]').val();
@@ -445,8 +446,6 @@ $('#login-frm').on('submit', function(e) {
             }
         });
     });
-
-
         // Open and close menu (for mobile or sidebar navigation)
         $('.open-menu-btn').click(function() {
             $('#push-menu').css('width', '250px'); 

@@ -91,8 +91,8 @@ if (isset($_POST["btn-new-password"])) {
             exit();
         }
     } else {
-        $_SESSION["notify"] = " OTP is expired. Please request a new OTP.";
-        header("location: ../admin/reset_password?reset=true&email=$email&error=No OTP found or OTP expired. Please request a new OTP.");
+        $_SESSION["notify"] = "OTP is expired. Please request a new OTP.";
+        header("location: ../admin/reset_password?reset=true&email=$email&error=OTP is expired. Please request a new OTP.");
         exit();
     }
 }

@@ -358,94 +358,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 icon.removeClass('fa-eye-slash').addClass('fa-eye');
             }
         });
-// Form submission logic (with validation)
-$('#login-frm').on('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission
 
-        const email = $('[name="email"]').val();
-        const password = $('[name="password"]').val();
-        const recaptchaResponse = grecaptcha.getResponse();
+        $(document).ready(function() {
+      $('#login-form').submit(function(e) {
+        e.preventDefault();
 
-        const emailPattern = /.+@gmail\.com$/;
-
-        // Validate email pattern
-        if (!emailPattern.test(email)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Email',
-                text: 'Please enter a valid Gmail address.',
-            });
-            return; // Stop form submission
-        }
-
-        // Validate reCAPTCHA
-        if (recaptchaResponse.length === 0) {
-            Swal.fire({
-                icon: 'error',
-                title: 'reCAPTCHA Required',
-                text: 'Please complete the reCAPTCHA to continue.',
-            });
-            return; // Stop form submission
-        }
+        const email = $('#email').val();
+        const password = $('#password').val();
 
         $.ajax({
-            url: 'login.php',
-            method: 'POST',
-            data: $(this).serialize(),
-            success: function(response) {
-                const data = JSON.parse(response);
-
-                if (data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Login Successful',
-                        text: data.message
-                    }).then(() => {
-                        window.location.href = 'admin.php';
-                    });
-                } else if (data.status === 'error') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login Failed',
-                        text: data.message
-                    });
-                } else if (data.status === 'locked') {
-                    let remainingTime = data.remaining_time;
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Account Locked',
-                        html: `Too many failed attempts. Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
-                        showConfirmButton: false, // Disable the OK button
-                        didOpen: () => {
-                            const countdownElement = document.getElementById('countdown');
-                            const countdownInterval = setInterval(() => {
-                                remainingTime--;
-                                countdownElement.textContent = remainingTime;
-                                if (remainingTime <= 0) {
-                                    clearInterval(countdownInterval);
-                                    Swal.fire({
-                                        icon: 'info',
-                                        title: 'You can try again now.',
-                                        text: 'Please try logging in again.'
-                                    }).then(() => {
-                                        location.reload();
-                                    });
-                                }
-                            }, 1000);
-                        }
-                    });
+          url: 'login.php',
+          method: 'POST',
+          dataType: 'json',
+          data: {
+            email: email,
+            password: password
+          },
+          success: function(response) {
+            if (response.status === 'success') {
+              Swal.fire({
+                title: 'Success!',
+                text: response.message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = 'index.php';
                 }
-            },
-            error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while processing your request.'
-                });
+              });
+            } else if (response.status === 'locked') {
+              Swal.fire({
+                title: 'Account Locked!',
+                text: response.message,
+                icon: 'warning',
+                confirmButtonText: 'OK'
+              });
+            } else {
+              Swal.fire({
+                title: 'Error!',
+                text: response.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
             }
+          }
         });
+      });
     });
-
 
         // Open and close menu (for mobile or sidebar navigation)
         $('.open-menu-btn').click(function() {

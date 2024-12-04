@@ -110,7 +110,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
     </div>
 
     <!-- Include SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Check for success parameter in the URL and show the sweet alert
         const urlParams = new URLSearchParams(window.location.search);

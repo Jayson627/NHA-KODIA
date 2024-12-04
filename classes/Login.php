@@ -60,7 +60,7 @@ class Login extends DBConnection {
         session_destroy();
     
         // Redirect to login page
-        header('Location: admin/login.php');
+        header('Location: login.php');
         exit(); // Ensure the script ends after the redirect
     }
     
@@ -110,7 +110,7 @@ class Login extends DBConnection {
         session_destroy();
     
         // Redirect to login page
-        header('Location: ./login.php');
+        header('Location: login.php');
         exit(); // Ensure the script ends after the redirect
     }
     

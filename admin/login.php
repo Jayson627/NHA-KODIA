@@ -2,7 +2,7 @@
 session_start();
 
 define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
-define('LOCK_TIME', 900); // Lock time in seconds (15 minutes)
+define('LOCK_TIME', 60); // Lock time in seconds (15 minutes)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];

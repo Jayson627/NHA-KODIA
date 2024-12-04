@@ -53,40 +53,10 @@ class Login extends DBConnection {
             return json_encode(array('status' => '', 'error' => $this->conn->error));
         }
     }
-// On the backend (logout handling in Login.php)
-public function logout() {
-    // Invalidate session
-    session_unset();
-    session_destroy();
-    
-    // Optionally, delete session cookies
-    if (ini_get("session.use_cookies")) {
-        $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000, $params["path"], $params["https://nha-kodia.com/"], $params["secure"], $params["httponly"]);
-    }
 
-    // Redirect to login page
-    header("Location: admin/login.php");
-    exit();
-}
-
-
-    public function employee_logout(){
-        // Invalidate the session token (if you're using token-based sessions)
-        $this->invalidateSessionToken($this->settings->get_userdata('email'));
-
-        // Destroy the session
+    public function logout(){
         if($this->settings->sess_des()){
-            redirect('./login.php');
-        }
-    }
-
-    private function invalidateSessionToken($email) {
-        // Assuming you are using a token stored in a file or database:
-        // For file-based token storage, delete the token file.
-        $tokenFile = "../tokens/{$email}.token";
-        if (file_exists($tokenFile)) {
-            unlink($tokenFile); // Remove the token to invalidate all sessions
+            redirect('admin/login.php');
         }
     }
 
@@ -128,6 +98,12 @@ public function logout() {
         }
 
         return json_encode($resp);
+    }
+
+    public function employee_logout(){
+        if($this->settings->sess_des()){
+            redirect('./login.php');
+        }
     }
 }
 

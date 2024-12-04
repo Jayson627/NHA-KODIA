@@ -358,9 +358,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 icon.removeClass('fa-eye-slash').addClass('fa-eye');
             }
         });
-
-      // Form submission logic (with validation)
-      $('#login-frm').on('submit', function(e) {
+// Form submission logic (with validation)
+$('#login-frm').on('submit', function(e) {
         e.preventDefault(); // Prevent the default form submission
 
         const email = $('[name="email"]').val();
@@ -404,17 +403,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }).then(() => {
                         window.location.href = 'admin.php';
                     });
-                } else if (data.status === 'notverified') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Account Not Verified',
-                        text: data.message
-                    });
                 } else if (data.status === 'error') {
                     Swal.fire({
                         icon: 'error',
                         title: 'Login Failed',
                         text: data.message
+                    });
+                } else if (data.status === 'locked') {
+                    let remainingTime = data.remaining_time;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Account Locked',
+                        html: `Too many failed attempts. Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
+                        showConfirmButton: false, // Disable the OK button
+                        didOpen: () => {
+                            const countdownElement = document.getElementById('countdown');
+                            const countdownInterval = setInterval(() => {
+                                remainingTime--;
+                                countdownElement.textContent = remainingTime;
+                                if (remainingTime <= 0) {
+                                    clearInterval(countdownInterval);
+                                    Swal.fire({
+                                        icon: 'info',
+                                        title: 'You can try again now.',
+                                        text: 'Please try logging in again.'
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                            }, 1000);
+                        }
                     });
                 }
             },
@@ -427,6 +445,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
     });
+
+
         // Open and close menu (for mobile or sidebar navigation)
         $('.open-menu-btn').click(function() {
             $('#push-menu').css('width', '250px'); 

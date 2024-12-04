@@ -19,43 +19,40 @@ class Login extends DBConnection {
         echo "<h1>Access Denied</h1> <a href='".base_url."'>Go Back.</a>";
     }
 
-    public function login() {
+    public function login(){
         extract($_POST);
-        
         // Use prepared statement to fetch user by email
         $stmt = $this->conn->prepare("SELECT * from users where email = ?");
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $qry = $stmt->get_result();
-    
-        if ($qry->num_rows > 0) {
+
+        if($qry->num_rows > 0){
             $res = $qry->fetch_array();
-    
+
             // Verify password using Argon2i
             if (!password_verify($password, $res['password'])) {
-                return json_encode(array('status' => 'error', 'message' => 'Invalid password.'));
+                return json_encode(array('status' => '', 'error' => 'Invalid password.'));
             }
-    
+
             // Check if the account is verified
             if ($res['status'] != 1) {
-                return json_encode(array('status' => 'notverified', 'message' => 'Account not verified.'));
+                return json_encode(array('status' => 'notverified'));
             }
-    
+
             // Store user data in session
-            foreach ($res as $k => $v) {
-                if (!is_numeric($k) && $k != 'password') {
+            foreach ($res as $k => $v){
+                if(!is_numeric($k) && $k != 'password'){
                     $this->settings->set_userdata($k, $v); 
                 }
             }
             $this->settings->set_userdata('login_type', 1);
-    
-            return json_encode(array('status' => 'success', 'message' => 'Login successful.'));
+
+            return json_encode(array('status' => 'success'));
         } else {
-            return json_encode(array('status' => 'error', 'message' => 'Email not found.'));
+            return json_encode(array('status' => '', 'error' => $this->conn->error));
         }
     }
-    
-    
 
     public function logout(){
         if($this->settings->sess_des()){

@@ -2,7 +2,7 @@
 session_start();
 
 define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
-define('LOCK_TIME', 60); // Lock time in seconds (15 minutes)
+define('LOCK_TIME', 60); // Lock time in seconds
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
             if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
                 $remainingTime = LOCK_TIME - (time() - $_SESSION['last_failed_login']);
-                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.']);
+                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . ceil($remainingTime) . ' seconds.', 'remainingTime' => $remainingTime]);
                 exit();
             } else {
                 // Reset failed attempts after the lock time has passed
@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -385,43 +386,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $.ajax({
-                    url: 'login.php',
-                    method: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        const data = JSON.parse(response);
+            url: 'login.php',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                const data = JSON.parse(response);
 
-                        if (data.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Login Successful',
-                                text: data.message
-                            }).then(() => {
-                                window.location.href = 'admin.php';
-                            });
-                        } else if (data.status === 'error') {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Login Failed',
-                                text: data.message
-                            });
-                        } else if (data.status === 'locked') {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Account Locked',
-                                text: data.message
-                            });
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Successful',
+                        text: data.message
+                    }).then(() => {
+                        window.location.href = 'admin.php';
+                    });
+                } else if (data.status === 'error') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: data.message
+                    });
+                } else if (data.status === 'locked') {
+                    let remainingTime = data.remainingTime;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Account Locked',
+                        html: 'Too many failed attempts. Please try again in <b>' + remainingTime + '</b> seconds.',
+                        didOpen: () => {
+                            const swalTimer = setInterval(() => {
+                                remainingTime--;
+                                Swal.getHtmlContainer().querySelector('b').textContent = remainingTime;
+                                if (remainingTime <= 0) {
+                                    clearInterval(swalTimer);
+                                    Swal.close();
+                                }
+                            }, 1000);
+                            Swal.disableButtons();
+                        },
+                        willClose: () => {
+                            clearInterval(swalTimer);
                         }
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'An error occurred while processing your request.'
-                        });
-                    }
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while processing your request.'
                 });
-            });
+            }
+        });
+    });
+});
 
         // Open and close menu (for mobile or sidebar navigation)
         $('.open-menu-btn').click(function() {

@@ -414,7 +414,7 @@
             </div>
           </div>
           <div class="form-group">
-            <div class="h-captcha" data-sitekey="YOUR_HCAPTCHA_SITE_KEY"></div>
+            <div class="h-captcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
           </div>
           <div class="form-group text-center">
             <button type="submit" class="btn btn-primary" id="login-btn">Login</button>

@@ -2,7 +2,7 @@
 session_start();
 
 define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
-define('LOCK_TIME', 60); // Lock time in seconds (15 minutes)
+define('LOCK_TIME', 60); // Lock time in seconds
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
@@ -15,9 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the number of failed login attempts exceeds the limit
     if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
         if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
-            if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
-                $remainingTime = LOCK_TIME - (time() - $_SESSION['last_failed_login']);
-                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.']);
+            $timeSinceLastFailedLogin = time() - $_SESSION['last_failed_login'];
+            if ($timeSinceLastFailedLogin < LOCK_TIME) {
+                $remainingTime = LOCK_TIME - $timeSinceLastFailedLogin;
+                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . $remainingTime . ' seconds.', 'remainingTime' => $remainingTime]);
                 exit();
             } else {
                 // Reset failed attempts after the lock time has passed
@@ -353,6 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 icon.removeClass('fa-eye-slash').addClass('fa-eye');
             }
         });
+
         $(document).ready(function() {
     // Existing code...
 
@@ -438,6 +440,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
     });
+
         // Open and close menu (for mobile or sidebar navigation)
         $('.open-menu-btn').click(function() {
             $('#push-menu').css('width', '250px'); 

@@ -94,7 +94,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
 </head>
 <body>
 <?php
-    session_start();
+    
     if (isset($_SESSION["alert_message"])) {
         echo "<script>
             Swal.fire({

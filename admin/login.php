@@ -1,3 +1,52 @@
+<?php
+session_start();
+
+define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
+define('LOCK_TIME', 60); // Lock time in seconds (15 minutes)
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Replace these with your actual database check
+    $correctEmail = 'admin@example.com';
+    $correctPassword = password_hash('password123', PASSWORD_DEFAULT); // Use a hashed password
+
+    // Check if the number of failed login attempts exceeds the limit
+    if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
+        if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
+            if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
+                $remainingTime = LOCK_TIME - (time() - $_SESSION['last_failed_login']);
+                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.']);
+                exit();
+            } else {
+                // Reset failed attempts after the lock time has passed
+                unset($_SESSION['failed_attempts']);
+                unset($_SESSION['last_failed_login']);
+            }
+        }
+    }
+
+    // Check if email and password are correct
+    if ($email === $correctEmail && password_verify($password, $correctPassword)) {
+        // Successful login, reset failed attempts
+        unset($_SESSION['failed_attempts']);
+        unset($_SESSION['last_failed_login']);
+        echo json_encode(['status' => 'success', 'message' => 'Login successful']);
+    } else {
+        // Increment failed attempts counter
+        if (!isset($_SESSION['failed_attempts'])) {
+            $_SESSION['failed_attempts'] = 0;
+        }
+        $_SESSION['failed_attempts']++;
+        $_SESSION['last_failed_login'] = time();
+
+        echo json_encode(['status' => 'error', 'message' => 'The email or password you entered is incorrect. Please try again.']);
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once('../config.php'); ?>
@@ -256,179 +305,238 @@
   <script>
     let typingInterval;
     const text = "Welcome to NHA Kodia Information System";
-    const speed = 150; 
+    const speed = 150;
     let index = 0;
-    let loginAttempts = 0;
-    const maxAttempts = 3;
-    const cooldownTime = 60; // seconds
-    let cooldownTimer;
 
+    // Function for typing animation
     function type() {
-      if (index < text.length) {
-        document.getElementById("animated-text").innerHTML += text.charAt(index);
-        index++;
-        typingInterval = setTimeout(type, speed); 
-      } else {
-        setTimeout(() => {
-          document.getElementById("animated-text").innerHTML = "";
-          index = 0; 
-          type();
-        }, 2000); 
-      }
-    }
-
-    function startCooldown() {
-      $('#login-btn').prop('disabled', true);
-      let timeLeft = cooldownTime;
-      cooldownTimer = setInterval(() => {
-        if (timeLeft <= 0) {
-          clearInterval(cooldownTimer);
-          $('#login-btn').prop('disabled', false);
-          loginAttempts = 0;
+        if (index < text.length) {
+            document.getElementById("animated-text").innerHTML += text.charAt(index);
+            index++;
+            typingInterval = setTimeout(type, speed);
         } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Too Many Attempts',
-            text: `Please wait ${timeLeft} seconds before trying again.`,
-            timer: 1000,
-            showConfirmButton: false,
-            willClose: () => {
-              timeLeft--;
-            }
-          });
+            setTimeout(() => {
+                document.getElementById("animated-text").innerHTML = "";
+                index = 0;
+                type();
+            }, 2000);
         }
-      }, 1000);
     }
 
     $(document).ready(function() {
-      $('#login').hide();
-      $('#animated-text').show();
+        // Hide login form initially and show animated text
+        $('#login').hide();
+        $('#animated-text').show();
 
-      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
-        e.preventDefault();
-        $('#login').fadeIn();
-        $('#animated-text').hide();
+        // Handle role-based login (admin, resident, officer)
+        $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+            e.preventDefault();
+            $('#login').fadeIn();
+            $('#animated-text').hide();
 
-        const role = $(this).attr('id').replace('login-as-', '');
-        $('#role').val(role);
-        $('#title').text(role.charAt(0).toUpperCase() + role.slice(1));
-      });
+            const role = $(this).attr('id').replace('login-as-', '');
+            $('#role').val(role);  // Set the role in the form
+            $('#login-frm').attr('action', role + '_login');
+        });
 
-      $('#login-frm').submit(function(e) {
-        e.preventDefault();
-        if (grecaptcha.getResponse() === '') {
-          Swal.fire({
-            icon: 'error',
-            title: 'Captcha Error',
-            text: 'Please complete the captcha.'
-          });
-        } else {
-          $.ajax({
-            url: 'Classes/Users.php?f=login',
-            method: 'POST',
-            data: $(this).serialize(),
-            success: function(resp) {
-              if (resp == 1) {
-                location.href = 'index.php';
-              } else {
-                loginAttempts++;
-                if (loginAttempts >= maxAttempts) {
-                  startCooldown();
-                } else {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Login Error',
-                    text: 'Invalid username or password.'
-                  });
-                }
-              }
-            },
-            error: function(err) {
-              console.log(err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while processing your request.'
-              });
+        // Toggle password visibility
+        $('#togglePassword').on('click', function() {
+            const passwordField = $('#password');
+            const passwordFieldType = passwordField.attr('type');
+            const icon = $(this);
+
+            if (passwordFieldType === 'password') {
+                passwordField.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordField.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
             }
-          });
-        }
-      });
+        });
 
-      type();
+        // Form submission logic (with validation)
+        $('#login-frm').on('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    const email = $('[name="email"]').val();
+    const password = $('[name="password"]').val();
+    const recaptchaResponse = grecaptcha.getResponse();
+
+    const emailPattern = /.+@gmail\.com$/;
+
+    // Validate email pattern
+    if (!emailPattern.test(email)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Email',
+            text: 'Please enter a valid Gmail address.',
+        });
+        return; // Stop form submission
+    }
+
+    // Validate reCAPTCHA
+    if (recaptchaResponse.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
+        });
+        return; // Stop form submission
+    }
+
+    $.ajax({
+                    url: 'login.php',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        const data = JSON.parse(response);
+
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Login Successful',
+                                text: data.message
+                            }).then(() => {
+                                window.location.href = 'admin.php';
+                            });
+                        } else if (data.status === 'error') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Login Failed',
+                                text: data.message
+                            });
+                        } else if (data.status === 'locked') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Account Locked',
+                                text: data.message
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while processing your request.'
+                        });
+                    }
+                });
+            });
+
+        // Open and close menu (for mobile or sidebar navigation)
+        $('.open-menu-btn').click(function() {
+            $('#push-menu').css('width', '250px'); 
+        });
+
+        $('.close-btn').click(function() {
+            $('#push-menu').css('width', '0'); 
+        });
     });
 
-    function openPushMenu() {
-      document.getElementById("push-menu").style.width = "250px";
-    }
+    window.onload = function() {
+        type();  // Initialize the typing animation
+    };
+</script>
 
-    function closePushMenu() {
-      document.getElementById("push-menu").style.width = "0";
-    }
-  </script>
 </head>
-
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <a class="navbar-brand d-flex align-items-center" href="#">
-      <img src="images/nha.png" alt="NHA Logo">
-      <h4 class="ml-2">NHA Kodia Information System</h4>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
+    <a class="navbar-brand" href="#">
+      <img src="lo.png" alt="Logo">
     </a>
-    <div class="navbar-nav ml-auto">
-      <a class="nav-link" href="#" id="login-as-admin">Admin</a>
-      <a class="nav-link" href="#" id="login-as-resident">Resident</a>
-      <a class="nav-link" href="#" id="login-as-officer">Officer</a>
+
+    <span class="open-menu-btn">&#9776;</span>
+
+    <div class="navbar-nav">
+      <a href="about" class="nav-link">About</a>
+      <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
+      <a href="residents" class="nav-link">Login as Resident</a>
     </div>
-    <span class="open-menu-btn" onclick="openPushMenu()">&#9776;</span>
+
+    <div id="push-menu">
+      <a href="javascript:void(0)" class="close-btn">&times;</a>
+      <a href="about">About</a>
+      <a href="#" id="login-as-admin"> Admin</a>
+      <a href="residents"> Resident</a>
+    </div>
   </nav>
-
-  <div id="push-menu">
-    <a href="javascript:void(0)" class="close-btn" onclick="closePushMenu()">&times;</a>
-    <a href="#">Admin</a>
-    <a href="#">Resident</a>
-    <a href="#">Officer</a>
-  </div>
-
-  <div class="container" id="login">
-    <div class="card">
-      <div class="card-header bg-primary text-white text-center">
-        <h4 id="title">Login</h4>
-      </div>
-      <div class="card-body">
-        <form id="login-frm">
-          <input type="hidden" id="role" name="role">
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text bg-primary text-white"><i class="fas fa-user"></i></span>
-              </div>
-              <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text bg-primary text-white"><i class="fas fa-lock"></i></span>
-              </div>
-              <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="h-captcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
-          </div>
-          <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary" id="login-btn">Login</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 
   <div id="animated-text" class="animated-text"></div>
 
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</body>
+  <div id="login">
+    <div class="card">
+      <div class="card-header">
+        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
+      </div>
+      <div class="card-body">
+        <form id="login-frm" action="" method="post">
+    <input type="hidden" name="role" id="role" value="">
+    <div class="form-group input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+        </div>
+        <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
+               pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
+    </div>
 
-<?php require_once('inc/footer.php'); ?>
+    <div class="form-group input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+        </div>
+        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
+        <div class="input-group-append">
+            <span class="input-group-text">
+                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+            </span>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+    </div>
+    <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
+    <div class="form-group text-center">
+        <a href="forgot_password" class="text-primary">Forgot Password?</a>
+    </div>
+    
+</form>
+
+      </div>
+    </div>
+  </div>
+</body>
 </html>
+<script>
+    </script>
+     <body oncontextmenu="return true" onkeydown="return true;" onmousedown="return true;">
+       <script>
+         $(document).bind("contextmenu",function(e) {
+            e.preventDefault();
+         });
+                        
+         eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('(3(){(3 a(){8{(3 b(2){7((\'\'+(2/2)).6!==1||2%5===0){(3(){}).9(\'4\')()}c{4}b(++2)})(0)}d(e){g(a,f)}})()})();',17,17,'||i|function|debugger|20|length|if|try|constructor|||else|catch||5000|setTimeout'.split('|'),0,{}))
+         window.addEventListener("keydown", function(event) {
+
+
+          if (event.keyCode == 123) {
+              // block F12 (DevTools)
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+
+          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) {
+              // block Strg+Shift+I (DevTools)
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+
+          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 74) {
+              // block Strg+Shift+J (Console)
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+          }
+      });
+              </script>
+</script>
+

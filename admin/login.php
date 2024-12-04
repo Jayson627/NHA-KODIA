@@ -358,186 +358,77 @@
       type();
     });
 
-
-    $(document).ready(function() {
-      $('#login').hide();
-      $('#animated-text').show();
-
-      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
-        e.preventDefault();
-        $('#login').fadeIn();
-        $('#animated-text').hide();
-
-        const role = $(this).attr('id').replace('login-as-', '');
-        $('#role').val(role);
-        $('#login-frm').attr('action', role + '_login');
-      });
-
-      $('#togglePassword').on('click', function() {
-        const passwordField = $('#password');
-        const passwordFieldType = passwordField.attr('type');
-        const icon = $(this);
-
-        if (passwordFieldType === 'password') {
-          passwordField.attr('type', 'text');
-          icon.removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-          passwordField.attr('type', 'password');
-          icon.removeClass('fa-eye-slash').addClass('fa-eye');
-        }
-      });
-
-      $('#login-frm').on('submit', function(e) {
-    const email = $('[name="email"]').val();
-    const emailPattern = /.+@gmail\.com$/;
-    // const password = $('[name="password"]').val();
-    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
-
-    //// Validate email
-    if (!emailPattern.test(email)) {
-        e.preventDefault();
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Email',
-            text: 'Please enter a valid Gmail address.',
-        });
-    } 
-    // Validate password
-    // else if (!passwordPattern.test(password)) {
-    //     e.preventDefault();
-    //     Swal.fire({
-    //         icon: 'error',
-    //         title: 'Invalid Password',
-    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
-    //     });
-    // } 
-    // Check if reCAPTCHA is filled
-    else if (recaptchaResponse.length === 0) {
-        e.preventDefault(); // Prevent form submission
-        Swal.fire({
-            icon: 'error',
-            title: 'reCAPTCHA Required',
-            text: 'Please complete the reCAPTCHA to continue.',
-        });
+    function openPushMenu() {
+      document.getElementById("push-menu").style.width = "250px";
     }
-});
 
-
-      $('.open-menu-btn').click(function() {
-        $('#push-menu').css('width', '250px'); 
-      });
-
-      $('.close-btn').click(function() {
-        $('#push-menu').css('width', '0'); 
-      });
-    });
-
-    window.onload = function() {
-      type(); 
-    };
+    function closePushMenu() {
+      document.getElementById("push-menu").style.width = "0";
+    }
   </script>
-  
 </head>
+
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-blue bg-blue">
-    <a class="navbar-brand" href="#">
-      <img src="lo.png" alt="Logo">
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="images/nha.png" alt="NHA Logo">
+      <h4 class="ml-2">NHA Kodia Information System</h4>
     </a>
-
-    <span class="open-menu-btn">&#9776;</span>
-
-    <div class="navbar-nav">
-      <a href="about.php" class="nav-link">About</a>
-      <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
-      <a href="residents.php" class="nav-link">Login as Resident</a>
+    <div class="navbar-nav ml-auto">
+      <a class="nav-link" href="#" id="login-as-admin">Admin</a>
+      <a class="nav-link" href="#" id="login-as-resident">Resident</a>
+      <a class="nav-link" href="#" id="login-as-officer">Officer</a>
     </div>
-
-    <div id="push-menu">
-      <a href="javascript:void(0)" class="close-btn">&times;</a>
-      <a href="about.php">About</a>
-      <a href="#" id="login-as-admin"> Admin</a>
-      <a href="residents"> Resident</a>
-    </div>
+    <span class="open-menu-btn" onclick="openPushMenu()">&#9776;</span>
   </nav>
 
-  <div id="animated-text" class="animated-text"></div>
+  <div id="push-menu">
+    <a href="javascript:void(0)" class="close-btn" onclick="closePushMenu()">&times;</a>
+    <a href="#">Admin</a>
+    <a href="#">Resident</a>
+    <a href="#">Officer</a>
+  </div>
 
-  <div id="login">
+  <div class="container" id="login">
     <div class="card">
-      <div class="card-header">
-        <h4><?php echo $_settings->info('name') ?> Kodia Information System</h4>
+      <div class="card-header bg-primary text-white text-center">
+        <h4 id="title">Login</h4>
       </div>
       <div class="card-body">
-        <form id="login-frm" action="" method="post">
-    <input type="hidden" name="role" id="role" value="">
-    <div class="form-group input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-user"></i></span>
-        </div>
-        <input type="text" class="form-control" autofocus name="email" placeholder="Enter email" required 
-               pattern=".+@gmail\.com$" title="Please enter a valid Gmail address">
-    </div>
-
-    <div class="form-group input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-        </div>
-        <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
-        <div class="input-group-append">
-            <span class="input-group-text">
-                <i class="fas fa-eye" id="togglePassword" style="cursor: pointer;"></i>
-            </span>
-        </div>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-    </div>
-    <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
-    <div class="form-group text-center">
-        <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
-    </div>
-    
-</form>
-
+        <form id="login-frm">
+          <input type="hidden" id="role" name="role">
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-primary text-white"><i class="fas fa-user"></i></span>
+              </div>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-primary text-white"><i class="fas fa-lock"></i></span>
+              </div>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="h-captcha" data-sitekey="YOUR_HCAPTCHA_SITE_KEY"></div>
+          </div>
+          <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary" id="login-btn">Login</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+
+  <div id="animated-text" class="animated-text"></div>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
+
+<?php require_once('inc/footer.php'); ?>
 </html>
-<script>
-    </script>
-     <body oncontextmenu="return true" onkeydown="return true;" onmousedown="return true;">
-       <script>
-         $(document).bind("contextmenu",function(e) {
-            e.preventDefault();
-         });
-                        
-         eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('(3(){(3 a(){8{(3 b(2){7((\'\'+(2/2)).6!==1||2%5===0){(3(){}).9(\'4\')()}c{4}b(++2)})(0)}d(e){g(a,f)}})()})();',17,17,'||i|function|debugger|20|length|if|try|constructor|||else|catch||5000|setTimeout'.split('|'),0,{}))
-         window.addEventListener("keydown", function(event) {
-
-
-          if (event.keyCode == 123) {
-              // block F12 (DevTools)
-              event.preventDefault();
-              event.stopPropagation();
-              return false;
-
-          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) {
-              // block Strg+Shift+I (DevTools)
-              event.preventDefault();
-              event.stopPropagation();
-              return false;
-
-          } else if (event.ctrlKey && event.shiftKey && event.keyCode == 74) {
-              // block Strg+Shift+J (Console)
-              event.preventDefault();
-              event.stopPropagation();
-              return false;
-          }
-      });
-              </script>
-</script>
-

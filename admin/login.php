@@ -15,10 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the number of failed login attempts exceeds the limit
     if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
         if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
-            $timeSinceLastFailedLogin = time() - $_SESSION['last_failed_login'];
-            if ($timeSinceLastFailedLogin < LOCK_TIME) {
-                $remainingTime = LOCK_TIME - $timeSinceLastFailedLogin;
-                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ', 'remainingTime' => $remainingTime]);
+            if (time() - $_SESSION['last_failed_login'] < LOCK_TIME) {
+                $remainingTime = LOCK_TIME - (time() - $_SESSION['last_failed_login']);
+                echo json_encode([
+                    'status' => 'locked',
+                    'message' => 'Too many failed attempts. Please try again in ' . ceil($remainingTime / 60) . ' minutes.',
+                    'remaining_time' => $remainingTime
+                ]);
                 exit();
             } else {
                 // Reset failed attempts after the lock time has passed
@@ -45,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'error', 'message' => 'The email or password you entered is incorrect. Please try again.']);
     }
 }
-
 ?>
+
 
 
 <!DOCTYPE html>
@@ -355,97 +358,94 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 icon.removeClass('fa-eye-slash').addClass('fa-eye');
             }
         });
+// Form submission logic (with validation)
+$('#login-frm').on('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission
 
-        $('#login-frm').on('submit', function(e) {
-    e.preventDefault(); // Prevent the default form submission
+        const email = $('[name="email"]').val();
+        const password = $('[name="password"]').val();
+        const recaptchaResponse = grecaptcha.getResponse();
 
-    const email = $('[name="email"]').val();
-    const password = $('[name="password"]').val();
-    const recaptchaResponse = grecaptcha.getResponse();
+        const emailPattern = /.+@gmail\.com$/;
 
-    const emailPattern = /.+@gmail\.com$/;
-
-    // Validate email pattern
-    if (!emailPattern.test(email)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid Email',
-            text: 'Please enter a valid Gmail address.',
-        });
-        return; // Stop form submission
-    }
-
-    // Validate reCAPTCHA
-    if (recaptchaResponse.length === 0) {
-        Swal.fire({
-            icon: 'error',
-            title: 'reCAPTCHA Required',
-            text: 'Please complete the reCAPTCHA to continue.',
-        });
-        return; // Stop form submission
-    }
-
-    $.ajax({
-        url: 'login.php',
-        method: 'POST',
-        data: $(this).serialize(),
-        success: function(response) {
-            const data = JSON.parse(response);
-
-            if (data.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Login Successful',
-                    text: data.message
-                }).then(() => {
-                    window.location.href = 'admin.php';
-                });
-            } else if (data.status === 'error') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Login Failed',
-                    text: data.message
-                });
-            } else if (data.status === 'locked') {
-                let remainingTime = data.remainingTime;
-
-                const countdown = setInterval(() => {
-                    if (remainingTime <= 0) {
-                        clearInterval(countdown);
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'You can try logging in again',
-                            text: 'Please try logging in now.',
-                        });
-                    } else {
-                        const minutes = Math.floor(remainingTime / 60);
-                        const seconds = remainingTime % 60;
-                        Swal.update({
-                            title: 'Account Locked',
-                            html: `Too many failed attempts. Please try again in <strong>${minutes}m ${seconds}s</strong>.`,
-                            icon: 'error',
-                        });
-                        remainingTime--;
-                    }
-                }, 1000);
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Account Locked',
-                    html: `Too many failed attempts. Please try again in <strong>${Math.floor(remainingTime / 60)}m ${remainingTime % 60}s</strong>.`,
-                    didClose: () => clearInterval(countdown)
-                });
-            }
-        },
-        error: function() {
+        // Validate email pattern
+        if (!emailPattern.test(email)) {
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while processing your request.'
+                title: 'Invalid Email',
+                text: 'Please enter a valid Gmail address.',
             });
+            return; // Stop form submission
         }
+
+        // Validate reCAPTCHA
+        if (recaptchaResponse.length === 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'reCAPTCHA Required',
+                text: 'Please complete the reCAPTCHA to continue.',
+            });
+            return; // Stop form submission
+        }
+
+        $.ajax({
+            url: 'login.php',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                const data = JSON.parse(response);
+
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Successful',
+                        text: data.message
+                    }).then(() => {
+                        window.location.href = 'admin.php';
+                    });
+                } else if (data.status === 'error') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: data.message
+                    });
+                } else if (data.status === 'locked') {
+                    let remainingTime = data.remaining_time;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Account Locked',
+                        html: `Too many failed attempts. Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
+                        showConfirmButton: false, // Disable the OK button
+                        didOpen: () => {
+                            const countdownElement = document.getElementById('countdown');
+                            const countdownInterval = setInterval(() => {
+                                remainingTime--;
+                                countdownElement.textContent = remainingTime;
+                                if (remainingTime <= 0) {
+                                    clearInterval(countdownInterval);
+                                    Swal.fire({
+                                        icon: 'info',
+                                        title: 'You can try again now.',
+                                        text: 'Please try logging in again.'
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                            }, 1000);
+                        }
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while processing your request.'
+                });
+            }
+        });
     });
-});
+
 
         // Open and close menu (for mobile or sidebar navigation)
         $('.open-menu-btn').click(function() {

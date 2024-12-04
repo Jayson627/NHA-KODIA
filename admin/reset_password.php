@@ -76,6 +76,11 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             background-color: #4cae4c;
         }
 
+        .otp-box {
+            display: flex;
+            justify-content: space-between;
+        }
+
         .otp-input {
             width: 40px;
             height: 40px;
@@ -83,7 +88,6 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             text-align: center;
             border: 1px solid #ccc;
             border-radius: 5px;
-            margin-right: 10px;
         }
 
         .otp-input:last-child {

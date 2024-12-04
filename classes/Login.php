@@ -55,6 +55,7 @@ class Login extends DBConnection {
         }
     }
     
+    
 
     public function logout(){
         if($this->settings->sess_des()){

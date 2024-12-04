@@ -27,7 +27,7 @@ if (isset($_POST["btn-forgotpass"])) {
     if ($result && $result->num_rows > 0) {
         // Email exists, generate OTP and send the reset email
         $reset_code = random_int(100000, 999999);
-        $otp_expiry = time() + 60; // Set expiration time to 1 minute from now
+        $otp_expiry = time() + 120; // Set expiration time to 1 minute from now
 
         // Store OTP and expiry time in the session
         $_SESSION['otp'] = $reset_code;

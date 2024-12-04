@@ -66,4 +66,18 @@
       }
     });
   });
+
+  function gettatus(){
+        $.get("sessioncheck.php", function(data){
+            if(!data) {
+              window.location.href = "<?php echo base_url . '/classes/Login?f=logout' ?>";
+            }
+            setTimeout(function(){
+                checkLoginStatus();
+            }, 3000);
+        });
+    }
+    $(document).ready(function(){
+        gettatus();
+    });
 </script>

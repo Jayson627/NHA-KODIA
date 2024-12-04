@@ -122,22 +122,19 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
                 confirmButtonText: 'OK'
             });
         }
-
-        // Display session notifications using sweet alert
-        <?php if (isset($_SESSION["notify"])): ?>
-            Swal.fire({
-                title: 'Notification',
-                text: "<?php echo $_SESSION["notify"]; unset($_SESSION["notify"]); ?>",
-                icon: 'info',
-                confirmButtonText: 'OK'
-            });
-        <?php endif; ?>
     </script>
 </body>
 </html>
 <?php
 } else {
     // Handle case when reset is not set
-    echo "Invalid reset request.";
+    echo "<script>
+        Swal.fire({
+            title: 'Error',
+            text: 'Invalid reset request.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    </script>";
 }
 ?>

@@ -28,22 +28,17 @@ if (isset($_POST["btn-forgotpass"])) {
         // Email exists, generate OTP and send the reset email
         $reset_code = random_int(100000, 999999);
         
-        // Direct SQL query to update the reset code
-        $update_sql = "UPDATE `users` SET `code` = '$reset_code' WHERE email = '$email'";
-        
-        if ($conn->query($update_sql) === TRUE) {
-            if (sendResetEmail($email, $reset_code)) {
-                $_SESSION["notify"] = "A reset link has been sent to your email.";
-            } else {
-                $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
-            }
-            header("location: ../admin/forgot_password");
-            exit();
+        // Store OTP and generation time in session
+        $_SESSION["reset_code"] = $reset_code;
+        $_SESSION["reset_code_time"] = time();
+
+        if (sendResetEmail($email, $reset_code)) {
+            $_SESSION["notify"] = "A reset link has been sent to your email.";
         } else {
-            $_SESSION["notify"] = "Failed to update the reset code. Please try again.";
-            header("location: ../admin/forgot_password");
-            exit();
+            $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
         }
+        header("location: ../admin/forgot_password");
+        exit();
     } else {
         // If the email does not exist in the database
         $_SESSION["notify"] = "No user found with this email. Please try again.";
@@ -58,6 +53,17 @@ if (isset($_POST["btn-new-password"])) {
     $password = $_POST["password"];
     $otp = $_POST["otp"];
 
+    // Get OTP and generation time from session
+    $stored_otp = $_SESSION["reset_code"];
+    $stored_otp_time = $_SESSION["reset_code_time"];
+
+    // Check if OTP has expired (2 minutes = 120 seconds)
+    if (time() - $stored_otp_time > 120) {
+        $_SESSION["alert_message"] = "The OTP has expired. Please request a new one.";
+        header("location: ../admin/reset_password?reset=true&email=$email");
+        exit();
+    }
+
     // Direct SQL query to get the code from the database
     $sql = "SELECT `code` FROM `users` WHERE email = '$email'";
     $result = $conn->query($sql);
@@ -67,7 +73,7 @@ if (isset($_POST["btn-new-password"])) {
         $get_code = $row['code'];
 
         // Validate OTP
-        if ($get_code && $otp === $get_code) {
+        if ($otp === $stored_otp) {
             $reset = random_int(100000, 999999);
             $hashed_password = password_hash($password, PASSWORD_ARGON2I);
 

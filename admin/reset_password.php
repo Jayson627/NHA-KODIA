@@ -108,7 +108,20 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
-
+    <?php
+    if (isset($_SESSION["alert_message"])) {
+        echo "<script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{$_SESSION["alert_message"]}',
+                showConfirmButton: true,
+                confirmButtonText: 'Okay'
+            });
+        </script>";
+        unset($_SESSION["alert_message"]); // Clear the message after displaying it
+    }
+    ?>
     <!-- Include SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

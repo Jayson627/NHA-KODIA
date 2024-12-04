@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,18 +82,17 @@ session_start();
     </div>
     <div class="footer-text"></div>
   </div>
-
+  
   <?php
+    session_start(); // Ensure session is started
     if (isset($_SESSION['notify'])) {
         $message = addslashes($_SESSION['notify']);
-        $title = (strpos($message, 'A reset link has been sent to your email') !== false) ? 'Success' : 'Error';
-        $icon = (strpos($message, 'A reset link has been sent to your email') !== false) ? 'success' : 'error';
         echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
-                title: '$title',
+                title: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'Success' : 'Error')."',
                 text: '$message',
-                icon: '$icon',
+                icon: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'success' : 'error')."',
                 confirmButtonText: 'OK'
             });
         });
@@ -105,6 +101,9 @@ session_start();
     }
   ?>
 
+        <?php if (isset($_SESSION["notify"])): ?>
+            alert("<?php echo $_SESSION["notify"]; unset($_SESSION["notify"]); ?>");
+        <?php endif; ?>
   <script>
     document.addEventListener('contextmenu', function (e) {
         e.preventDefault();

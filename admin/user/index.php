@@ -1,99 +1,89 @@
-<?php 
-$user = $conn->query("SELECT * FROM users where id ='".$_settings->userdata('id')."'");
-foreach($user->fetch_array() as $k =>$v){
-	$meta[$k] = $v;
-}
-?>
-<?php if($_settings->chk_flashdata('success')): ?>
-<script>
-	alert_toast("<?php echo $_settings->flashdata('success') ?>",'success')
-</script>
-<?php endif;?>
-<div class="card card-outline card-primary">
-	<div class="card-body">
-		<div class="container-fluid">
-			<div id="msg"></div>
-			<form action="" id="manage-user">	
-				<input type="hidden" name="id" value="<?php echo $_settings->userdata('id') ?>">
-				<div class="form-group">
-					<label for="name">First Name</label>
-					<input type="text" name="firstname" id="firstname" class="form-control" value="<?php echo isset($meta['firstname']) ? $meta['firstname']: '' ?>" required>
-				</div>
-				<div class="form-group">
-					<label for="name">Last Name</label>
-					<input type="text" name="lastname" id="lastname" class="form-control" value="<?php echo isset($meta['lastname']) ? $meta['lastname']: '' ?>" required>
-				</div>
-				<div class="form-group">
-					<label for="email">Email</label>
-					<input type="text" name="email" id="email" class="form-control" value="<?php echo isset($meta['email']) ? $meta['email']: '' ?>" required  autocomplete="off">
-				</div>
-				<div class="form-group">
-					<label for="password">Password</label>
-					<input type="password" name="password" id="password" class="form-control" value="" autocomplete="off">
-					<small><i>Leave this blank if you dont want to change the password.</i></small>
-				</div>
-				<div class="form-group">
-    <label for="" class="control-label">Avatar</label>
-    <div class="custom-file">
-        <input type="file" class="custom-file-input rounded-circle" id="customFile" name="img" accept=".png, .jpg, .jpeg" onchange="displayImg(this,$(this))">
-        <label class="custom-file-label" for="customFile">Choose file</label>
-    </div>
-</div>
-
-				<div class="form-group d-flex justify-content-center">
-					<img src="<?php echo validate_image(isset($meta['avatar']) ? $meta['avatar'] :'') ?>" alt="" id="cimg" class="img-fluid img-thumbnail">
-				</div>
-			</form>
-		</div>
-	</div>
-	<div class="card-footer">
-			<div class="col-md-12">
-				<div class="row">
-					<button class="btn btn-sm btn-primary" form="manage-user">Update</button>
-				</div>
-			</div>
-		</div>
-</div>
 <style>
-	img#cimg{
-		height: 15vh;
-		width: 15vh;
-		object-fit: cover;
-		border-radius: 100% 100%;
-	}
+  .user-img {
+        position: absolute;
+        height: 27px;
+        width: 27px;
+        object-fit: cover;
+        left: -7%;
+        top: -12%;
+  }
+  .btn-rounded {
+        border-radius: 50px;
+  }
+
+  /* Hover effect for user image */
+  .user-img:hover {
+      border: 2px solid #007bff;
+      cursor: pointer;
+  }
+
+  /* Change background color of the dropdown button on hover */
+  .btn-rounded:hover {
+      background-color: #f0f0f0;
+      cursor: pointer;
+  }
+
+  /* Adjust font size for user name */
+  .navbar-nav .nav-link span {
+      font-size: 14px;
+  }
+
+  /* Make logout button stand out on hover */
+  .dropdown-item:hover {
+      background-color: #f8f9fa;
+  }
 </style>
+
+<!-- Navbar -->
+<nav class="main-header navbar navbar-expand navbar-light border-top-0 border-left-0 border-right-0 text-sm shadow-sm bg-gradient-blue">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+    </li>
+    <li class="nav-item d-none d-sm-inline-block">
+      <a href="<?php echo base_url ?>" class="nav-link">
+        <b><?php echo (!isMobileDevice()) ? $_settings->info('name') : $_settings->info('short_name'); ?></b>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Right navbar links -->
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+      <div class="btn-group nav-link">
+        <button type="button" class="btn btn-rounded badge badge-light dropdown-toggle dropdown-icon" data-toggle="dropdown">
+          <span><img src="<?php echo validate_image($_settings->userdata('avatar')) ?>" class="img-circle elevation-2 user-img" alt="User Image"></span>
+          <span class="ml-3"><?php echo ucwords($_settings->userdata('firstname') . ' ' . $_settings->userdata('lastname')) ?></span>
+        </button>
+        <div class="dropdown-menu" role="menu">
+          <a class="dropdown-item" href="<?php echo base_url . 'admin/?page=user' ?>"><span class="fa fa-user"></span> My Account</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" id="logout-link" href="#"><span class="fas fa-sign-out-alt"></span> Logout</a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</nav>
+<!-- /.navbar -->
+
+<!-- SweetAlert Script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-	function displayImg(input,_this) {
-	    if (input.files && input.files[0]) {
-	        var reader = new FileReader();
-	        reader.onload = function (e) {
-	        	$('#cimg').attr('src', e.target.result);
-	        }
-
-	        reader.readAsDataURL(input.files[0]);
-	    }
-	}
-	$('#manage-user').submit(function(e){
-		e.preventDefault();
-var _this = $(this)
-		start_loader()
-		$.ajax({
-			url:_base_url_+'classes/Users.php?f=save',
-			data: new FormData($(this)[0]),
-		    cache: false,
-		    contentType: false,
-		    processData: false,
-		    method: 'POST',
-		    type: 'POST',
-			success:function(resp){
-				if(resp ==1){
-					location.reload()
-				}else{
-					$('#msg').html('<div class="alert alert-danger">Username already exist</div>')
-					end_loader()
-				}
-			}
-		})
-	})
-
+  document.getElementById('logout-link').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent default link behavior
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You are about to log out!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, log me out!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Redirect to the logout URL
+        window.location.href = "<?php echo base_url . '/classes/Login?f=logout' ?>";
+      }
+    });
+  });
 </script>

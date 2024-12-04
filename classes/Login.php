@@ -53,16 +53,23 @@ class Login extends DBConnection {
             return json_encode(array('status' => '', 'error' => $this->conn->error));
         }
     }
-
-    public function logout(){
-        // Invalidate the session token (if you're using token-based sessions)
-        $this->invalidateSessionToken($this->settings->get_userdata('email'));
-
-        // Destroy the session
-        if($this->settings->sess_des()){
-            redirect('admin/login.php');
-        }
+// On the backend (logout handling in Login.php)
+public function logout() {
+    // Invalidate session
+    session_unset();
+    session_destroy();
+    
+    // Optionally, delete session cookies
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
     }
+
+    // Redirect to login page
+    header("Location: admin/login.php");
+    exit();
+}
+
 
     public function employee_logout(){
         // Invalidate the session token (if you're using token-based sessions)

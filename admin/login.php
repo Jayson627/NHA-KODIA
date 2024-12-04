@@ -258,6 +258,10 @@
     const text = "Welcome to NHA Kodia Information System";
     const speed = 150; 
     let index = 0;
+    let loginAttempts = 0;
+    const maxAttempts = 3;
+    const cooldownTime = 60; // seconds
+    let cooldownTimer;
 
     function type() {
       if (index < text.length) {
@@ -272,6 +276,88 @@
         }, 2000); 
       }
     }
+
+    function startCooldown() {
+      $('#login-btn').prop('disabled', true);
+      let timeLeft = cooldownTime;
+      cooldownTimer = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(cooldownTimer);
+          $('#login-btn').prop('disabled', false);
+          loginAttempts = 0;
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Too Many Attempts',
+            text: `Please wait ${timeLeft} seconds before trying again.`,
+            timer: 1000,
+            showConfirmButton: false,
+            willClose: () => {
+              timeLeft--;
+            }
+          });
+        }
+      }, 1000);
+    }
+
+    $(document).ready(function() {
+      $('#login').hide();
+      $('#animated-text').show();
+
+      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+        e.preventDefault();
+        $('#login').fadeIn();
+        $('#animated-text').hide();
+
+        const role = $(this).attr('id').replace('login-as-', '');
+        $('#role').val(role);
+        $('#title').text(role.charAt(0).toUpperCase() + role.slice(1));
+      });
+
+      $('#login-frm').submit(function(e) {
+        e.preventDefault();
+        if (grecaptcha.getResponse() === '') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Captcha Error',
+            text: 'Please complete the captcha.'
+          });
+        } else {
+          $.ajax({
+            url: 'Classes/Users.php?f=login',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(resp) {
+              if (resp == 1) {
+                location.href = 'index.php';
+              } else {
+                loginAttempts++;
+                if (loginAttempts >= maxAttempts) {
+                  startCooldown();
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Login Error',
+                    text: 'Invalid username or password.'
+                  });
+                }
+              }
+            },
+            error: function(err) {
+              console.log(err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while processing your request.'
+              });
+            }
+          });
+        }
+      });
+
+      type();
+    });
+
 
     $(document).ready(function() {
       $('#login').hide();

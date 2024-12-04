@@ -76,6 +76,20 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             background-color: #4cae4c;
         }
 
+        .otp-input {
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .otp-input:last-child {
+            margin-right: 0;
+        }
+
         /* Responsive design */
         @media (max-width: 600px) {
             .reset-password-box {
@@ -83,6 +97,12 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             }
 
             .reset-password-title {
+                font-size: 20px;
+            }
+
+            .otp-input {
+                width: 30px;
+                height: 30px;
                 font-size: 20px;
             }
         }
@@ -102,8 +122,14 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             <div class="form-group has-feedback">
                 <input type="password" class="form-control" placeholder="Set new password" name="password" required>
             </div>
-            <div class="form-group has-feedback">
-                <input type="text" class="form-control" placeholder="OTP Code" name="otp" required>
+            <div class="form-group has-feedback otp-box">
+                <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
+                <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
+                <input type="hidden" name="otp" id="otp" required>
             </div>
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
@@ -121,6 +147,33 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
+        }
+
+        // Handle OTP input focus and combine values
+        const otpInputs = document.querySelectorAll('.otp-input');
+        const otpHiddenInput = document.getElementById('otp');
+
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', () => {
+                if (input.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+                combineOtp();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && input.value.length === 0 && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        function combineOtp() {
+            let otpValue = '';
+            otpInputs.forEach(input => {
+                otpValue += input.value;
+            });
+            otpHiddenInput.value = otpValue;
         }
     </script>
 </body>

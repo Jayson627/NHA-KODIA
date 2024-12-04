@@ -159,7 +159,9 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
 
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', () => {
-                if (input.value.length === 1 && index < otpInputs.length - 1) {
+                if (!/^\d$/.test(input.value)) {
+                    input.value = '';
+                } else if (input.value.length === 1 && index < otpInputs.length - 1) {
                     otpInputs[index + 1].focus();
                 }
                 combineOtp();

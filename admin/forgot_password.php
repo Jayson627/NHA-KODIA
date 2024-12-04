@@ -82,20 +82,7 @@
     </div>
     <div class="footer-text"></div>
   </div>
-  <?php
-    if (isset($_SESSION["alert_message"])) {
-        echo "<script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '{$_SESSION["alert_message"]}',
-                showConfirmButton: true,
-                confirmButtonText: 'Okay'
-            });
-        </script>";
-        unset($_SESSION["alert_message"]); // Clear the message after displaying it
-    }
-    ?>
+  
   <?php
     session_start(); // Ensure session is started
     if (isset($_SESSION['notify'])) {

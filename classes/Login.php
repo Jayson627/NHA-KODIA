@@ -55,8 +55,31 @@ class Login extends DBConnection {
     }
 
     public function logout(){
+        // Invalidate the session token (if you're using token-based sessions)
+        $this->invalidateSessionToken($this->settings->get_userdata('email'));
+
+        // Destroy the session
         if($this->settings->sess_des()){
             redirect('admin/login.php');
+        }
+    }
+
+    public function employee_logout(){
+        // Invalidate the session token (if you're using token-based sessions)
+        $this->invalidateSessionToken($this->settings->get_userdata('email'));
+
+        // Destroy the session
+        if($this->settings->sess_des()){
+            redirect('./login.php');
+        }
+    }
+
+    private function invalidateSessionToken($email) {
+        // Assuming you are using a token stored in a file or database:
+        // For file-based token storage, delete the token file.
+        $tokenFile = "../tokens/{$email}.token";
+        if (file_exists($tokenFile)) {
+            unlink($tokenFile); // Remove the token to invalidate all sessions
         }
     }
 
@@ -98,12 +121,6 @@ class Login extends DBConnection {
         }
 
         return json_encode($resp);
-    }
-
-    public function employee_logout(){
-        if($this->settings->sess_des()){
-            redirect('./login.php');
-        }
     }
 }
 

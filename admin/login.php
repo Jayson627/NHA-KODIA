@@ -309,7 +309,7 @@
 
     const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
 
-    // Validate email
+    //// Validate email
     if (!emailPattern.test(email)) {
         e.preventDefault();
         Swal.fire({

@@ -59,7 +59,7 @@ if (isset($_POST["btn-new-password"])) {
 
     // Check if OTP has expired (2 minutes = 120 seconds)
     if (time() - $stored_otp_time > 120) {
-        $_SESSION["alert_message"] = "The OTP has expired. Please request a new one.";
+        $_SESSION["notify"] = "The OTP has expired. Please request a new one.";
         header("location: ../admin/reset_password?reset=true&email=$email");
         exit();
     }

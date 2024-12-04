@@ -95,7 +95,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
 <body>
 <?php
     
-    if (isset($_SESSION["alert_message"])) {
+    if (isset($_SESSION["notify"])) {
         echo "<script>
             Swal.fire({
                 icon: 'error',
@@ -105,7 +105,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
                 confirmButtonText: 'Okay'
             });
         </script>";
-        unset($_SESSION["alert_message"]); // Clear the message after displaying it
+        unset($_SESSION["notify"]); // Clear the message after displaying it
     }
     ?>
     <div class="reset-password-box">

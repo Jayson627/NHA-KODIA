@@ -436,7 +436,7 @@
     </div>
     <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
     <div class="form-group text-center">
-        <a href="forgot_password" class="text-primary">Forgot Password?</a>
+        <a href="forgot_password" class="text-primary">Forget Password?</a>
     </div>
     
 </form>

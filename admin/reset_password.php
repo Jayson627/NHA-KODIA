@@ -11,9 +11,6 @@ if (isset($_GET["reset"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
-  
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   
 
     <!-- Styling for the page -->
     <style>
@@ -107,35 +104,23 @@ if (isset($_GET["reset"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
-
     <script>
-        <?php
-        // Check if there's a session message to display
-        if (isset($_SESSION['notify'])) {
-            $message = addslashes($_SESSION['notify']);
-            if (strpos($message, 'Your password has been reset successfully') !== false) {
-                echo "Swal.fire({
-                    title: 'Success',
-                    text: '$message',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });";
-            } else {
-                echo "Swal.fire({
-                    title: 'Error',
-                    text: '$message',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });";
-            }
-            unset($_SESSION['notify']);
+        // Check for success parameter in the URL and show the alert
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success')) {
+            alert("Your password has been reset successfully! Have a wonderful day!");
         }
-        ?>
+
+        // Display session notifications
+        <?php if (isset($_SESSION["notify"])): ?>
+            alert("<?php echo $_SESSION["notify"]; unset($_SESSION["notify"]); ?>");
+        <?php endif; ?>
     </script>
 </body>
 </html>
 <?php
 } else {
     // Handle case when reset is not set
+    echo "Invalid reset request.";
 }
 ?>

@@ -76,23 +76,23 @@ if (isset($_POST["btn-new-password"])) {
                     exit();
                 } else {
                     $_SESSION["notify"] = "Failed to update the password. Please try again.";
-                    header("location: ../admin/reset_password?reset=true&email=$email");
+                    header("location: ../admin/reset_password?reset=true&email=$email&error=Failed to update the password. Please try again.");
                     exit();
                 }
             } else {
                 // OTP has expired
                 $_SESSION["notify"] = "Your OTP has expired. Please request a new one.";
-                header("location: ../admin/reset_password?reset=true&email=$email");
+                header("location: ../admin/reset_password?reset=true&email=$email&error=Your OTP has expired. Please request a new one.");
                 exit();
             }
         } else {
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-            header("location: ../admin/reset_password?reset=true&email=$email");
+            header("location: ../admin/reset_password?reset=true&email=$email&error=Invalid OTP. Please try again.");
             exit();
         }
     } else {
         $_SESSION["notify"] = "No OTP found or OTP expired. Please request a new OTP.";
-        header("location: ../admin/reset_password?reset=true&email=$email");
+        header("location: ../admin/reset_password?reset=true&email=$email&error=No OTP found or OTP expired. Please request a new OTP.");
         exit();
     }
 }

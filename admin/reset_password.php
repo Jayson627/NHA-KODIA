@@ -95,7 +95,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/funtion" method="post">
+        <form action="../admin/function.php" method="post">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
             </div>
@@ -119,6 +119,13 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
                 title: 'Success!',
                 text: 'Your password has been reset successfully! Have a wonderful day!',
                 icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        } else if (urlParams.has('error') && urlParams.get('error') === 'otp') {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Invalid or expired OTP. Please try again.',
+                icon: 'error',
                 confirmButtonText: 'OK'
             });
         }

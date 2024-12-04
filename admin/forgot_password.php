@@ -83,23 +83,19 @@
     <div class="footer-text"></div>
   </div>
   
-  <?php
-    session_start(); // Ensure session is started
-    if (isset($_SESSION['notify'])) {
-        $message = addslashes($_SESSION['notify']);
-        echo "<script>
-        document.addEventListener('DOMContentLoaded', function() {
+ 
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+    <script>
+        // Display session notifications using sweet alert
+        <?php if (isset($_SESSION["notify"])): ?>
             Swal.fire({
-                title: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'Success' : 'Error')."',
-                text: '$message',
-                icon: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'success' : 'error')."',
+                title: 'Notification',
+                text: "<?php echo $_SESSION["notify"]; unset($_SESSION["notify"]); ?>",
+                icon: 'info',
                 confirmButtonText: 'OK'
             });
-        });
-        </script>";
-        unset($_SESSION['notify']);
-    }
-  ?>
+        <?php endif; ?>
 
         <?php if (isset($_SESSION["notify"])): ?>
             alert("<?php echo $_SESSION["notify"]; unset($_SESSION["notify"]); ?>");

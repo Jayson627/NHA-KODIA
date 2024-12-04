@@ -87,11 +87,15 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             }
         }
     </style>
+
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
 </head>
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/funtion" method="post">
+        <form action="../admin/funtion.php" method="post">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
             </div>
@@ -104,16 +108,29 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             <button type="submit" name="btn-new-password">Set Password</button>
         </form>
     </div>
+
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
     <script>
-        // Check for success parameter in the URL and show the alert
+        // Check for success parameter in the URL and show the sweet alert
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('success')) {
-            alert("Your password has been reset successfully! Have a wonderful day!");
+            Swal.fire({
+                title: 'Success!',
+                text: 'Your password has been reset successfully! Have a wonderful day!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
         }
 
-        // Display session notifications
+        // Display session notifications using sweet alert
         <?php if (isset($_SESSION["notify"])): ?>
-            alert("<?php echo $_SESSION["notify"]; unset($_SESSION["notify"]); ?>");
+            Swal.fire({
+                title: 'Notification',
+                text: "<?php echo $_SESSION["notify"]; unset($_SESSION["notify"]); ?>",
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
         <?php endif; ?>
     </script>
 </body>

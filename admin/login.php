@@ -3,6 +3,7 @@ session_start();
 
 define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
 define('LOCK_TIME', 60); // Lock time in seconds (15 minutes)
+define('SESSION_TIMEOUT', 1800); // Session timeout in seconds (30 minutes)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
@@ -11,6 +12,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Replace these with your actual database check
     $correctEmail = 'admin@example.com';
     $correctPassword = password_hash('password123', PASSWORD_DEFAULT); // Use a hashed password
+
+    // Check if the session has expired
+    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > SESSION_TIMEOUT) {
+        session_unset();
+        session_destroy();
+        echo json_encode(['status' => 'error', 'message' => 'Your session has expired. Please log in again.']);
+        exit();
+    }
+    $_SESSION['last_activity'] = time(); // Update the last activity timestamp
 
     // Check if the number of failed login attempts exceeds the limit
     if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
@@ -29,9 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check if email and password are correct
     if ($email === $correctEmail && password_verify($password, $correctPassword)) {
-        // Successful login, reset failed attempts
+        // Successful login, reset failed attempts and session timeout
         unset($_SESSION['failed_attempts']);
         unset($_SESSION['last_failed_login']);
+        $_SESSION['user'] = $email;  // Store the user's email in session
+        $_SESSION['role'] = 'admin'; // Store the role in session
+        session_regenerate_id(); // Regenerate session ID for security
         echo json_encode(['status' => 'success', 'message' => 'Login successful']);
     } else {
         // Increment failed attempts counter
@@ -45,7 +58,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">

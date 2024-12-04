@@ -107,6 +107,14 @@ class Login extends DBConnection {
     }
 }
 
+
+if (isset($_POST['logout'])) {
+    session_unset();  // Clear all session variables
+    session_destroy();  // Destroy the session
+    header('Location: login.php'); // Redirect to login page
+    exit();
+}
+
 // Handling actions
 $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);
 $auth = new Login();

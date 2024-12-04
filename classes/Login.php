@@ -18,7 +18,7 @@ class Login extends DBConnection {
     public function index(){
         echo "<h1>Access Denied</h1> <a href='".base_url."'>Go Back.</a>";
     }
-}
+
     public function login(){
         extract($_POST);
         // Use prepared statement to fetch user by email
@@ -54,14 +54,13 @@ class Login extends DBConnection {
         }
     }
 
-    public function logout(){
-        // Clear session data
-        session_unset();
-        session_destroy();
-    
-        // Redirect to login page
-        header('Location: login.php');
-        exit(); // Ensure the script ends after the redirect
+ 
+    public function logout() {
+        if ($this->settings->sess_des()) {
+            // Redirect to login page
+            header("Location: " . base_url . 'admin/login.php');
+            exit();
+        }
     }
     
 
@@ -104,16 +103,13 @@ class Login extends DBConnection {
 
         return json_encode($resp);
     }
+
     public function employee_logout(){
-        // Clear session data
-        session_unset();
-        session_destroy();
-    
-        // Redirect to login page
-        header('Location: login.php');
-        exit(); // Ensure the script ends after the redirect
+        if($this->settings->sess_des()){
+            redirect('./login.php');
+        }
     }
-    
+}
 
 // Handling actions
 $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);

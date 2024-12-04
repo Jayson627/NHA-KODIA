@@ -1,53 +1,3 @@
-<?php
-session_start();
-
-define('MAX_LOGIN_ATTEMPTS', 3); // Maximum allowed login attempts
-define('LOCK_TIME', 60); // Lock time in seconds
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    // Replace these with your actual database check
-    $correctEmail = 'admin@example.com';
-    $correctPassword = password_hash('password123', PASSWORD_DEFAULT); // Use a hashed password
-
-    // Check if the number of failed login attempts exceeds the limit
-    if (isset($_SESSION['last_failed_login']) && isset($_SESSION['failed_attempts'])) {
-        if ($_SESSION['failed_attempts'] >= MAX_LOGIN_ATTEMPTS) {
-            $timeSinceLastFailedLogin = time() - $_SESSION['last_failed_login'];
-            if ($timeSinceLastFailedLogin < LOCK_TIME) {
-                $remainingTime = LOCK_TIME - $timeSinceLastFailedLogin;
-                echo json_encode(['status' => 'locked', 'message' => 'Too many failed attempts. Please try again in ' . $remainingTime . ' seconds.', 'remainingTime' => $remainingTime]);
-                exit();
-            } else {
-                // Reset failed attempts after the lock time has passed
-                unset($_SESSION['failed_attempts']);
-                unset($_SESSION['last_failed_login']);
-            }
-        }
-    }
-
-    // Check if email and password are correct
-    if ($email === $correctEmail && password_verify($password, $correctPassword)) {
-        // Successful login, reset failed attempts
-        unset($_SESSION['failed_attempts']);
-        unset($_SESSION['last_failed_login']);
-        echo json_encode(['status' => 'success', 'message' => 'Login successful']);
-    } else {
-        // Increment failed attempts counter
-        if (!isset($_SESSION['failed_attempts'])) {
-            $_SESSION['failed_attempts'] = 0;
-        }
-        $_SESSION['failed_attempts']++;
-        $_SESSION['last_failed_login'] = time();
-
-        echo json_encode(['status' => 'error', 'message' => 'The email or password you entered is incorrect. Please try again.']);
-    }
-}
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once('../config.php'); ?>
@@ -306,156 +256,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script>
     let typingInterval;
     const text = "Welcome to NHA Kodia Information System";
-    const speed = 150;
+    const speed = 150; 
     let index = 0;
 
-    // Function for typing animation
     function type() {
-        if (index < text.length) {
-            document.getElementById("animated-text").innerHTML += text.charAt(index);
-            index++;
-            typingInterval = setTimeout(type, speed);
-        } else {
-            setTimeout(() => {
-                document.getElementById("animated-text").innerHTML = "";
-                index = 0;
-                type();
-            }, 2000);
-        }
+      if (index < text.length) {
+        document.getElementById("animated-text").innerHTML += text.charAt(index);
+        index++;
+        typingInterval = setTimeout(type, speed); 
+      } else {
+        setTimeout(() => {
+          document.getElementById("animated-text").innerHTML = "";
+          index = 0; 
+          type();
+        }, 2000); 
+      }
     }
 
     $(document).ready(function() {
-        // Hide login form initially and show animated text
-        $('#login').hide();
-        $('#animated-text').show();
+      $('#login').hide();
+      $('#animated-text').show();
 
-        // Handle role-based login (admin, resident, officer)
-        $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
-            e.preventDefault();
-            $('#login').fadeIn();
-            $('#animated-text').hide();
+      $('#login-as-admin, #login-as-resident, #login-as-officer').on('click', function(e) {
+        e.preventDefault();
+        $('#login').fadeIn();
+        $('#animated-text').hide();
 
-            const role = $(this).attr('id').replace('login-as-', '');
-            $('#role').val(role);  // Set the role in the form
-            $('#login-frm').attr('action', role + '_login');
-        });
+        const role = $(this).attr('id').replace('login-as-', '');
+        $('#role').val(role);
+        $('#login-frm').attr('action', role + '_login');
+      });
 
-        // Toggle password visibility
-        $('#togglePassword').on('click', function() {
-            const passwordField = $('#password');
-            const passwordFieldType = passwordField.attr('type');
-            const icon = $(this);
+      $('#togglePassword').on('click', function() {
+        const passwordField = $('#password');
+        const passwordFieldType = passwordField.attr('type');
+        const icon = $(this);
 
-            if (passwordFieldType === 'password') {
-                passwordField.attr('type', 'text');
-                icon.removeClass('fa-eye').addClass('fa-eye-slash');
-            } else {
-                passwordField.attr('type', 'password');
-                icon.removeClass('fa-eye-slash').addClass('fa-eye');
-            }
-        });
-
-        $(document).ready(function() {
-    // Existing code...
-
-    // Form submission logic (with validation)
-    $('#login-frm').on('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission
-
-        const email = $('[name="email"]').val();
-        const password = $('[name="password"]').val();
-        const recaptchaResponse = grecaptcha.getResponse();
-
-        const emailPattern = /.+@gmail\.com$/;
-
-        // Validate email pattern
-        if (!emailPattern.test(email)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Email',
-                text: 'Please enter a valid Gmail address.',
-            });
-            return; // Stop form submission
+        if (passwordFieldType === 'password') {
+          passwordField.attr('type', 'text');
+          icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+          passwordField.attr('type', 'password');
+          icon.removeClass('fa-eye-slash').addClass('fa-eye');
         }
+      });
 
-        // Validate reCAPTCHA
-        if (recaptchaResponse.length === 0) {
-            Swal.fire({
-                icon: 'error',
-                title: 'reCAPTCHA Required',
-                text: 'Please complete the reCAPTCHA to continue.',
-            });
-            return; // Stop form submission
-        }
+      $('#login-frm').on('submit', function(e) {
+    const email = $('[name="email"]').val();
+    const emailPattern = /.+@gmail\.com$/;
+    // const password = $('[name="password"]').val();
+    // const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        $.ajax({
-            url: 'login.php',
-            method: 'POST',
-            data: $(this).serialize(),
-            success: function(response) {
-                const data = JSON.parse(response);
+    const recaptchaResponse = grecaptcha.getResponse();  // Get the reCAPTCHA response
 
-                if (data.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Login Successful',
-                        text: data.message
-                    }).then(() => {
-                        window.location.href = 'admin.php';
-                    });
-                } else if (data.status === 'error') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login Failed',
-                        text: data.message
-                    });
-                } else if (data.status === 'locked') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Account Locked',
-                        html: `<p>${data.message}</p><p>Retry in <span id="lock-timer">${data.remainingTime}</span> seconds.</p>`,
-                        didOpen: () => {
-                            const lockTimer = document.getElementById('lock-timer');
-                            let remainingTime = data.remainingTime;
-
-                            const timerInterval = setInterval(() => {
-                                remainingTime--;
-                                lockTimer.textContent = remainingTime;
-
-                                if (remainingTime <= 0) {
-                                    clearInterval(timerInterval);
-                                    Swal.close();
-                                }
-                            }, 1000);
-                        }
-                    });
-                }
-            },
-            error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while processing your request.'
-                });
-            }
+    // Validate email
+    if (!emailPattern.test(email)) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Email',
+            text: 'Please enter a valid Gmail address.',
         });
-    });
-
-        // Open and close menu (for mobile or sidebar navigation)
-        $('.open-menu-btn').click(function() {
-            $('#push-menu').css('width', '250px'); 
+    } 
+    // Validate password
+    // else if (!passwordPattern.test(password)) {
+    //     e.preventDefault();
+    //     Swal.fire({
+    //         icon: 'error',
+    //         title: 'Invalid Password',
+    //         text: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.',
+    //     });
+    // } 
+    // Check if reCAPTCHA is filled
+    else if (recaptchaResponse.length === 0) {
+        e.preventDefault(); // Prevent form submission
+        Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Required',
+            text: 'Please complete the reCAPTCHA to continue.',
         });
+    }
+});
 
-        $('.close-btn').click(function() {
-            $('#push-menu').css('width', '0'); 
-        });
+
+      $('.open-menu-btn').click(function() {
+        $('#push-menu').css('width', '250px'); 
+      });
+
+      $('.close-btn').click(function() {
+        $('#push-menu').css('width', '0'); 
+      });
     });
 
     window.onload = function() {
-        type();  // Initialize the typing animation
+      type(); 
     };
-</script>
-
+  </script>
+  
 </head>
 <body>
   <!-- Navbar -->
@@ -467,14 +364,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <span class="open-menu-btn">&#9776;</span>
 
     <div class="navbar-nav">
-      <a href="about" class="nav-link">About</a>
+      <a href="about.php" class="nav-link">About</a>
       <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
-      <a href="residents" class="nav-link">Login as Resident</a>
+      <a href="residents.php" class="nav-link">Login as Resident</a>
     </div>
 
     <div id="push-menu">
       <a href="javascript:void(0)" class="close-btn">&times;</a>
-      <a href="about">About</a>
+      <a href="about.php">About</a>
       <a href="#" id="login-as-admin"> Admin</a>
       <a href="residents"> Resident</a>
     </div>
@@ -514,7 +411,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
     <div class="form-group text-center">
-        <a href="forgot_password" class="text-primary">Forgot Password?</a>
+        <a href="forgot_password.php" class="text-primary">Forgot Password?</a>
     </div>
     
 </form>

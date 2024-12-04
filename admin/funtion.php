@@ -11,7 +11,7 @@ function sendResetEmail($email, $reset_code) {
     $mail->AddAddress($email);
     $mail->Subject = "Reset Password OTP";
     $mail->Body = "Use this OTP Code to reset your password: " . $reset_code . "<br/>" . 
-                  "Click the link to reset password: http://nha-kodia.com/admin/reset_password?reset&email=$email";
+                  "Click the link to reset password: http://nha-kodia.com/admin/reset_password.php?reset&email=$email";
 
     return $mail->send();
 }
@@ -80,17 +80,17 @@ if (isset($_POST["btn-new-password"])) {
                 exit();
             } else {
                 $_SESSION["notify"] = "Failed to update the password. Please try again.";
-                header("location: ../admin/reset_password");
+                header("location: ../admin/reset_password?reset=true&email=$email");
                 exit();
             }
         } else {
             $_SESSION["notify"] = "Invalid OTP. Please try again.";
-            header("location: ../admin/reset_password");
+            header("location: ../admin/reset_password?reset=true&email=$email");
             exit();
         }
     } else {
         $_SESSION["notify"] = "No user found with this email. Please try again.";
-        header("location: ../admin/reset_password");
+        header("location: ../admin/reset_password?reset=true&email=$email");
         exit();
     }
 }

@@ -2,7 +2,7 @@
 session_start();
 include 'includes/conn.php';
 
-if (isset($_GET["reset"])) {
+if (isset($_GET["reset"]) && isset($_GET["email"])) {
     $email = $_GET["email"];
 ?>
 <!DOCTYPE html>
@@ -93,7 +93,7 @@ if (isset($_GET["reset"])) {
         <h2 class="reset-password-title">Reset Password</h2>
         <form action="../admin/funtion" method="post">
             <div class="form-group has-feedback">
-                <input type="hidden" name="email" class="form-control" value="<?php echo $email ?>" required readonly>
+                <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
             </div>
             <div class="form-group has-feedback">
                 <input type="password" class="form-control" placeholder="Set new password" name="password" required>

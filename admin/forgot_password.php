@@ -101,6 +101,9 @@
     }
   ?>
 
+        <?php if (isset($_SESSION["notify"])): ?>
+            alert("<?php echo $_SESSION["notify"]; unset($_SESSION["notify"]); ?>");
+        <?php endif; ?>
   <script>
     document.addEventListener('contextmenu', function (e) {
         e.preventDefault();

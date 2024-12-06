@@ -479,7 +479,7 @@ window.onclick = function(event) {
                 title: 'reCAPTCHA Required',
                 text: 'Please complete the reCAPTCHA to continue.',
             });
-            return; // Stop form submission
+            return; 
         }   
 
     document.addEventListener('DOMContentLoaded', function() {

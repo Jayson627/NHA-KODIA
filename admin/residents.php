@@ -472,7 +472,15 @@ window.onclick = function(event) {
         termsCheckbox.checked = false;
     }
 }
-        
+       // Validate reCAPTCHA
+       if (recaptchaResponse.length === 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'reCAPTCHA Required',
+                text: 'Please complete the reCAPTCHA to continue.',
+            });
+            return; // Stop form submission
+        }   
 
     document.addEventListener('DOMContentLoaded', function() {
         <?php if (isset($_SESSION['message'])): ?>

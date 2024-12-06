@@ -26,7 +26,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 ini_set('session.cookie_secure', '1'); // Use HTTPS
 ini_set('session.cookie_httponly', '1'); // HttpOnly
-ini_set('session.cookie_samesite', 'Strict'); // SameSite policy
+ini_set('session.cookie_samesite', 'Strict'); // SameSite policyy
 ini_set('date.timezone','Asia/Manila');
 date_default_timezone_set('Asia/Manila');
 session_start();

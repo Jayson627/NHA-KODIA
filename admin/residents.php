@@ -370,7 +370,7 @@ $conn->close();
         input[type="email"],
         input[type="date"],
         input[type="password"] {
-            width: 9%;
+            width: 92%;
             padding: 12px;
             margin: 10px 0;
             border: 1px solid #ccc;

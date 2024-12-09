@@ -510,11 +510,11 @@ $conn->close();
             <option value="president">President</option>
         </select>
 
-        <!-- Terms and Conditions Checkbox -->
-        <div style="margin: 10px 0;">
-            <input type="checkbox" id="terms" name="terms" required>
-            <label for="terms">I agree to the <a href="terms.php" target="_blank">Terms and Conditions</a></label>
-        </div>
+       <!-- Terms and Conditions Checkbox -->
+ <div style="margin: 10px 0;">
+    <input type="checkbox" id="terms" name="terms" required>
+    <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
+</div>
 
         <button type="submit" name="create_account">Create Account</button>
     </form>

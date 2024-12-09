@@ -335,8 +335,8 @@ $conn->close();
         header {
     width: 100%;
     display: flex;
-    justify-content: space-between; /* Ensures the elements are aligned to the left and right */
-    align-items: center;
+    justify-content: space-between; /* Aligns the logo on the left and Home on the right */
+    align-items: center; /* Centers vertically */
     padding: 10px 20px;
     background-color: #007BFF;
     color: white;
@@ -347,15 +347,18 @@ $conn->close();
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    margin-right: 15px; /* Space between the logo and text */
 }
 
-header h1 {
+h1 {
     margin: 0;
-    font-size: 24px; /* Adjust font size for better spacing */
+    font-size: 24px; /* Larger font size for the header */
+    white-space: nowrap; /* Ensures the header text doesn't wrap */
 }
 
+/* Align the "Home" link to the right */
 a {
-    margin-left: auto; /* Push "Home" to the far right */
+    margin-left: auto; /* Pushes "Home" to the right */
     color: white;
     text-decoration: none;
     padding: 10px 15px;
@@ -366,13 +369,12 @@ a {
 /* Responsive Design for mobile screens */
 @media (max-width: 768px) {
     header {
-        flex-direction: row; /* Maintain row direction for small screens */
-        justify-content: space-between; /* Ensures logo is on the left, Home on the right */
-        align-items: center;
+        flex-direction: row; /* Maintain horizontal layout for small screens */
+        justify-content: space-between;
     }
 
     .logo {
-        margin-right: 0; /* Keep logo aligned on the left */
+        margin-right: 10px; /* Adjust space between logo and text */
     }
 
     h1 {
@@ -390,11 +392,11 @@ a {
     }
 
     h1 {
-        font-size: 16px;
+        font-size: 16px; /* Further adjust font size for very small screens */
     }
 
     a {
-        font-size: 12px; /* Further adjust font size for very small screens */
+        font-size: 12px; /* Adjust font size for very small screens */
     }
 }
 

@@ -140,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -244,6 +245,7 @@ $conn->close();
             position: relative;
             width: 100%;
         }
+
         .eye-icon {
             position: absolute;
             top: 50%;
@@ -253,67 +255,56 @@ $conn->close();
             font-size: 20px;
         }
         .modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; /* Enable scrolling if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-            padding-top: 60px;
-        }
-        .modal-content {
-            background-color: #fff;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .accept-button {
-            background-color: #5a67d8;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .accept-button:hover {
-            background-color: #4c51bf;
-        }
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto; /* Enable scrolling if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        padding-top: 60px;
+    }
 
-        /* Media Queries for Responsive Design */
-        @media (max-width: 480px) {
-            .container {
-                width: 90%;
-                padding: 20px;
-                margin-top: 50px;
-            }
-            header h1 {
-                font-size: 18px;
-            }
-            header .logo {
-                width: 40px;
-                height: 40px;
-            }
-        }
+    .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 8px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .accept-button {
+        background-color: #5a67d8;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .accept-button:hover {
+        background-color: #4c51bf;
+    }
     </style>
 </head>
 <body>
@@ -326,34 +317,34 @@ $conn->close();
 <div class="container">
     <h2 id="form-title">Login Portal</h2>
     <div class="form-container" id="create-account">
-        <form method="POST" onsubmit="return validateForm()">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-            <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
-            <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
-            <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
-            <input type="text" name="house_no" placeholder="House No" required pattern="^\d{1,4}$" title="House number should contain 1-4 digits">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="text" name="username" placeholder="Username" required pattern="^[A-Za-z0-9_]{5,20}$" title="Username should be alphanumeric, 5-20 characters, and may include underscores">
-            
-            <!-- Password input with show/hide toggle -->
-            <div class="password-wrapper">
-                <input type="password" id="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
-                <span id="togglePassword" class="eye-icon">&#128065;</span>
-            </div>
-            
-            <select name="role" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
-                <option value="residents">Residents</option>
-                <option value="president">President</option>
-            </select>
-            <!-- Terms and Conditions Checkbox -->
-            <div style="margin: 10px 0;">
-                <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
-            </div>
-            <button type="submit" name="create_account">Create Account</button>
-        </form>
-        <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
-    </div>
+    <form method="POST" onsubmit="return validateForm()">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+        <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
+        <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
+        <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
+        <input type="text" name="house_no" placeholder="House No" required pattern="^\d{1,4}$" title="House number should contain 1-4 digits">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="text" name="username" placeholder="Username" required pattern="^[A-Za-z0-9_]{5,20}$" title="Username should be alphanumeric, 5-20 characters, and may include underscores">
+        
+        <!-- Password input with show/hide toggle -->
+        <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
+            <span id="togglePassword" class="eye-icon">&#128065;</span>
+        </div>
+        
+        <select name="role" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+            <option value="residents">Residents</option>
+            <option value="president">President</option>
+        </select>
+ <!-- Terms and Conditions Checkbox -->
+ <div style="margin: 10px 0;">
+    <input type="checkbox" id="terms" name="terms" required>
+    <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
+</div>
+        <button type="submit" name="create_account">Create Account</button>
+    </form>
+    <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
+</div>
     <div class="form-container active" id="login">
         <form method="POST">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
@@ -384,19 +375,19 @@ $conn->close();
     </div>
 </div>
 <script>
-   function toggleForm() {
-        var loginForm = document.getElementById('login');
-        var createAccountForm = document.getElementById('create-account');
-        var formTitle = document.getElementById('form-title');
-        
-        if (loginForm.classList.contains('active')) {
+    function toggleForm() {
+        const createAccountForm = document.getElementById('create-account');
+        const loginForm = document.getElementById('login');
+        const formTitle = document.getElementById('form-title');
+
+        if (createAccountForm.classList.contains('active')) {
+            createAccountForm.classList.remove('active');
+            loginForm.classList.add('active');
+            formTitle.textContent = 'Login';
+        } else {
             loginForm.classList.remove('active');
             createAccountForm.classList.add('active');
             formTitle.textContent = 'Create Account';
-        } else {
-            loginForm.classList.add('active');
-            createAccountForm.classList.remove('active');
-            formTitle.textContent = 'Login Portal';
         }
     }
 

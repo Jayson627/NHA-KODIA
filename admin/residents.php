@@ -156,7 +156,6 @@ $conn->close();
         background-image: url('houses.jpg'); /* Update the path as necessary */
         background-size: cover;
         background-position: center;
-        background-attachment: fixed;
         color: #333;
         margin: 0;
         padding: 0;
@@ -259,7 +258,6 @@ $conn->close();
         body {
             padding: 0 15px;
             height: auto; /* Adjust height for scrollable content */
-            background-attachment: scroll; /* Make the background image scrollable */
         }
 
         .container {

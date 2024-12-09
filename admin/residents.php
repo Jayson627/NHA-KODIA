@@ -152,21 +152,18 @@ $conn->close();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
     body {
-    font-family: Arial, sans-serif;
-    background-image: url('houses.jpg'); /* Update the path as necessary */
-    background-size: cover; /* Ensures the image covers the entire background */
-    background-position: center; /* Ensures the image is centered */
-    background-repeat: no-repeat; /* Ensures the image does not repeat */
-    color: #333;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh; /* Ensures the height of the body is 100% of the viewport */
-    overflow: hidden; /* Prevents scrolling, keeping the background image intact */
-}
-
+        font-family: Arial, sans-serif;
+        background-image: url('houses.jpg'); /* Update the path as necessary */
+        background-size: cover;
+        background-position: center;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+    }
 
     header {
         width: 100%;
@@ -292,12 +289,9 @@ $conn->close();
     }
 
     @media (max-width: 480px) {
-    body {
-        background-size: auto 100%; /* Adjusts the background image size for very small screens */
-        background-position: top center; /* Keeps the image's focus on the top part of the image */
-    }
-}
-
+        header {
+            padding: 10px;
+        }
 
         h1 {
             font-size: 16px;

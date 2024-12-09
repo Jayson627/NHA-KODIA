@@ -170,22 +170,22 @@ $conn->close();
             background-color: #007BFF; /* Blue background */
             color: white; /* Text color for better contrast */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            justify-content: space-between; /* Ensure the logo and home link are spaced out */
         }
         .logo {
             width: 50px; /* Adjust the size as necessary */
             height: 50px; /* Ensure height matches width for a perfect circle */
             border-radius: 50%; /* Make the logo circular */
-            margin-right: 15px; /* Space between the logo and any following content */
         }
-        
         .container {
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             padding: 35px;
-            width: 350px;
+            width: 90%;
+            max-width: 400px;
             transition: transform 0.3s ease;
-            margin-top: 100px; /* Add margin to push it down */
+            margin-top: 50px; /* Adjust for better spacing on mobile */
         }
         .container:hover {
             transform: translateY(-5px);
@@ -198,7 +198,8 @@ $conn->close();
         input[type="text"],
         input[type="email"],
         input[type="date"],
-        input[type="password"] {
+        input[type="password"],
+        select {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
@@ -210,7 +211,8 @@ $conn->close();
         input[type="text"]:focus,
         input[type="email"]:focus,
         input[type="date"]:focus,
-        input[type="password"]:focus {
+        input[type="password"]:focus,
+        select:focus {
             border-color: #5a67d8;
             outline: none;
         }
@@ -245,7 +247,6 @@ $conn->close();
             position: relative;
             width: 100%;
         }
-
         .eye-icon {
             position: absolute;
             top: 50%;
@@ -255,56 +256,71 @@ $conn->close();
             font-size: 20px;
         }
         .modal {
-        display: none; /* Hidden by default */
-        position: fixed;
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto; /* Enable scrolling if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        padding-top: 60px;
-    }
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scrolling if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .accept-button {
+            background-color: #5a67d8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .accept-button:hover {
+            background-color: #4c51bf;
+        }
 
-    .modal-content {
-        background-color: #fff;
-        margin: 5% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 8px;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .accept-button {
-        background-color: #5a67d8;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .accept-button:hover {
-        background-color: #4c51bf;
-    }
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            header .logo {
+                margin-bottom: 10px;
+            }
+            .container {
+                width: 90%;
+                margin-top: 20px;
+            }
+            .toggle-button {
+                font-size: 14px;
+            }
+            .modal-content {
+                width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -332,15 +348,16 @@ $conn->close();
             <span id="togglePassword" class="eye-icon">&#128065;</span>
         </div>
         
-        <select name="role" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+        <select name="role" required>
             <option value="residents">Residents</option>
             <option value="president">President</option>
         </select>
- <!-- Terms and Conditions Checkbox -->
- <div style="margin: 10px 0;">
-    <input type="checkbox" id="terms" name="terms" required>
-    <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
-</div>
+
+        <!-- Terms and Conditions Checkbox -->
+        <div style="margin: 10px 0;">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
+        </div>
         <button type="submit" name="create_account">Create Account</button>
     </form>
     <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
@@ -363,17 +380,16 @@ $conn->close();
     </div>
 </div>
 
-       <!-- Modal for Terms and Conditions -->
-       <div id="termsModal" class="modal">
+<!-- Modal for Terms and Conditions -->
+<div id="termsModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Terms and Conditions</h2>
-        <p>Welcome to the Kodi NHA Information System. This system is intended for administrators managing the Kodi NHA community information, including household details, block, and lot data.</p>
-    <p>By accessing this system, you agree to handle all data with confidentiality and to use the information solely for administrative purposes. Unauthorized access, data sharing, or modification without permission may result in disciplinary action.</p>
-    <p>Ensure that all actions taken comply with the privacy policies and data protection regulations governing community information management. The system logs all activities for security and auditing purposes.</p>
+        <p>Welcome to the Kodi NHA Information System...</p>
         <button id="acceptTerms" class="accept-button">I Agree</button>
     </div>
 </div>
+
 <script>
     function toggleForm() {
         const createAccountForm = document.getElementById('create-account');

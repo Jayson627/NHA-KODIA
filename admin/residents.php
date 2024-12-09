@@ -150,32 +150,33 @@ $conn->close();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('houses.jpg');
-            background-size: cover;
-            background-position: center;
+            background-image: url('houses.jpg'); /* Update the path as necessary */
+            background-size: cover; /* Ensure the image covers the entire area */
+            background-position: center; /* Center the image */
             color: #333;
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Stack elements vertically */
             align-items: center;
             height: 100vh;
         }
         header {
             width: 100%;
             display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
+            align-items: center; /* Align items vertically center */
+            padding: 10px 20px; /* Add some padding */
+            background-color: #007BFF; /* Blue background */
+            color: white; /* Text color for better contrast */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
+            width: 50px; /* Adjust the size as necessary */
+            height: 50px; /* Ensure height matches width for a perfect circle */
+            border-radius: 50%; /* Make the logo circular */
+            margin-right: 15px; /* Space between the logo and any following content */
         }
+        
         .container {
             background-color: white;
             border-radius: 8px;
@@ -183,7 +184,7 @@ $conn->close();
             padding: 35px;
             width: 350px;
             transition: transform 0.3s ease;
-            margin-top: 100px;
+            margin-top: 100px; /* Add margin to push it down */
         }
         .container:hover {
             transform: translateY(-5px);
@@ -252,15 +253,16 @@ $conn->close();
             font-size: 20px;
         }
         .modal {
-            display: none;
+            display: none; /* Hidden by default */
             position: fixed;
-            z-index: 1;
+            z-index: 1; /* Sit on top */
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            overflow: auto; /* Enable scrolling if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
             padding-top: 60px;
         }
         .modal-content {
@@ -297,23 +299,19 @@ $conn->close();
             background-color: #4c51bf;
         }
 
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .logo {
-                margin-right: 0;
-                margin-bottom: 10px;
-            }
+        /* Media Queries for Responsive Design */
+        @media (max-width: 480px) {
             .container {
                 width: 90%;
+                padding: 20px;
                 margin-top: 50px;
             }
-            .password-wrapper {
-                position: relative;
-                width: 100%;
+            header h1 {
+                font-size: 18px;
+            }
+            header .logo {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -336,14 +334,18 @@ $conn->close();
             <input type="text" name="house_no" placeholder="House No" required pattern="^\d{1,4}$" title="House number should contain 1-4 digits">
             <input type="email" name="email" placeholder="Email" required>
             <input type="text" name="username" placeholder="Username" required pattern="^[A-Za-z0-9_]{5,20}$" title="Username should be alphanumeric, 5-20 characters, and may include underscores">
+            
+            <!-- Password input with show/hide toggle -->
             <div class="password-wrapper">
                 <input type="password" id="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
                 <span id="togglePassword" class="eye-icon">&#128065;</span>
             </div>
+            
             <select name="role" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
                 <option value="residents">Residents</option>
                 <option value="president">President</option>
             </select>
+            <!-- Terms and Conditions Checkbox -->
             <div style="margin: 10px 0;">
                 <input type="checkbox" id="terms" name="terms" required>
                 <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
@@ -361,12 +363,14 @@ $conn->close();
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
             <button type="submit" name="login">Login</button>
-            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c5d-603cbd20eea5"></div>
+            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
+        <p class="forgot-password" style="text-align: center; margin-top: 10px;">
+            <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+        </p>
     </div>
 </div>
-
 
        <!-- Modal for Terms and Conditions -->
        <div id="termsModal" class="modal">

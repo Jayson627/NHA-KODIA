@@ -332,22 +332,72 @@ $conn->close();
             background-attachment: fixed; /* Ensure the background is fixed and consistent */
         }
 
-        header {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+        /* General styling */
+header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #333; /* Adjust to your preference */
+    color: white;
+    justify-content: space-between;
+}
 
-        .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
+header .logo {
+    height: 50px; /* Adjust logo size */
+    max-width: 100%;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px; /* Adjust title font size */
+}
+
+.home-link {
+    margin-left: auto;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    background-color: transparent;
+    border-radius: 4px;
+    border: 1px solid white;
+}
+
+.home-link:hover {
+    background-color: #555;
+}
+
+/* Mobile-responsive adjustments */
+@media screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header h1 {
+        font-size: 20px; /* Adjust title size on mobile */
+        margin-top: 10px;
+    }
+
+    .home-link {
+        margin-top: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    header {
+        padding: 15px;
+    }
+
+    header h1 {
+        font-size: 18px;
+    }
+
+    .home-link {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}
+
 
         .container {
             background-color: white;
@@ -498,8 +548,9 @@ $conn->close();
 <header>
     <img src="lo.png" alt="Logo" class="logo">
     <h1 style="margin: 0;">NHA Kodia-IS</h1>
-    <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
+    <a href="login.php" class="home-link">Home</a>
 </header>
+
 
 <div class="container">
     <h2 id="form-title">Login Portal</h2>

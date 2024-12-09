@@ -141,7 +141,173 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $conn->close();
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account / Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('houses.jpg'); /* Update the path as necessary */
+            background-size: cover; /* Ensure the image covers the entire area */
+            background-position: center; /* Center the image */
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center;
+            height: 100vh;
+        }
+        header {
+            width: 100%;
+            display: flex;
+            align-items: center; /* Align items vertically center */
+            padding: 10px 20px; /* Add some padding */
+            background-color: #007BFF; /* Blue background */
+            color: white; /* Text color for better contrast */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 50px; /* Adjust the size as necessary */
+            height: 50px; /* Ensure height matches width for a perfect circle */
+            border-radius: 50%; /* Make the logo circular */
+            margin-right: 15px; /* Space between the logo and any following content */
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 35px;
+            width: 350px;
+            transition: transform 0.3s ease;
+            margin-top: 100px; /* Add margin to push it down */
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        h2 {
+            text-align: center;
+            color: #5a67d8;
+            margin-bottom: 20px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        input[type="password"]:focus {
+            border-color: #5a67d8;
+            outline: none;
+        }
+        button {
+            background-color: #5a67d8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #4c51bf;
+        }
+        .toggle-button {
+            text-align: center;
+            color: #5a67d8;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .form-container {
+            display: none;
+        }
+        .form-container.active {
+            display: block;
+        }
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
 
+        .eye-icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto; /* Enable scrolling if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 8px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .accept-button {
+        background-color: #5a67d8;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .accept-button:hover {
+        background-color: #4c51bf;
+    }
+    </style>
+</head>
+<body>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -167,35 +333,21 @@ $conn->close();
         }
 
         header {
-        width: 100%;
-        display: flex;
-        align-items: center; /* Align logo and title vertically in the center */
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-    .logo {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-right: 15px; /* Adds spacing between logo and title */
-    }
-
-    h1 {
-        margin: 0; /* Remove margin to ensure proper alignment */
-        font-size: 24px; /* Adjust font size of the title */
-    }
-
-    a {
-        margin-left: auto; /* Pushes the 'Home' link to the far right */
-        color: white;
-        text-decoration: none;
-        padding: 10px 15px;
-        background-color: transparent;
-        border-radius: 4px;
-    }
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
 
         .container {
             background-color: white;
@@ -348,7 +500,6 @@ $conn->close();
     <h1 style="margin: 0;">NHA Kodia-IS</h1>
     <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
 </header>
-
 
 <div class="container">
     <h2 id="form-title">Login Portal</h2>

@@ -308,190 +308,17 @@ $conn->close();
     </style>
 </head>
 <body>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account / Login</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-image: url('houses.jpg'); /* Update the path as necessary */
-        background-size: cover;
-        background-position: center;
-        color: #333;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
-    }
-
-    header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .logo {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-
-    .container {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        width: 90%; /* Use percentage for better responsiveness */
-        max-width: 400px; /* Set a maximum width */
-        transition: transform 0.3s ease;
-        margin-top: 20px;
-    }
-
-    h2 {
-        text-align: center;
-        color: #5a67d8;
-        margin-bottom: 20px;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="date"],
-    input[type="password"] {
-        width: 93%;
-        padding: 12px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        font-size: 14px;
-    }
-    
-
-    button {
-        background-color: #5a67d8;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 12px;
-        cursor: pointer;
-        width: 100%;
-        font-size: 16px;
-    }
-
-    .toggle-button {
-        text-align: center;
-        color: #5a67d8;
-        text-decoration: underline;
-        cursor: pointer;
-        margin-top: 15px;
-    }
-
-    .form-container {
-        display: none;
-    }
-
-    .form-container.active {
-        display: block;
-    }
-
-    .password-wrapper {
-        position: relative;
-        width: 100%;
-    }
-
-    .eye-icon {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 20px;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        body {
-            padding: 0 15px;
-            height: auto; /* Adjust height for scrollable content */
-        }
-
-        .container {
-            margin-top: 10px;
-        }
-
-        header {
-            flex-direction: column; /* Stack logo and title vertically */
-            align-items: center;
-            text-align: center;
-        }
-
-        .logo {
-            margin-right: 0; /* Center align logo */
-            margin-bottom: 10px; /* Add space below logo */
-        }
-
-        h1 {
-            font-size: 18px; /* Smaller font size for title */
-        }
-
-        .container {
-            padding: 15px;
-        }
-
-        button {
-            font-size: 14px; /* Slightly smaller font for buttons */
-        }
-    }
-
-    @media (max-width: 480px) {
-        header {
-            padding: 10px;
-        }
-
-        h1 {
-            font-size: 16px;
-        }
-
-        .container {
-            padding: 10px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="date"],
-        input[type="password"] {
-            font-size: 12px; /* Smaller input font size for small screens */
-        }
-
-        button {
-            padding: 10px;
-            font-size: 14px;
-        }
-    }
-</style>
-</head>
-<body>
 <header>
     <img src="lo.png" alt="Logo" class="logo">
     <h1 style="margin: 0;">NHA Kodia-IS</h1>
-    <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
+    <a href="login" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
 </header>
 
 <div class="container">
     <h2 id="form-title">Login Portal</h2>
     <div class="form-container" id="create-account">
     <form method="POST" onsubmit="return validateForm()">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
         <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
         <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
@@ -509,27 +336,23 @@ $conn->close();
             <option value="residents">Residents</option>
             <option value="president">President</option>
         </select>
-
-       <!-- Terms and Conditions Checkbox -->
+ <!-- Terms and Conditions Checkbox -->
  <div style="margin: 10px 0;">
     <input type="checkbox" id="terms" name="terms" required>
     <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
 </div>
-
         <button type="submit" name="create_account">Create Account</button>
     </form>
     <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
 </div>
     <div class="form-container active" id="login">
         <form method="POST">
-            <input type="email" name="email" placeholder="email" required>
-            
-            <!-- Password input with show/hide toggle -->
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+            <input type="email" name="email" placeholder="Email" required>
             <div class="password-wrapper">
-                <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
+                <input type="password" id="login_password" name="password" placeholder="Password" required>
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
-            
             <button type="submit" name="login">Login</button>
             <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>
@@ -538,6 +361,7 @@ $conn->close();
             <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
+</div>
 
        <!-- Modal for Terms and Conditions -->
        <div id="termsModal" class="modal">

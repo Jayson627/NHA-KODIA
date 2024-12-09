@@ -340,7 +340,6 @@ $conn->close();
             background-color: #007BFF;
             color: white;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            flex-wrap: wrap;
         }
 
         .logo {
@@ -348,19 +347,6 @@ $conn->close();
             height: 50px;
             border-radius: 50%;
             margin-right: 15px;
-        }
-
-        .header-title {
-            flex: 1;
-            font-size: 1.5em;
-        }
-
-        .header-link {
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            background-color: transparent;
-            border-radius: 4px;
         }
 
         .container {
@@ -384,7 +370,7 @@ $conn->close();
         input[type="email"],
         input[type="date"],
         input[type="password"] {
-            width: 92%;
+            width: 93%;
             padding: 12px;
             margin: 10px 0;
             border: 1px solid #ccc;
@@ -453,6 +439,10 @@ $conn->close();
                 height: auto; /* Adjust height for scrollable content */
             }
 
+            .container {
+                margin-top: 10px;
+            }
+
             header {
                 flex-direction: column; /* Stack logo and title vertically */
                 align-items: center;
@@ -462,14 +452,6 @@ $conn->close();
             .logo {
                 margin-right: 0; /* Center align logo */
                 margin-bottom: 10px; /* Add space below logo */
-            }
-
-            .header-title {
-                font-size: 1.2em; /* Smaller font size for title */
-            }
-
-            .container {
-                margin-top: 10px;
             }
 
             h1 {
@@ -515,9 +497,10 @@ $conn->close();
 <body>
 <header>
     <img src="lo.png" alt="Logo" class="logo">
-    <h1 class="header-title">NHA Kodia-IS</h1>
-    <a href="login.php" class="header-link">Home</a>
+    <h1 style="margin: 0;">NHA Kodia-IS</h1>
+    <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
 </header>
+
 <div class="container">
     <h2 id="form-title">Login Portal</h2>
     <div class="form-container" id="create-account">

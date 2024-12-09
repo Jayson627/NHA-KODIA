@@ -313,6 +313,57 @@ $conn->close();
             font-size: 14px;
         }
     }
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto; /* Enable scrolling if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+        border-radius: 8px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .accept-button {
+        background-color: #5a67d8;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .accept-button:hover {
+        background-color: #4c51bf;
+    }
 </style>
 </head>
 <body>
@@ -343,7 +394,7 @@ $conn->close();
             <option value="residents">Residents</option>
             <option value="president">President</option>
         </select>
-        
+
 <!-- Terms and Conditions Checkbox -->
 <div style="margin: 10px 0;">
     <input type="checkbox" id="terms" name="terms" required>

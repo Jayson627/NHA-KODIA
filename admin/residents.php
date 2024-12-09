@@ -163,19 +163,31 @@ $conn->close();
             height: 100vh;
         }
         header {
-            width: 100%;
             display: flex;
-            align-items: center; /* Align items vertically center */
-            padding: 10px 20px; /* Add some padding */
-            background-color: #007BFF; /* Blue background */
-            color: white; /* Text color for better contrast */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            align-items: center;
+            background-color: #0063B2; /* Match the blue color from the image */
+            padding: 10px 20px;
         }
         .logo {
-            width: 50px; /* Adjust the size as necessary */
-            height: 50px; /* Ensure height matches width for a perfect circle */
-            border-radius: 50%; /* Make the logo circular */
-            margin-right: 15px; /* Space between the logo and any following content */
+            height: 50px; /* Adjust the height as needed */
+            margin-right: 15px;
+        }
+        h1 {
+            color: white;
+            margin: 0;
+            flex-grow: 1;
+        }
+        a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: transparent;
+            border: 1px solid white;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
         
         .container {
@@ -496,10 +508,10 @@ $conn->close();
 </head>
 <body>
 <header>
-    <img src="lo.png" alt="Logo" class="logo">
-    <h1 style="margin: 0;">NHA Kodia-IS</h1>
-    <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
-</header>
+        <img src="lo.png" alt="Logo" class="logo">
+        <h1>NHA Kodia-IS</h1>
+        <a href="login.php">Home</a>
+    </header>
 
 <div class="container">
     <h2 id="form-title">Login Portal</h2>

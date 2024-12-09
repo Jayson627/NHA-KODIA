@@ -333,21 +333,71 @@ $conn->close();
         }
 
         header {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* Ensures the elements are aligned to the left and right */
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
-        .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
+.logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px; /* Adjust font size for better spacing */
+}
+
+a {
+    margin-left: auto; /* Push "Home" to the far right */
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    background-color: transparent;
+    border-radius: 4px;
+}
+
+/* Responsive Design for mobile screens */
+@media (max-width: 768px) {
+    header {
+        flex-direction: row; /* Maintain row direction for small screens */
+        justify-content: space-between; /* Ensures logo is on the left, Home on the right */
+        align-items: center;
+    }
+
+    .logo {
+        margin-right: 0; /* Keep logo aligned on the left */
+    }
+
+    h1 {
+        font-size: 18px; /* Smaller font size for title */
+    }
+
+    a {
+        font-size: 14px; /* Adjust font size for small screens */
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 16px;
+    }
+
+    a {
+        font-size: 12px; /* Further adjust font size for very small screens */
+    }
+}
+
 
         .container {
             background-color: white;

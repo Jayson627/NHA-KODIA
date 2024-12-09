@@ -167,21 +167,35 @@ $conn->close();
         }
 
         header {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+        width: 100%;
+        display: flex;
+        align-items: center; /* Align logo and title vertically in the center */
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
-        .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
+    .logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 15px; /* Adds spacing between logo and title */
+    }
+
+    h1 {
+        margin: 0; /* Remove margin to ensure proper alignment */
+        font-size: 24px; /* Adjust font size of the title */
+    }
+
+    a {
+        margin-left: auto; /* Pushes the 'Home' link to the far right */
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        background-color: transparent;
+        border-radius: 4px;
+    }
 
         .container {
             background-color: white;
@@ -329,6 +343,11 @@ $conn->close();
     </style>
 </head>
 <body>
+<header>
+    <img src="lo.png" alt="Logo" class="logo">
+    <h1 style="margin: 0;">NHA Kodia-IS</h1>
+    <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
+</header>
 
 
 <div class="container">

@@ -333,73 +333,21 @@ $conn->close();
         }
 
         header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between; /* Aligns the logo on the left and Home on the right */
-    align-items: center; /* Centers vertically */
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-.logo {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 15px; /* Space between the logo and text */
-}
-
-h1 {
-    margin: 0;
-    font-size: 24px; /* Larger font size for the header */
-    white-space: nowrap; /* Ensures the header text doesn't wrap */
-}
-
-/* Align the "Home" link to the right */
-a {
-    margin-left: auto; /* Pushes "Home" to the right */
-    color: white;
-    text-decoration: none;
-    padding: 10px 15px;
-    background-color: transparent;
-    border-radius: 4px;
-}
-
-/* Responsive Design for mobile screens */
-@media (max-width: 768px) {
-    header {
-        flex-direction: row; /* Maintain horizontal layout for small screens */
-        justify-content: space-between;
-    }
-
-    .logo {
-        margin-right: 10px; /* Adjust space between logo and text */
-    }
-
-    h1 {
-        font-size: 18px; /* Smaller font size for title */
-    }
-
-    a {
-        font-size: 14px; /* Adjust font size for small screens */
-    }
-}
-
-@media (max-width: 480px) {
-    header {
-        padding: 10px;
-    }
-
-    h1 {
-        font-size: 16px; /* Further adjust font size for very small screens */
-    }
-
-    a {
-        font-size: 12px; /* Adjust font size for very small screens */
-    }
-}
-
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
 
         .container {
             background-color: white;
@@ -422,7 +370,7 @@ a {
         input[type="email"],
         input[type="date"],
         input[type="password"] {
-            width: 93%;
+            width: 9%;
             padding: 12px;
             margin: 10px 0;
             border: 1px solid #ccc;

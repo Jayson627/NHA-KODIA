@@ -141,6 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $conn->close();
 ?>
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,176 +151,181 @@ $conn->close();
     <title>Create Account / Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-image: url('houses.jpg'); /* Update the path as necessary */
+        background-size: cover;
+        background-position: center;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+    }
+
+    header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .container {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 90%; /* Use percentage for better responsiveness */
+        max-width: 400px; /* Set a maximum width */
+        transition: transform 0.3s ease;
+        margin-top: 20px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #5a67d8;
+        margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="password"] {
+        width: 93%;
+        padding: 12px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        font-size: 14px;
+    }
+    
+
+    button {
+        background-color: #5a67d8;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 12px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .toggle-button {
+        text-align: center;
+        color: #5a67d8;
+        text-decoration: underline;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+
+    .form-container {
+        display: none;
+    }
+
+    .form-container.active {
+        display: block;
+    }
+
+    .password-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .eye-icon {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
         body {
-            font-family: Arial, sans-serif;
-            background-image: url('houses.jpg'); /* Update the path as necessary */
-            background-size: cover; /* Ensure the image covers the entire area */
-            background-position: center; /* Center the image */
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column; /* Stack elements vertically */
-            align-items: center;
-            height: 100vh;
+            padding: 0 15px;
+            height: auto; /* Adjust height for scrollable content */
         }
-        header {
-            width: 100%;
-            display: flex;
-            align-items: center; /* Align items vertically center */
-            padding: 10px 20px; /* Add some padding */
-            background-color: #007BFF; /* Blue background */
-            color: white; /* Text color for better contrast */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .logo {
-            width: 50px; /* Adjust the size as necessary */
-            height: 50px; /* Ensure height matches width for a perfect circle */
-            border-radius: 50%; /* Make the logo circular */
-            margin-right: 15px; /* Space between the logo and any following content */
-        }
-        
+
         .container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 35px;
-            width: 350px;
-            transition: transform 0.3s ease;
-            margin-top: 100px; /* Add margin to push it down */
+            margin-top: 10px;
         }
-        .container:hover {
-            transform: translateY(-5px);
-        }
-        h2 {
+
+        header {
+            flex-direction: column; /* Stack logo and title vertically */
+            align-items: center;
             text-align: center;
-            color: #5a67d8;
-            margin-bottom: 20px;
         }
+
+        .logo {
+            margin-right: 0; /* Center align logo */
+            margin-bottom: 10px; /* Add space below logo */
+        }
+
+        h1 {
+            font-size: 18px; /* Smaller font size for title */
+        }
+
+        .container {
+            padding: 15px;
+        }
+
+        button {
+            font-size: 14px; /* Slightly smaller font for buttons */
+        }
+    }
+
+    @media (max-width: 480px) {
+        header {
+            padding: 10px;
+        }
+
+        h1 {
+            font-size: 16px;
+        }
+
+        .container {
+            padding: 10px;
+        }
+
         input[type="text"],
         input[type="email"],
         input[type="date"],
         input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: border-color 0.3s;
+            font-size: 12px; /* Smaller input font size for small screens */
         }
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="date"]:focus,
-        input[type="password"]:focus {
-            border-color: #5a67d8;
-            outline: none;
-        }
+
         button {
-            background-color: #5a67d8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 12px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            transition: background-color 0.3s;
+            padding: 10px;
+            font-size: 14px;
         }
-        button:hover {
-            background-color: #4c51bf;
-        }
-        .toggle-button {
-            text-align: center;
-            color: #5a67d8;
-            text-decoration: underline;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        .form-container {
-            display: none;
-        }
-        .form-container.active {
-            display: block;
-        }
-        .password-wrapper {
-            position: relative;
-            width: 100%;
-        }
-
-        .eye-icon {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 20px;
-        }
-        .modal {
-        display: none; /* Hidden by default */
-        position: fixed;
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto; /* Enable scrolling if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        padding-top: 60px;
     }
-
-    .modal-content {
-        background-color: #fff;
-        margin: 5% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 8px;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .accept-button {
-        background-color: #5a67d8;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .accept-button:hover {
-        background-color: #4c51bf;
-    }
-    </style>
+</style>
 </head>
 <body>
 <header>
     <img src="lo.png" alt="Logo" class="logo">
     <h1 style="margin: 0;">NHA Kodia-IS</h1>
-    <a href="login" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
+    <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
 </header>
 
 <div class="container">
     <h2 id="form-title">Login Portal</h2>
     <div class="form-container" id="create-account">
     <form method="POST" onsubmit="return validateForm()">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
         <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
         <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
@@ -336,33 +343,35 @@ $conn->close();
             <option value="residents">Residents</option>
             <option value="president">President</option>
         </select>
- <!-- Terms and Conditions Checkbox -->
- <div style="margin: 10px 0;">
+        
+<!-- Terms and Conditions Checkbox -->
+<div style="margin: 10px 0;">
     <input type="checkbox" id="terms" name="terms" required>
     <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
 </div>
+
         <button type="submit" name="create_account">Create Account</button>
     </form>
     <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
 </div>
     <div class="form-container active" id="login">
         <form method="POST">
-            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-            <input type="email" name="email" placeholder="Email" required>
+            <input type="email" name="email" placeholder="email" required>
+            
+            <!-- Password input with show/hide toggle -->
             <div class="password-wrapper">
-                <input type="password" id="login_password" name="password" placeholder="Password" required>
+                <input type="password" id="login-password" name="password" placeholder="Password" required minlength="8">
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
+            
             <button type="submit" name="login">Login</button>
             <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-            <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+            <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
-</div>
-
        <!-- Modal for Terms and Conditions -->
        <div id="termsModal" class="modal">
     <div class="modal-content">

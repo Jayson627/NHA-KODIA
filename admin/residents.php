@@ -317,169 +317,182 @@ $conn->close();
     <title>Create Account / Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-image: url('houses.jpg'); /* Update the path as necessary */
-        background-size: cover;
-        background-position: center;
-        color: #333;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
-    }
-
-    header {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .logo {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-
-    .container {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        width: 90%; /* Use percentage for better responsiveness */
-        max-width: 400px; /* Set a maximum width */
-        transition: transform 0.3s ease;
-        margin-top: 20px;
-    }
-
-    h2 {
-        text-align: center;
-        color: #5a67d8;
-        margin-bottom: 20px;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="date"],
-    input[type="password"] {
-        width: 93%;
-        padding: 12px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 2px;
-        font-size: 14px;
-    }
-    
-
-    button {
-        background-color: #5a67d8;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        padding: 12px;
-        cursor: pointer;
-        width: 100%;
-        font-size: 16px;
-    }
-
-    .toggle-button {
-        text-align: center;
-        color: #5a67d8;
-        text-decoration: underline;
-        cursor: pointer;
-        margin-top: 15px;
-    }
-
-    .form-container {
-        display: none;
-    }
-
-    .form-container.active {
-        display: block;
-    }
-
-    .password-wrapper {
-        position: relative;
-        width: 100%;
-    }
-
-    .eye-icon {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 20px;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
         body {
-            padding: 0 15px;
-            height: auto; /* Adjust height for scrollable content */
-        }
-
-        .container {
-            margin-top: 10px;
+            font-family: Arial, sans-serif;
+            background-image: url('houses.jpg'); /* Update the path as necessary */
+            background-size: cover;
+            background-position: center;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            background-attachment: fixed; /* Ensure the background is fixed and consistent */
         }
 
         header {
-            flex-direction: column; /* Stack logo and title vertically */
+            width: 100%;
+            display: flex;
             align-items: center;
-            text-align: center;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
-            margin-right: 0; /* Center align logo */
-            margin-bottom: 10px; /* Add space below logo */
-        }
-
-        h1 {
-            font-size: 18px; /* Smaller font size for title */
-        }
-
-        .container {
-            padding: 15px;
-        }
-
-        button {
-            font-size: 14px; /* Slightly smaller font for buttons */
-        }
-    }
-
-    @media (max-width: 480px) {
-        header {
-            padding: 10px;
-        }
-
-        h1 {
-            font-size: 16px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
         }
 
         .container {
-            padding: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 90%; /* Use percentage for better responsiveness */
+            max-width: 400px; /* Set a maximum width */
+            transition: transform 0.3s ease;
+            margin-top: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #5a67d8;
+            margin-bottom: 20px;
         }
 
         input[type="text"],
         input[type="email"],
         input[type="date"],
         input[type="password"] {
-            font-size: 12px; /* Smaller input font size for small screens */
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        input[type="password"]:focus {
+            border-color: #5a67d8;
+            outline: none;
         }
 
         button {
-            padding: 10px;
-            font-size: 14px;
+            background-color: #5a67d8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
-    }
-</style>
+
+        button:hover {
+            background-color: #4c51bf;
+        }
+
+        .toggle-button {
+            text-align: center;
+            color: #5a67d8;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .eye-icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 0 15px;
+                height: auto; /* Adjust height for scrollable content */
+            }
+
+            .container {
+                margin-top: 10px;
+            }
+
+            header {
+                flex-direction: column; /* Stack logo and title vertically */
+                align-items: center;
+                text-align: center;
+            }
+
+            .logo {
+                margin-right: 0; /* Center align logo */
+                margin-bottom: 10px; /* Add space below logo */
+            }
+
+            h1 {
+                font-size: 18px; /* Smaller font size for title */
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            button {
+                font-size: 14px; /* Slightly smaller font for buttons */
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="date"],
+            input[type="password"] {
+                font-size: 12px; /* Smaller input font size for small screens */
+            }
+
+            button {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -511,10 +524,10 @@ $conn->close();
         </select>
 
        <!-- Terms and Conditions Checkbox -->
- <div style="margin: 10px 0;">
-    <input type="checkbox" id="terms" name="terms" required>
-    <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
-</div>
+        <div style="margin: 10px 0;">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
+        </div>
 
         <button type="submit" name="create_account">Create Account</button>
     </form>
@@ -522,7 +535,7 @@ $conn->close();
 </div>
     <div class="form-container active" id="login">
         <form method="POST">
-            <input type="email" name="email" placeholder="email" required>
+            <input type="email" name="email" placeholder="Email" required>
             
             <!-- Password input with show/hide toggle -->
             <div class="password-wrapper">
@@ -538,7 +551,7 @@ $conn->close();
             <a href="forgot_password.php" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
-
+</div>
        <!-- Modal for Terms and Conditions -->
        <div id="termsModal" class="modal">
     <div class="modal-content">

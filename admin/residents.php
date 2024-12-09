@@ -384,19 +384,19 @@ $conn->close();
     </div>
 </div>
 <script>
-    function toggleForm() {
-        const createAccountForm = document.getElementById('create-account');
-        const loginForm = document.getElementById('login');
-        const formTitle = document.getElementById('form-title');
-
-        if (createAccountForm.classList.contains('active')) {
-            createAccountForm.classList.remove('active');
-            loginForm.classList.add('active');
-            formTitle.textContent = 'Login';
-        } else {
+   function toggleForm() {
+        var loginForm = document.getElementById('login');
+        var createAccountForm = document.getElementById('create-account');
+        var formTitle = document.getElementById('form-title');
+        
+        if (loginForm.classList.contains('active')) {
             loginForm.classList.remove('active');
             createAccountForm.classList.add('active');
             formTitle.textContent = 'Create Account';
+        } else {
+            loginForm.classList.add('active');
+            createAccountForm.classList.remove('active');
+            formTitle.textContent = 'Login Portal';
         }
     }
 

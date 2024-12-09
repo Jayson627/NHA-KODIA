@@ -345,20 +345,33 @@ $conn->close();
         }
 
         header {
-            width: 100%;
             display: flex;
             align-items: center;
+            background-color: #0063B2; /* Match the blue color from the image */
             padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
         .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            height: 50px; /* Adjust the height as needed */
             margin-right: 15px;
+        }
+        .title {
+            display: flex;
+            align-items: center;
+            color: white;
+            margin: 0;
+            flex-grow: 1;
+        }
+        a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: transparent;
+            border: 1px solid white;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         .container {
@@ -509,7 +522,9 @@ $conn->close();
 <body>
 <header>
         <img src="lo.png" alt="Logo" class="logo">
-        <h1>NHA Kodia-IS</h1>
+        <div class="title">
+            <h1>NHA Kodia-IS</h1>
+        </div>
         <a href="login.php">Home</a>
     </header>
 

@@ -498,9 +498,8 @@ $conn->close();
 <header>
     <img src="lo.png" alt="Logo" class="logo">
     <h1 style="margin: 0;">NHA Kodia-IS</h1>
-    <a href="login.php" class="home-link">Home</a>
+    <a href="login.php" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
 </header>
-
 
 <div class="container">
     <h2 id="form-title">Login Portal</h2>

@@ -54,53 +54,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (isset($_POST['login'])) {
-        // Check if the user is locked out
-        if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
-            // Check if lockout time has passed
-            if (isset($_SESSION['last_attempt_time']) && (time() - $_SESSION['last_attempt_time']) < LOCKOUT_TIME) {
-                $remaining_time = LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']);
-                $_SESSION['message'] = "Too many login attempts. Please try again in " . $remaining_time . " seconds.";
-                header("Location: " . $_SERVER['PHP_SELF']); 
-                exit();
-            } else {
-                // Reset the login attempts after lockout time has passed
-                $_SESSION['login_attempts'] = 0;
-            }
+        // Validate hCaptcha response
+        $captcha_response = $_POST['g-recaptcha-response'];
+        $secret_key = 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88'; // Replace with your secret key
+        $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$captcha_response");
+        $response_keys = json_decode($response, true);
+    
+        // If the reCAPTCHA response is invalid, show an error
+        if(intval($response_keys["success"]) !== 1) {
+            $_SESSION['message'] = "Please complete the CAPTCHA to proceed.";
+            header("Location: " . $_SERVER['PHP_SELF']); // Redirect back to the login page
+            exit();
         }
-
+    
+        // If CAPTCHA is successful, proceed with login validation
         // Collect and sanitize input
         $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
         $password = sanitize_input($_POST['password']);
-
+    
         // Prepare and execute the statement to get the user, role, and status by email
         $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-
+    
         // Check if user exists
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
-
+    
             // Check if the account status is 'approved'
             if ($status !== 'approved') {
                 $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             }
-
+    
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
                 // Reset login attempts on successful login
                 $_SESSION['login_attempts'] = 0;
-
+    
                 // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
-
+    
                 // Regenerate session ID to prevent session fixation attacks
                 session_regenerate_id(true);
-
+    
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
                     header("Location: president"); 
@@ -115,10 +115,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['login_attempts'] = 0;
                 }
                 $_SESSION['login_attempts']++;
-
+    
                 // Store the last attempt time
                 $_SESSION['last_attempt_time'] = time();
-
+    
                 $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
@@ -127,15 +127,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
             $_SESSION['login_attempts']++;
-
+    
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
-
+    
             $_SESSION['message'] = "Invalid email or password!";
         }
-
+    
         $stmt->close();
     }
+    
 }
 
 $conn->close();
@@ -375,6 +376,18 @@ $conn->close();
     </div>
 </div>
 <script>
+    <?php if (isset($_SESSION['message'])): ?>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '<?php echo $_SESSION['message']; ?>',
+            confirmButtonText: 'OK'
+        });
+    </script>
+<?php unset($_SESSION['message']); ?>
+<?php endif; ?>
+
     function toggleForm() {
         const createAccountForm = document.getElementById('create-account');
         const loginForm = document.getElementById('login');

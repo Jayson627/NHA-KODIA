@@ -232,55 +232,57 @@ $conn->close();
 <div class="container mt-5">
     <h2 class="text-center mb-4">Children Information</h2>
 
-    <table class="table table-striped table-hover table-bordered shadow-sm">
-        <thead class="table-primary">
-            <tr>
-                <th>Full Name</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Status</th>
-                <th>Birthdate</th>
-                <th>Educational Attainment</th>
-                <th>Contact Number</th>
-                <th>Remarks</th>
-                <th class="hide-print">Actions</th> <!-- Add the hide-print class here -->
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($children)): ?>
-                <?php foreach ($children as $child): ?>
-                    <tr>
-                        <td>
-                            <?php 
-                            $fullName = htmlspecialchars($child['first_name']) . ' ' . 
-                                        htmlspecialchars($child['middle_name']) . ' ' . 
-                                        htmlspecialchars($child['last_name']);
-                            if (!empty($child['extension_name'])) {
-                                $fullName .= ' ' . htmlspecialchars($child['extension_name']);
-                            }
-                            echo $fullName; 
-                            ?>
-                        </td>
-                        <td><?php echo htmlspecialchars($child['age']); ?></td>
-                        <td><?php echo htmlspecialchars($child['gender']); ?></td>
-                        <td><?php echo htmlspecialchars($child['status']); ?></td>
-                        <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
-                        <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
-                        <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
-                        <td><?php echo htmlspecialchars($child['remark']); ?></td>
-                        <td class="hide-print"> <!-- Add the hide-print class to actions column -->
-                            <a href="view_child?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
-                            <a href="edit_child?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
+    <div class="table-responsive"> <!-- Add table-responsive class -->
+        <table class="table table-striped table-hover table-bordered shadow-sm">
+            <thead class="table-primary">
                 <tr>
-                    <td colspan="9" class="text-center">No children found.</td>
+                    <th>Full Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Status</th>
+                    <th>Birthdate</th>
+                    <th>Educational Attainment</th>
+                    <th>Contact Number</th>
+                    <th>Remarks</th>
+                    <th class="hide-print">Actions</th>
                 </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php if (!empty($children)): ?>
+                    <?php foreach ($children as $child): ?>
+                        <tr>
+                            <td>
+                                <?php 
+                                $fullName = htmlspecialchars($child['first_name']) . ' ' . 
+                                            htmlspecialchars($child['middle_name']) . ' ' . 
+                                            htmlspecialchars($child['last_name']);
+                                if (!empty($child['extension_name'])) {
+                                    $fullName .= ' ' . htmlspecialchars($child['extension_name']);
+                                }
+                                echo $fullName; 
+                                ?>
+                            </td>
+                            <td><?php echo htmlspecialchars($child['age']); ?></td>
+                            <td><?php echo htmlspecialchars($child['gender']); ?></td>
+                            <td><?php echo htmlspecialchars($child['status']); ?></td>
+                            <td><?php echo htmlspecialchars($child['birthdate']); ?></td>
+                            <td><?php echo htmlspecialchars($child['educational_attainment']); ?></td>
+                            <td><?php echo htmlspecialchars($child['contact_number']); ?></td>
+                            <td><?php echo htmlspecialchars($child['remark']); ?></td>
+                            <td class="hide-print"> <!-- Add the hide-print class to actions column -->
+                                <a href="view_child?id=<?php echo urlencode($child['id']); ?>" class="btn btn-info btn-sm">View</a>
+                                <a href="edit_child?id=<?php echo urlencode($child['id']); ?>" class="btn btn-primary btn-sm">Edit</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="9" class="text-center">No children found.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 

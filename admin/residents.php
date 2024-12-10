@@ -415,27 +415,27 @@ $conn->close();
     });
 
     function validateForm() {
-    const recaptchaResponse = grecaptcha.getResponse();
+        const recaptchaResponse = grecaptcha.getResponse();
 
-    // Check if reCAPTCHA is empty
-    if (recaptchaResponse.length === 0) {
-        alert("Please complete the reCAPTCHA.");
-        return false;  // Prevent form submission if not completed
+        // Check if reCAPTCHA is empty
+        if (recaptchaResponse.length === 0) {
+            alert("Please complete the reCAPTCHA.");
+            return false;  // Prevent form submission if not completed
+        }
+
+        const dob = document.querySelector('input[name="dob"]').value;
+        const dobDate = new Date(dob);
+        const today = new Date();
+        const age = today.getFullYear() - dobDate.getFullYear();
+        
+        // Check if user is at least 18 years old
+        if (age < 18) {
+            alert("You must be at least 18 years old to register.");
+            return false;
+        }
+
+        return true;  // Proceed with form submission if reCAPTCHA is completed and all validations pass
     }
-
-    const dob = document.querySelector('input[name="dob"]').value;
-    const dobDate = new Date(dob);
-    const today = new Date();
-    const age = today.getFullYear() - dobDate.getFullYear();
-    
-    // Check if user is at least 18 years old
-    if (age < 18) {
-        alert("You must be at least 18 years old to register.");
-        return false;
-    }
-
-    return true;  // Proceed with form submission if reCAPTCHA is completed and all validations pass
-}
 
 
         // Retrieve data from localStorage when loading the page

@@ -174,9 +174,24 @@
                 type: 'bar',
                 data: data,
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
                         }
                     }
                 }

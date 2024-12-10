@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         // Send the password reset link to the user's email
-        $resetLink = "http://yourwebsite.com/reset_password.php?token=$token";
+        $resetLink = "http://yourwebsite.com/reset_password?token=$token";
         $subject = "Password Reset Request";
         $message = "Click the link below to reset your password:\n\n$resetLink";
         $headers = "From: no-reply@yourwebsite.com";

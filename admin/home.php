@@ -29,6 +29,11 @@
         .info-box-icon {
             font-size: 2rem;
         }
+        @media (max-width: 767px) {
+            #barChart {
+                height: 400px !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -169,33 +174,77 @@
                 }
             });
 
-            // Bar chart initialization
-            new Chart(barCtx, {
-                type: 'bar',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    size: 14
-                                }
+            function initializeBarChart(options) {
+                return new Chart(barCtx, {
+                    type: 'bar',
+                    data: data,
+                    options: options
+                });
+            }
+
+            // Default options for desktop view
+            var barOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14
                             }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    size: 14
-                                }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14
                             }
                         }
                     }
                 }
-            });
+            };
+
+            // Update options for mobile view
+            var mobileBarOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                }
+            };
+
+            var barChart = initializeBarChart(barOptions);
+
+            // Add media query listener
+            var mediaQuery = window.matchMedia("(max-width: 767px)");
+            mediaQuery.addListener(handleScreenChange);
+            handleScreenChange(mediaQuery);
+
+            function handleScreenChange(mediaQuery) {
+                if (mediaQuery.matches) {
+                    barChart.options = mobileBarOptions;
+                } else {
+                    barChart.options = barOptions;
+                }
+                barChart.update();
+            }
         });
     </script>
 

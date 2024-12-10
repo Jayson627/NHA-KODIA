@@ -101,13 +101,13 @@ function sendApprovalEmail($toEmail, $fullname) {
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 60px;
+            margin-top: 20px;
         }
         table, th, td {
             border: 1px solid #ccc;
         }
         th, td {
-            padding: 10px;
+            padding: 70px;
             text-align: left;
         }
         th {

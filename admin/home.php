@@ -10,7 +10,7 @@
     <style>
         #website-cover {
             width: 100%;
-            height: 30em;   
+            height: 30em;
             object-fit: cover;
             object-position: center center;
             color: pink;
@@ -28,6 +28,12 @@
         }
         .info-box-icon {
             font-size: 2rem;
+        }
+        /* Responsive styles for charts */
+        @media (max-width: 768px) {
+            .chart-container {
+                overflow-x: auto;
+            }
         }
     </style>
 </head>
@@ -100,10 +106,8 @@
                     <div class="card-header">
                         <h5 class="card-title">Pie Chart: Totals Overview</h5>
                     </div>
-                    <div class="card-body">
-                        <div style="overflow-x:auto;">
-                            <canvas id="pieChart" class="chartjs-render-monitor"></canvas>
-                        </div>
+                    <div class="card-body chart-container">
+                        <canvas id="pieChart" class="chartjs-render-monitor"></canvas>
                     </div>
                 </div>
             </div>
@@ -112,10 +116,8 @@
                     <div class="card-header">
                         <h5 class="card-title">Bar Chart: Totals Overview</h5>
                     </div>
-                    <div class="card-body">
-                        <div style="overflow-x:auto;">
-                            <canvas id="barChart" class="chartjs-render-monitor"></canvas>
-                        </div>
+                    <div class="card-body chart-container">
+                        <canvas id="barChart" class="chartjs-render-monitor"></canvas>
                     </div>
                 </div>
             </div>
@@ -160,29 +162,32 @@
                 }]
             };
 
-            // Pie chart initialization
-            new Chart(pieCtx, {
-                type: 'pie',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-
-            // Bar chart initialization
-            new Chart(barCtx, {
-                type: 'bar',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+            function createChart(ctx, type, data) {
+                return new Chart(ctx, {
+                    type: type,
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: window.innerWidth <= 768 ? false : true,
+                        scales: type === 'bar' ? {
+                            y: {
+                                beginAtZero: true
+                            }
+                        } : {}
                     }
-                }
+                });
+            }
+
+            // Create the charts
+            var pieChart = createChart(pieCtx, 'pie', data);
+            var barChart = createChart(barCtx, 'bar', data);
+
+            // Adjust charts on window resize
+            window.addEventListener('resize', function() {
+                pieChart.options.maintainAspectRatio = window.innerWidth <= 768 ? false : true;
+                barChart.options.maintainAspectRatio = window.innerWidth <= 768 ? false : true;
+                pieChart.update();
+                barChart.update();
             });
         });
     </script>

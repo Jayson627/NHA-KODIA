@@ -1,12 +1,30 @@
 <?php
 session_start();
 include_once('connection.php');
-// Max login attempts and lockout time
-define('MAX_LOGIN_ATTEMPTS', 3); // Adjust as needed
-define('LOCKOUT_TIME', 60); // 15 minutes lockout time
+
+// Define max login attempts and lockout time
+define('MAX_LOGIN_ATTEMPTS', 3);
+define('LOCKOUT_TIME', 60); // 60 seconds
+
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Function to sanitize input
+function sanitize_input($data) {
+    return htmlspecialchars(strip_tags(trim($data)));
+}
+
+// Handle form submission for account creation and login
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Check CSRF token
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die("CSRF token validation failed.");
+    }
 
 if (isset($_POST['create_account'])) {
-    // Sanitize and validate input
+ 
     $fullname = sanitize_input($_POST['fullname']);
     $dob = sanitize_input($_POST['dob']);
     $lot_no = sanitize_input($_POST['lot_no']);
@@ -145,6 +163,7 @@ if (isset($_POST['login'])) {
     $stmt->close();
 }
 
+}
 
 $conn->close();
 ?>

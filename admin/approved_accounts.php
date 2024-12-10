@@ -164,7 +164,7 @@ function sendApprovalEmail($toEmail, $fullname) {
                 display: block;
                 text-align: left; /* Align text to the left */
                 font-size: 14px;
-                padding: 8px 70px; /* Adjust padding */
+                padding: 8px 80px; /* Adjust padding */
                 border-bottom: 1px solid #ddd; /* Add border between rows */
             }
 

@@ -1,125 +1,121 @@
 <?php
 session_start();
 include_once('connection.php');
+// Max login attempts and lockout time
+define('MAX_LOGIN_ATTEMPTS', 3); // Adjust as needed
+define('LOCKOUT_TIME', 60); // 15 minutes lockout time
 
-// Define max login attempts and lockout time
-define('MAX_LOGIN_ATTEMPTS', 3);
-define('LOCKOUT_TIME', 60); // 60 seconds
+if (isset($_POST['create_account'])) {
+    // Sanitize and validate input
+    $fullname = sanitize_input($_POST['fullname']);
+    $dob = sanitize_input($_POST['dob']);
+    $lot_no = sanitize_input($_POST['lot_no']);
+    $house_no = sanitize_input($_POST['house_no']);
+    $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
+    $username = sanitize_input($_POST['username']);
+    $password = sanitize_input($_POST['password']);
+    $role = sanitize_input($_POST['role']);
+    $id = uniqid();
 
-// Generate CSRF token
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
+    // Verify reCAPTCHA for account creation
+    $recaptcha_secret = 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88'; // Replace with your actual secret key
+    $recaptcha_response = $_POST['g-recaptcha-response'];
+    $recaptcha_verify_url = 'https://www.google.com/recaptcha/api/siteverify';
+    $recaptcha_response = file_get_contents($recaptcha_verify_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+    $recaptcha_result = json_decode($recaptcha_response, true);
 
-// Function to sanitize input
-function sanitize_input($data) {
-    return htmlspecialchars(strip_tags(trim($data)));
-}
-
-// Handle form submission for account creation and login
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Check CSRF token
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        die("CSRF token validation failed.");
-    }
-
-    if (isset($_POST['create_account'])) {
-        // Sanitize and validate input
-        $fullname = sanitize_input($_POST['fullname']);
-        $dob = sanitize_input($_POST['dob']);
-        $lot_no = sanitize_input($_POST['lot_no']);
-        $house_no = sanitize_input($_POST['house_no']);
-        $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
-        $username = sanitize_input($_POST['username']);
-        $password = sanitize_input($_POST['password']);
-        $role = sanitize_input($_POST['role']);
-        $id = uniqid();
-
-        // Hash the password
-        $hashed_password = password_hash($password, PASSWORD_ARGON2I);
-
-        // Insert new user with default 'pending' status and random ID
-        $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
-
-        // Execute and check for success
-        if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
-        } else {
-            $_SESSION['message'] = "Error creating account. Please try again.";
-        }
-        $stmt->close();
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+    if (!$recaptcha_result['success']) {
+        $_SESSION['message'] = "Please complete the CAPTCHA verification.";
+        header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     }
 
-    if (isset($_POST['login'])) {
-        // Validate hCaptcha response
-        $captcha_response = $_POST['g-recaptcha-response'];
-        $secret_key = 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88'; // Replace with your secret key
-        $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$captcha_response");
-        $response_keys = json_decode($response, true);
-    
-        // If the reCAPTCHA response is invalid, show an error
-        if(intval($response_keys["success"]) !== 1) {
-            $_SESSION['message'] = "Please complete the CAPTCHA to proceed.";
-            header("Location: " . $_SERVER['PHP_SELF']); // Redirect back to the login page
+    // Hash the password
+    $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+
+    // Insert new user with default 'pending' status and random ID
+    $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+    $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
+
+    // Execute and check for success
+    if ($stmt->execute()) {
+        $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
+    } else {
+        $_SESSION['message'] = "Error creating account. Please try again.";
+    }
+    $stmt->close();
+    header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+    exit();
+}
+
+if (isset($_POST['login'])) {
+    // Check if the user is locked out
+    if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_LOGIN_ATTEMPTS) {
+        // Check if lockout time has passed
+        if (isset($_SESSION['last_attempt_time']) && (time() - $_SESSION['last_attempt_time']) < LOCKOUT_TIME) {
+            $remaining_time = LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']);
+            $_SESSION['message'] = "Too many login attempts. Please try again in " . $remaining_time . " seconds.";
+            header("Location: " . $_SERVER['PHP_SELF']); 
+            exit();
+        } else {
+            // Reset the login attempts after lockout time has passed
+            $_SESSION['login_attempts'] = 0;
+        }
+    }
+
+    // Collect and sanitize input
+    $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
+    $password = sanitize_input($_POST['password']);
+
+    // Verify reCAPTCHA for login
+    $recaptcha_secret = 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88'; // Replace with your actual secret key
+    $recaptcha_response = $_POST['g-recaptcha-response'];
+    $recaptcha_verify_url = 'https://www.google.com/recaptcha/api/siteverify';
+    $recaptcha_response = file_get_contents($recaptcha_verify_url . '?secret=' . $recaptcha_secret . '&response=' . $recaptcha_response);
+    $recaptcha_result = json_decode($recaptcha_response, true);
+
+    if (!$recaptcha_result['success']) {
+        $_SESSION['message'] = "Please complete the CAPTCHA verification.";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
+
+    // Prepare and execute the statement to get the user, role, and status by email
+    $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    // Check if user exists
+    if ($stmt->num_rows > 0) {
+        $stmt->bind_result($hashedPassword, $role, $status);
+        $stmt->fetch();
+
+        // Check if the account status is 'approved'
+        if ($status !== 'approved') {
+            $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+            header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         }
-    
-        // If CAPTCHA is successful, proceed with login validation
-        // Collect and sanitize input
-        $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
-        $password = sanitize_input($_POST['password']);
-    
-        // Prepare and execute the statement to get the user, role, and status by email
-        $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->store_result();
-    
-        // Check if user exists
-        if ($stmt->num_rows > 0) {
-            $stmt->bind_result($hashedPassword, $role, $status);
-            $stmt->fetch();
-    
-            // Check if the account status is 'approved'
-            if ($status !== 'approved') {
-                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-                header("Location: " . $_SERVER['PHP_SELF']);
+
+        // Verify the password
+        if (password_verify($password, $hashedPassword)) {
+            // Reset login attempts on successful login
+            $_SESSION['login_attempts'] = 0;
+
+            // Convert role to lowercase to avoid case sensitivity issues
+            $role = strtolower($role);
+
+            // Regenerate session ID to prevent session fixation attacks
+            session_regenerate_id(true);
+
+            // Check role and redirect accordingly
+            if ($role === 'president') {  
+                header("Location: president"); 
                 exit();
-            }
-    
-            // Verify the password
-            if (password_verify($password, $hashedPassword)) {
-                // Reset login attempts on successful login
-                $_SESSION['login_attempts'] = 0;
-    
-                // Convert role to lowercase to avoid case sensitivity issues
-                $role = strtolower($role);
-    
-                // Regenerate session ID to prevent session fixation attacks
-                session_regenerate_id(true);
-    
-                // Check role and redirect accordingly
-                if ($role === 'president') {  
-                    header("Location: president"); 
-                    exit();
-                } else if ($role === 'residents') { 
-                    header("Location: people_dashboard");
-                    exit();
-                }
-            } else {
-                // Increment the login attempts
-                if (!isset($_SESSION['login_attempts'])) {
-                    $_SESSION['login_attempts'] = 0;
-                }
-                $_SESSION['login_attempts']++;
-    
-                // Store the last attempt time
-                $_SESSION['last_attempt_time'] = time();
-    
-                $_SESSION['message'] = "Invalid email or password!";
+            } else if ($role === 'residents') { 
+                header("Location: people_dashboard");
+                exit();
             }
         } else {
             // Increment the login attempts
@@ -127,17 +123,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
             $_SESSION['login_attempts']++;
-    
+
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
-    
+
             $_SESSION['message'] = "Invalid email or password!";
         }
-    
-        $stmt->close();
+    } else {
+        // Increment the login attempts
+        if (!isset($_SESSION['login_attempts'])) {
+            $_SESSION['login_attempts'] = 0;
+        }
+        $_SESSION['login_attempts']++;
+
+        // Store the last attempt time
+        $_SESSION['last_attempt_time'] = time();
+
+        $_SESSION['message'] = "Invalid email or password!";
     }
-    
+
+    $stmt->close();
 }
+
 
 $conn->close();
 ?>

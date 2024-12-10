@@ -354,7 +354,6 @@ $conn->close();
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
             <button type="submit" name="login">Login</button>
-          
             <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88" required></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
@@ -376,6 +375,20 @@ $conn->close();
     </div>
 </div>
 <script>
+    function validateLoginForm() {
+        const recaptchaResponse = grecaptcha.getResponse();
+
+        // Check if reCAPTCHA is completed
+        if (recaptchaResponse.length === 0) {
+            alert("Please complete the reCAPTCHA.");
+            return false;  // Prevent form submission if reCAPTCHA is not completed
+        }
+
+        // Optionally, add other validation logic here (e.g., email/password validation)
+
+        return true;  // Proceed with form submission if reCAPTCHA is completed
+    }
+    
     function toggleForm() {
         const createAccountForm = document.getElementById('create-account');
         const loginForm = document.getElementById('login');
@@ -415,14 +428,6 @@ $conn->close();
     });
 
     function validateForm() {
-        const recaptchaResponse = grecaptcha.getResponse();
-
-        // Check if reCAPTCHA is empty
-        if (recaptchaResponse.length === 0) {
-            alert("Please complete the reCAPTCHA.");
-            return false;  // Prevent form submission if not completed
-        }
-
         const dob = document.querySelector('input[name="dob"]').value;
         const dobDate = new Date(dob);
         const today = new Date();
@@ -433,10 +438,7 @@ $conn->close();
             alert("You must be at least 18 years old to register.");
             return false;
         }
-
-        return true;  // Proceed with form submission if reCAPTCHA is completed and all validations pass
     }
-
 
         // Retrieve data from localStorage when loading the page
         window.onload = function() {

@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $captcha_response = $_POST['g-recaptcha-response']; // Captcha response
     
         // Verify the hCaptcha response
-        $captcha_secret = 'your-hcaptcha-secret-key';  // Replace with your hCaptcha secret key
+        $captcha_secret = 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88';  // Replace with your hCaptcha secret key
         $captcha_url = 'https://hcaptcha.com/siteverify';
         $captcha_data = [
             'secret' => $captcha_secret,

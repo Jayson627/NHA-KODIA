@@ -28,13 +28,9 @@
 		</div>
 		<div class="card-body">
 			<form action="" id="system-frm">
-			<div id="msg" class="form-group"></div>
+			
 			<div class="form-group">
-				<label for="name" class="control-label">System Name</label>
-				<input type="text" class="form-control form-control-sm" name="name" id="name" value="<?php echo $_settings->info('name') ?>">
-			</div>
-			<div class="form-group">
-				<label for="short_name" class="control-label">System Short Name</label>
+				<label for="short_name" class="control-label">System Name</label>
 				<input type="text" class="form-control form-control-sm" name="short_name" id="short_name" value="<?php echo  $_settings->info('short_name') ?>">
 			</div>
 			<div class="form-group">

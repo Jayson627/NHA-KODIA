@@ -72,7 +72,7 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
+      <form id="forgotPasswordForm" action="../admin/process_forgot_password" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>

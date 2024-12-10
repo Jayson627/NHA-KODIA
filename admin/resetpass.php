@@ -119,7 +119,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
 <body>
     <div class="reset-password-box">
         <h2 class="reset-password-title">Reset Password</h2>
-        <form action="../admin/funtion" method="post" onsubmit="return validatePassword();">
+        <form action="../admin/process_forgot_password" method="post" onsubmit="return validatePassword();">
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
             </div>

@@ -432,7 +432,7 @@ $conn->close();
     </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-            <a href="forgot_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
+            <a href="forget_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
         </p>
     </div>
 </div>

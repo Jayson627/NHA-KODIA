@@ -153,7 +153,11 @@ $conn->close();
         function validateRecaptcha() {
             const response = grecaptcha.getResponse();
             if (response.length === 0) {
-                alert("Please complete the reCAPTCHA");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please complete the reCAPTCHA',
+                });
                 return false;
             }
             return true;

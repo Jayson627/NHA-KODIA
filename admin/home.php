@@ -29,11 +29,6 @@
         .info-box-icon {
             font-size: 2rem;
         }
-        @media (max-width: 767px) {
-            #barChart {
-                height: 400px !important;
-            }
-        }
     </style>
 </head>
 <body>
@@ -57,7 +52,7 @@
     <main class="container-fluid">
         <div class="row">
             <!-- Total Lots Display -->
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
                 <div class="info-box bg-gradient-pink shadow">
                     <span class="info-box-icon bg-gradient-pink elevation-1"><i class="fas fa-cube"></i></span>
                     <div class="info-box-content">
@@ -67,7 +62,7 @@
                 </div>
             </div>
             
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
                 <div class="info-box bg-gradient-blue shadow">
                     <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-box"></i></span>
                     <div class="info-box-content">
@@ -77,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
                 <div class="info-box bg-gradient-yellow shadow">
                     <span class="info-box-icon bg-gradient-warning elevation-1"><i class="fas fa-user-friends"></i></span>
                     <div class="info-box-content">
@@ -87,7 +82,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
                 <div class="info-box bg-gradient-green shadow">
                     <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fas fa-users"></i></span>
                     <div class="info-box-content">
@@ -100,7 +95,7 @@
     
         <!-- Chart.js Charts wrapped in responsive containers -->
         <div class="row mt-4">
-            <div class="col-md-6">
+            <div class="col-md-6 mb-4">
                 <div class="card card-outline card-navy shadow rounded-0">
                     <div class="card-header">
                         <h5 class="card-title">Pie Chart: Totals Overview</h5>
@@ -112,7 +107,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 mb-4">
                 <div class="card card-outline card-navy shadow rounded-0">
                     <div class="card-header">
                         <h5 class="card-title">Bar Chart: Totals Overview</h5>
@@ -171,80 +166,24 @@
                 data: data,
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false
                 }
             });
 
-            function initializeBarChart(options) {
-                return new Chart(barCtx, {
-                    type: 'bar',
-                    data: data,
-                    options: options
-                });
-            }
-
-            // Default options for desktop view
-            var barOptions = {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        ticks: {
-                            font: {
-                                size: 14
-                            }
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            font: {
-                                size: 14
-                            }
+            // Bar chart initialization
+            new Chart(barCtx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
                         }
                     }
                 }
-            };
-
-            // Update options for mobile view
-            var mobileBarOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        ticks: {
-                            font: {
-                                size: 10
-                            }
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            font: {
-                                size: 10
-                            }
-                        }
-                    }
-                }
-            };
-
-            var barChart = initializeBarChart(barOptions);
-
-            // Add media query listener
-            var mediaQuery = window.matchMedia("(max-width: 767px)");
-            mediaQuery.addListener(handleScreenChange);
-            handleScreenChange(mediaQuery);
-
-            function handleScreenChange(mediaQuery) {
-                if (mediaQuery.matches) {
-                    barChart.options = mobileBarOptions;
-                } else {
-                    barChart.options = barOptions;
-                }
-                barChart.update();
-            }
+            });
         });
     </script>
 

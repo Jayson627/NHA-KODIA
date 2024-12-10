@@ -101,7 +101,7 @@ function sendApprovalEmail($toEmail, $fullname) {
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 60px;
         }
         table, th, td {
             border: 1px solid #ccc;

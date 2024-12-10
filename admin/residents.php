@@ -149,8 +149,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account / Login</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <script>
         function validateRecaptcha() {
             const response = grecaptcha.getResponse();

@@ -1,58 +1,88 @@
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
+session_start();
+require_once("mailer.php");
+require_once('../admin/connection.php');
+require_once("../initialize.php");
 
-    // Validate email
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "Invalid email format";
-        exit;
-    }
+// Helper function to send reset email
+function sendResetEmail($email, $reset_code, $timestamp) {
+    global $mail;
+    $mail->SetFrom("alcantarajayson118@gmail.com");
+    $mail->AddAddress($email);
+    $mail->Subject = "Reset Password OTP";
+    $mail->Body = "Use this OTP Code to reset your password: " . $reset_code . "<br/>" . 
+                  "Click the link to reset password: http://nha-kodia.com/admin/resetpass?reset&email=$email&timestamp=$timestamp";
 
-    // Connect to the database
-    $conn = new mysqli('localhost', 'username', 'password', 'database');
+    return $mail->send();
+}
 
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+// Handle forgotten password (generate OTP)
+if (isset($_POST["btn-forgotpass"])) {
+    $email = $_POST["email"];
+    
+    // Query the database to check if the email exists
+    $sql = "SELECT * FROM `residents` WHERE email = '$email'";
+    $result = $conn->query($sql);
 
-    // Check if email exists in the database
-    $sql = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    if ($result && $result->num_rows > 0) {
+        // Email exists, generate OTP and send the reset email
+        $reset_code = random_int(100000, 999999);
+        $timestamp = time(); // Current timestamp
+        
+        // Store OTP and timestamp in session
+        $_SESSION['reset_code'] = $reset_code;
+        $_SESSION['reset_timestamp'] = $timestamp;
+        $_SESSION['reset_email'] = $email;
 
-    if ($result->num_rows > 0) {
-        // Generate a unique token
-        $token = bin2hex(random_bytes(50));
-
-        // Store the token in the database with an expiration date
-        $expires = date("U") + 1800; // Token expires in 30 minutes
-        $sql = "INSERT INTO password_resets (email, token, expires) VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE token = ?, expires = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssiss", $email, $token, $expires, $token, $expires);
-        $stmt->execute();
-
-        // Send the password reset link to the user's email
-        $resetLink = "http://yourwebsite.com/reset_password?token=$token";
-        $subject = "Password Reset Request";
-        $message = "Click the link below to reset your password:\n\n$resetLink";
-        $headers = "From: no-reply@yourwebsite.com";
-
-        if (mail($email, $subject, $message, $headers)) {
-            echo "Password reset link has been sent to your email.";
+        if (sendResetEmail($email, $reset_code, $timestamp)) {
+            $_SESSION["notify"] = "A reset link has been sent to your email.";
         } else {
-            echo "Failed to send email.";
+            $_SESSION["notify"] = "Mailer Error: " . $mail->ErrorInfo;
+        }
+        header("location: ../admin/forget_password");
+        exit();
+    } else {
+        // If the email does not exist in the database
+        $_SESSION["notify"] = "No user found with this email. Please try again.";
+        header("location: ../admin/forget_password");
+        exit();
+    }
+}
+
+// Handle new password submission (validate OTP and reset password)
+if (isset($_POST["btn-new-password"])) {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+    $otp = $_POST["otp"];
+    $timestamp = $_POST["timestamp"];
+    
+    // Validate if the OTP is within the 2-minute window
+    if (isset($_SESSION['reset_code'], $_SESSION['reset_timestamp'], $_SESSION['reset_email']) &&
+        $_SESSION['reset_email'] === $email &&
+        $_SESSION['reset_code'] == $otp &&
+        (time() - $_SESSION['reset_timestamp']) <= 120) {
+        
+        $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+        
+        // Direct SQL query to update the password
+        $update_sql = "UPDATE `residents` SET `password` = '$hashed_password' WHERE email = '$email'";
+        
+        if ($conn->query($update_sql) === TRUE) {
+            // Clear the session variables
+            unset($_SESSION['reset_code'], $_SESSION['reset_timestamp'], $_SESSION['reset_email']);
+            
+            $_SESSION["notify"] = "Your password has been reset successfully.";
+            header("location: ../admin/resetpass?reset=true&email=$email&success=true");
+            exit();
+        } else {
+            $_SESSION["notify"] = "Failed to update the password. Please try again.";
+            header("location: ../admin/resetpass?reset=true&email=$email");
+            exit();
         }
     } else {
-        echo "No account found with that email.";
+        $_SESSION["notify"] = "Invalid or expired OTP. Please try again.";
+        header("location: ../admin/resetpass?reset=true&email=$email");
+        exit();
     }
-
-    $stmt->close();
-    $conn->close();
-} else {
-    echo "Invalid request.";
 }
 ?>

@@ -72,7 +72,7 @@
   <div class="card">
     <div class="card-header">Forgot Password</div>
     <div class="card-body">
-      <form id="forgotPasswordForm" action="../admin/process_forgot_password" method="post">
+      <form id="forgotPasswordForm" action="../admin/funtion" method="post">
         <div class="mb-3">
           <label for="email" class="form-label">Enter your email address:</label>
           <input type="email" class="form-control" name="email" placeholder="jayson5@gmail.com" required>
@@ -83,3 +83,38 @@
     <div class="footer-text"></div>
   </div>
   
+  <?php
+    session_start(); // Ensure session is started
+    if (isset($_SESSION['notify'])) {
+        $message = addslashes($_SESSION['notify']);
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'Success' : 'Error')."',
+                text: '$message',
+                icon: '".(strpos($message, 'A reset link has been sent to your email') !== false ? 'success' : 'error')."',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>";
+        unset($_SESSION['notify']);
+    }
+  ?>
+
+        <?php if (isset($_SESSION["notify"])): ?>
+            alert("<?php echo $_SESSION["notify"]; unset($_SESSION["notify"]); ?>");
+        <?php endif; ?>
+  <script>
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+  </script>
+
+</body>
+</html>

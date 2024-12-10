@@ -67,40 +67,61 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
         }
-
+    
         // Collect and sanitize input
         $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
         $password = sanitize_input($_POST['password']);
-
+        $captcha_response = $_POST['g-recaptcha-response']; // Captcha response
+    
+        // Verify the hCaptcha response
+        $captcha_secret = 'your-hcaptcha-secret-key';  // Replace with your hCaptcha secret key
+        $captcha_url = 'https://hcaptcha.com/siteverify';
+        $captcha_data = [
+            'secret' => $captcha_secret,
+            'response' => $captcha_response,
+            'remoteip' => $_SERVER['REMOTE_ADDR']
+        ];
+    
+        // Perform the request to hCaptcha verification API
+        $verify_response = file_get_contents($captcha_url . '?' . http_build_query($captcha_data));
+        $captcha_result = json_decode($verify_response);
+    
+        // If hCaptcha is not valid, return an error
+        if (!$captcha_result->success) {
+            $_SESSION['message'] = "Please complete the CAPTCHA to login.";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+    
         // Prepare and execute the statement to get the user, role, and status by email
         $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-
+    
         // Check if user exists
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
-
+    
             // Check if the account status is 'approved'
             if ($status !== 'approved') {
                 $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             }
-
+    
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
                 // Reset login attempts on successful login
                 $_SESSION['login_attempts'] = 0;
-
+    
                 // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
-
+    
                 // Regenerate session ID to prevent session fixation attacks
                 session_regenerate_id(true);
-
+    
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
                     header("Location: president"); 
@@ -115,10 +136,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['login_attempts'] = 0;
                 }
                 $_SESSION['login_attempts']++;
-
+    
                 // Store the last attempt time
                 $_SESSION['last_attempt_time'] = time();
-
+    
                 $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
@@ -127,15 +148,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
             $_SESSION['login_attempts']++;
-
+    
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
-
+    
             $_SESSION['message'] = "Invalid email or password!";
         }
-
+    
         $stmt->close();
     }
+    
 }
 
 $conn->close();
@@ -354,7 +376,7 @@ $conn->close();
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
             <button type="submit" name="login">Login</button>
-            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88" required></div>
+            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">
@@ -375,20 +397,6 @@ $conn->close();
     </div>
 </div>
 <script>
-    function validateLoginForm() {
-        const recaptchaResponse = grecaptcha.getResponse();
-
-        // Check if reCAPTCHA is completed
-        if (recaptchaResponse.length === 0) {
-            alert("Please complete the reCAPTCHA.");
-            return false;  // Prevent form submission if reCAPTCHA is not completed
-        }
-
-        // Optionally, add other validation logic here (e.g., email/password validation)
-
-        return true;  // Proceed with form submission if reCAPTCHA is completed
-    }
-    
     function toggleForm() {
         const createAccountForm = document.getElementById('create-account');
         const loginForm = document.getElementById('login');

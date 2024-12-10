@@ -309,6 +309,17 @@ $conn->close();
     </style>
 </head>
 <body>
+<?php if (isset($_SESSION['message'])): ?>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '<?php echo $_SESSION['message']; ?>',
+            confirmButtonText: 'OK'
+        });
+    </script>
+<?php unset($_SESSION['message']); ?>
+<?php endif; ?>
 <header>
     <img src="lo.png" alt="Logo" class="logo">
     <h1 style="margin: 0;">NHA Kodia-IS</h1>
@@ -376,17 +387,6 @@ $conn->close();
     </div>
 </div>
 <script>
-    <?php if (isset($_SESSION['message'])): ?>
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: '<?php echo $_SESSION['message']; ?>',
-            confirmButtonText: 'OK'
-        });
-    </script>
-<?php unset($_SESSION['message']); ?>
-<?php endif; ?>
 
     function toggleForm() {
         const createAccountForm = document.getElementById('create-account');

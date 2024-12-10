@@ -47,7 +47,7 @@
 <body>
     <div class="container">
         <h2>Forgot Password</h2>
-        <form action="process_forgot_password.php" method="POST">
+        <form action="process_forgot_password" method="POST">
             <input type="email" name="email" placeholder="Enter your email" required>
             <input type="submit" value="Submit">
         </form>

@@ -107,7 +107,7 @@ function sendApprovalEmail($toEmail, $fullname) {
             border: 1px solid #ccc;
         }
         th, td {
-            padding: 70px;
+            padding: 10px;
             text-align: left;
         }
         th {
@@ -156,7 +156,7 @@ function sendApprovalEmail($toEmail, $fullname) {
 
             table tr {
                 display: block;
-                margin-bottom: 10px;
+                margin-bottom: 70px;
                 border: 1px solid #ccc; /* Add border to each row */
             }
 

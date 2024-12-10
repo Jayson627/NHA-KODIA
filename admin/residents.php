@@ -6,6 +6,11 @@ include_once('connection.php');
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
 
+
+// hCaptcha secret key
+define('HCAPTCHA_SECRET_KEY', 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88');
+
+
 // Generate CSRF token
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -67,61 +72,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
         }
-    
+
         // Collect and sanitize input
         $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
         $password = sanitize_input($_POST['password']);
-        $captcha_response = $_POST['g-recaptcha-response']; // Captcha response
-    
-        // Verify the hCaptcha response
-        $captcha_secret = 'f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88';  // Replace with your hCaptcha secret key
-        $captcha_url = 'https://hcaptcha.com/siteverify';
-        $captcha_data = [
-            'secret' => $captcha_secret,
-            'response' => $captcha_response,
-            'remoteip' => $_SERVER['REMOTE_ADDR']
-        ];
-    
-        // Perform the request to hCaptcha verification API
-        $verify_response = file_get_contents($captcha_url . '?' . http_build_query($captcha_data));
-        $captcha_result = json_decode($verify_response);
-    
-        // If hCaptcha is not valid, return an error
-        if (!$captcha_result->success) {
-            $_SESSION['message'] = "Please complete the CAPTCHA to login.";
+
+        // Verify hCaptcha
+        $hcaptcha_response = $_POST['h-captcha-response'];
+        $hcaptcha_verify_url = 'https://hcaptcha.com/siteverify';
+        $response = file_get_contents($hcaptcha_verify_url . '?secret=' . HCAPTCHA_SECRET_KEY . '&response=' . $hcaptcha_response);
+        $response_data = json_decode($response);
+
+        if (!$response_data->success) {
+            $_SESSION['message'] = "hCaptcha validation failed. Please try again.";
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         }
-    
+
         // Prepare and execute the statement to get the user, role, and status by email
         $stmt = $conn->prepare("SELECT password, role, status FROM residents WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-    
+
         // Check if user exists
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
-    
+
             // Check if the account status is 'approved'
             if ($status !== 'approved') {
                 $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             }
-    
+
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
                 // Reset login attempts on successful login
                 $_SESSION['login_attempts'] = 0;
-    
+
                 // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
-    
+
                 // Regenerate session ID to prevent session fixation attacks
                 session_regenerate_id(true);
-    
+
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
                     header("Location: president"); 
@@ -136,10 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['login_attempts'] = 0;
                 }
                 $_SESSION['login_attempts']++;
-    
+
                 // Store the last attempt time
                 $_SESSION['last_attempt_time'] = time();
-    
+
                 $_SESSION['message'] = "Invalid email or password!";
             }
         } else {
@@ -148,19 +144,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
             $_SESSION['login_attempts']++;
-    
+
             // Store the last attempt time
             $_SESSION['last_attempt_time'] = time();
-    
+
             $_SESSION['message'] = "Invalid email or password!";
         }
-    
+
         $stmt->close();
     }
-    
 }
-
-$conn->close();
 ?>
 
 <!DOCTYPE html>

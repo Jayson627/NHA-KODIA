@@ -157,35 +157,27 @@ function sendApprovalEmail($toEmail, $fullname) {
             table tr {
                 display: block;
                 margin-bottom: 10px;
+                border: 1px solid #ccc; /* Add border to each row */
             }
 
             table td {
                 display: block;
-                text-align: right;
+                text-align: left; /* Align text to the left */
                 font-size: 14px;
-                position: relative;
-                padding-left: 50%; /* Create space for labels */
+                padding: 8px 10px; /* Adjust padding */
+                border-bottom: 1px solid #ddd; /* Add border between rows */
             }
 
             table td::before {
                 content: attr(data-label); /* Show column label before data */
-                position: absolute;
-                left: 10px;
+                display: block;
                 font-weight: bold;
+                margin-bottom: 5px; /* Add space between label and data */
             }
-
-            td[data-label="Full Name"] { padding-left: 20px; }
-            td[data-label="Date of Birth"] { padding-left: 20px; }
-            td[data-label="Lot No"] { padding-left: 20px; }
-            td[data-label="House No"] { padding-left: 20px; }
-            td[data-label="Email"] { padding-left: 20px; }
-            td[data-label="Username"] { padding-left: 20px; }
-            td[data-label="Created At"] { padding-left: 20px; }
-            td[data-label="Status"] { padding-left: 20px; }
-            td[data-label="Role"] { padding-left: 20px; }
 
             td:last-child {
                 text-align: center;
+                padding-bottom: 15px; /* Add extra padding for last column */
             }
         }
 

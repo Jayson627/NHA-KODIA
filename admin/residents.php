@@ -354,7 +354,8 @@ $conn->close();
                 <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
             </div>
             <button type="submit" name="login">Login</button>
-            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
+          
+            <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88" required></div>
         </form>
         <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
         <p class="forgot-password" style="text-align: center; margin-top: 10px;">

@@ -212,7 +212,7 @@ Class Master extends DBConnection {
 				if(empty($id))
 					$resp['msg']= " Owner Information successfully saved.";
 				else
-					$resp['msg']= " Oner Information successfully updated.";
+					$resp['msg']= " Owner Information successfully updated.";
 			}else{
 				$resp['status'] = 'failed';
 				$resp['msg'] = "An error occured.";

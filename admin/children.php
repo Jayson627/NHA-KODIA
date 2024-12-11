@@ -13,6 +13,7 @@ $page = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1; /
 $start = ($page - 1) * $limit;
 
 $cid = $_GET['id'] ?? null; // Use null coalescing to avoid undefined index notice
+
 // Handle form submission for adding a new child
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
 
@@ -44,6 +45,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
 }
 
 
+// Handle delete action
+if (isset($_GET['delete'])) {
+    $id_to_delete = $_GET['delete'];
+    $stmt = $conn->prepare("DELETE FROM children WHERE id = ?");
+    $stmt->bind_param("i", $id_to_delete);
+    $stmt->execute();
+    $stmt->close();
+    // Redirect to avoid resubmission
+    header("Location: children.php");
+    exit();
+}
 
 // Retrieve children for current page
 $children = [];
@@ -148,7 +160,7 @@ $conn->close();
     <a href="./?page=students" class="btn btn-primary mb-3"><i class="fa fa-angle-left"></i> Back</a>
     
     <!-- Form to add a new child -->
-    <form method="POST" action="children" class="form-inline mb-3">
+    <form method="POST" action="children.php" class="form-inline mb-3">
         <input type="hidden" class="form-control mb-2 mr-sm-2" id="cid" name="cid" value="<?php echo htmlspecialchars($cid); ?>" required>
         
         <input type="text" class="form-control mb-2 mr-sm-2" id="first_name" name="first_name" placeholder="First Name" oninput="validateName(this)" required>

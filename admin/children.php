@@ -13,7 +13,9 @@ $page = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1; /
 $start = ($page - 1) * $limit;
 
 $cid = $_GET['id'] ?? null; // Use null coalescing to avoid undefined index notice
+// Handle form submission for adding a new child
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
+
     $cid = $_POST['cid'];
     $first_name = $_POST['first_name'];
     $middle_name = $_POST['middle_name'];
@@ -25,11 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
     $birthdate = $_POST['birthdate'];
     $educational_attainment = $_POST['educational_attainment'];
     $contact_number = $_POST['contact_number'];
-    $remark = $_POST['remark'];  // Capture remark field value
+    $remark = $_POST['remark'];  // Get the remark field from the form
 
-    // Insert new child record
+    // Insert new child record (now including the remark field)
     $stmt = $conn->prepare("INSERT INTO children (child_id, first_name, middle_name, last_name, extension_name, age, gender, status, birthdate, educational_attainment, contact_number, remark) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("issssssssssss", $cid, $first_name, $middle_name, $last_name, $extension_name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark);
+
+    // Bind the parameters, including the remark
+    $stmt->bind_param("issssssssss", $cid, $first_name, $middle_name, $last_name, $extension_name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark);
 
     if ($stmt->execute()) {
         $success = true; // Set success flag
@@ -39,6 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
     $stmt->close();
 }
 
+
+
+// Retrieve children for current page
+$children = [];
 $result = $conn->query("SELECT * FROM children LIMIT $start, $limit");
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {

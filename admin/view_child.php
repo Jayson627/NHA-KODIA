@@ -2,17 +2,13 @@
 include_once('connection.php'); 
 
 if (isset($_GET['id'])) {
-    $stmt = $conn->prepare("SELECT * FROM `children` WHERE id = ?");
-    $stmt->bind_param("i", $_GET['id']); // 'i' for integer
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $child = $result->fetch_array();
+    $qry = $conn->query("SELECT * FROM `children` WHERE id = '{$_GET['id']}'");
+    if ($qry->num_rows > 0) {
+        $child = $qry->fetch_array();
     } else {
         echo "Child not found.";
         exit();
     }
-    $stmt->close();
 } else {
     echo "No child ID provided.";
     exit();
@@ -69,13 +65,13 @@ if (isset($_GET['id'])) {
                 </div>
                 <div class="col-md-6">
                     <p><strong>Status:</strong> <?= htmlspecialchars($child['status']); ?></p>
-                    <p><strong>Birthdate:</strong> <?= date('F j, Y', strtotime($child['birthdate'])); ?></p> <!-- Improved birthdate format -->
+                    <p><strong>Birthdate:</strong> <?= htmlspecialchars($child['birthdate']); ?></p>
                     <p><strong>Educational Attainment:</strong> <?= htmlspecialchars($child['educational_attainment']); ?></p>
                     <p><strong>Contact Number:</strong> <?= htmlspecialchars($child['contact_number']); ?></p>
                     <p><strong>Remark:</strong> <?= htmlspecialchars($child['remark']); ?></p>
                 </div>
             </div>
-           
+            
         </div>
     </div>
 </div>

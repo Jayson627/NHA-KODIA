@@ -12,7 +12,6 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
 
-    <!-- Styling for the page -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -127,6 +126,9 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
                 <input type="password" id="new-password" class="form-control" placeholder="Set new password" name="password" required>
                 <small id="password-help" style="color: #888; font-size: 12px;">Password must be at least 8 characters long and contain at least one uppercase letter.</small>
             </div>
+            <div class="form-group">
+                <input type="checkbox" id="show-password"> <label for="show-password">Show Password</label>
+            </div>
             <div class="form-group has-feedback otp-box">
                 <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
                 <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
@@ -198,6 +200,14 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             }
             return true; // Allow form submission if validation passes
         }
+        document.getElementById('show-password').addEventListener('change', function() {
+            const passwordInput = document.getElementById('new-password');
+            if (this.checked) {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        });
     </script>
 </body>
 </html>

@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="form-group">
                 <label for="incident_date">Date of Incident</label>
-                <input type="date" id="incident_date" name="incident_date" required readonly>
+                <input type="date" id="incident_date" name="incident_date" required>
             </div>
             <button type="submit">Submit Incident</button>
         </form>
@@ -160,13 +160,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <footer>&copy; <?php echo date("Y"); ?> Incident Management System</footer>
 
     <script>
-        // Set the date input value to today's date
-        const today = new Date().toISOString().split('T')[0];
+        // Set the date input to current date and make other dates unselectable
         const dateInput = document.getElementById('incident_date');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+        dateInput.setAttribute('max', today);
         dateInput.value = today;
-        dateInput.min = today;
-        dateInput.max = today;
-        dateInput.readOnly = true; // Ensure the field is readonly
 
         // Display success or error message using SweetAlert2
         <?php if (isset($_SESSION['success'])): ?>

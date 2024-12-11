@@ -194,9 +194,9 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
-                return false;
+                return false; // Prevent form submission if the validation fails
             }
-            return true; 
+            return true; // Allow form submission if validation passes
         }
     </script>
 </body>

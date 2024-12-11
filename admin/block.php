@@ -182,7 +182,7 @@ $conn->close();
     </div>
 
     <!-- Pagination buttons -->
-    <div class="text-center">H
+    <div class="text-center">
         <?php if ($page > 1): ?>
             <a href="block?page=<?php echo $page - 1; ?>" class="btn btn-secondary mr-2">&laquo; Previous</a>
         <?php endif; ?>

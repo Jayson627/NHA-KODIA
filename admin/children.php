@@ -28,11 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
     $birthdate = $_POST['birthdate'];
     $educational_attainment = $_POST['educational_attainment'];
     $contact_number = $_POST['contact_number'];
-    $remark = $_POST['remark'];
 
     // Insert new child record
-    $stmt = $conn->prepare("INSERT INTO children (child_id, first_name, middle_name, last_name, extension_name, age, gender, status, birthdate, educational_attainment, contact_number, remark) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
-    $stmt->bind_param("issssssssss", $cid, $first_name, $middle_name, $last_name, $extension_name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark);
+    $stmt = $conn->prepare("INSERT INTO children (child_id, first_name, middle_name, last_name, extension_name, age, gender, status, birthdate, educational_attainment, contact_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("issssssssss", $cid, $first_name, $middle_name, $last_name, $extension_name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number);
 
     if ($stmt->execute()) {
         $success = true; // Set success flag
@@ -50,7 +49,7 @@ if (isset($_GET['delete'])) {
     $stmt->execute();
     $stmt->close();
     // Redirect to avoid resubmission
-    header("Location: children");
+    header("Location: children.php");
     exit();
 }
 
@@ -157,7 +156,7 @@ $conn->close();
     <a href="./?page=students" class="btn btn-primary mb-3"><i class="fa fa-angle-left"></i> Back</a>
     
     <!-- Form to add a new child -->
-    <form method="POST" action="children" class="form-inline mb-3">
+    <form method="POST" action="children.php" class="form-inline mb-3">
         <input type="hidden" class="form-control mb-2 mr-sm-2" id="cid" name="cid" value="<?php echo htmlspecialchars($cid); ?>" required>
         
         <input type="text" class="form-control mb-2 mr-sm-2" id="first_name" name="first_name" placeholder="First Name" oninput="validateName(this)" required>
@@ -195,10 +194,7 @@ $conn->close();
             <option value="None">None</option>
         </select>
         <input type="text" class="form-control mb-2 mr-sm-2" id="contact_number" name="contact_number" placeholder="Contact Number" oninput="validateContactNumber(this)">
-        <div class="form-group">
-        <label for="remark">Remark</label>
-        <textarea class="form-control" id="remark" name="remark"></textarea>
-    </div>
+        <textarea class="form-control mb-2 mr-sm-2" id="remark" name="remark" placeholder="Remarks (optional)" rows="3"></textarea>
         <button type="submit" name="add_child" class="btn btn-primary mb-2"><i class="fa fa-plus"></i> Add</button>
     </form>
 

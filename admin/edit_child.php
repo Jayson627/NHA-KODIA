@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $stmt->close();
     $conn->close();
-    header("Location: view_child?id=" . $_GET['id']);
+    header("Location: view_child.php?id=" . $_GET['id']);
     exit();
 }
 ?>
@@ -133,13 +133,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="form-group">
                     <label for="contact_number">Contact Number:</label>
                     <input type="text" class="form-control" name="contact_number" value="<?= htmlspecialchars($child['contact_number']); ?>" required>
-                    <div class="form-group">
-        <label for="remark">Remark</label>
-        <textarea class="form-control" id="remark" name="remark"></textarea>
-    </div>
+                    <textarea class="form-control mb-2 mr-sm-2" id="remark" name="remark" placeholder="Remarks (optional)" rows="3"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a href="view_child?id=<?= $_GET['id'] ?>" class="btn btn-secondary">Cancel</a>
+                <a href="view_child.php?id=<?= $_GET['id'] ?>" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

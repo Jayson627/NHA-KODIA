@@ -28,13 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
     $birthdate = $_POST['birthdate'];
     $educational_attainment = $_POST['educational_attainment'];
     $contact_number = $_POST['contact_number'];
-    $remark = $_POST['remark'];  // Get the remark field from the form
 
-    // Insert new child record (now including the remark field)
-    $stmt = $conn->prepare("INSERT INTO children (child_id, first_name, middle_name, last_name, extension_name, age, gender, status, birthdate, educational_attainment, contact_number, remark) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-    // Bind the parameters, including the remark
-    $stmt->bind_param("issssssssss", $cid, $first_name, $middle_name, $last_name, $extension_name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark);
+    // Insert new child record
+    $stmt = $conn->prepare("INSERT INTO children (child_id, first_name, middle_name, last_name, extension_name, age, gender, status, birthdate, educational_attainment, contact_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("issssssssss", $cid, $first_name, $middle_name, $last_name, $extension_name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number);
 
     if ($stmt->execute()) {
         $success = true; // Set success flag
@@ -43,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
     }
     $stmt->close();
 }
-
 
 // Handle delete action
 if (isset($_GET['delete'])) {

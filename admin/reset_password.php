@@ -190,7 +190,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             });
             otpHiddenInput.value = otpValue;
         }
- // Toggle password visibility
+ 
  function togglePasswordVisibility() {
             const passwordField = document.getElementById('new-password');
             const eyeIcon = document.getElementById('toggle-password');

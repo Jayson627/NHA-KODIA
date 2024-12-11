@@ -22,9 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $birthdate = $_POST['birthdate'];
     $educational_attainment = $_POST['educational_attainment'];
     $contact_number = $_POST['contact_number'];
+    $remark = $_POST['remark'];
 
-    $stmt = $conn->prepare("UPDATE children SET name=?, age=?, gender=?, status=?, birthdate=?, educational_attainment=?, contact_number=? WHERE id=?");
-    $stmt->bind_param("sisssssi", $name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $_GET['id']);
+    $stmt = $conn->prepare("UPDATE children SET name=?, age=?, gender=?, status=?, birthdate=?, educational_attainment=?, contact_number=?, remark=? WHERE id=?");
+    $stmt->bind_param("sissssss", $name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark, $_GET['id']);
     
     if ($stmt->execute()) {
         echo "Child record updated successfully.";
@@ -33,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $stmt->close();
     $conn->close();
-    header("Location: view_child.php?id=" . $_GET['id']);
+    header("Location: view_child?id=" . $_GET['id']);
     exit();
 }
 ?>
@@ -136,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <textarea class="form-control mb-2 mr-sm-2" id="remark" name="remark" placeholder="Remarks (optional)" rows="3"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a href="view_child.php?id=<?= $_GET['id'] ?>" class="btn btn-secondary">Cancel</a>
+                <a href="view_child?id=<?= $_GET['id'] ?>" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

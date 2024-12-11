@@ -13,7 +13,6 @@ if (isset($_GET['id'])) {
     echo "No child ID provided.";
     exit();
 }
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $age = $_POST['age'];
@@ -24,9 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $contact_number = $_POST['contact_number'];
     $remark = $_POST['remark'];
 
+    // Update statement with correct bind_param types
+    // 's' for strings, 'i' for integers, 's' for the remark (text field)
     $stmt = $conn->prepare("UPDATE children SET name=?, age=?, gender=?, status=?, birthdate=?, educational_attainment=?, contact_number=?, remark=? WHERE id=?");
-    $stmt->bind_param("isssssss", $name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark, $_GET['id']);
     
+    // 's' for string (name, gender, status, etc.), 'i' for integer (age), and 's' for remark (text)
+    $stmt->bind_param("sissssss", $name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark, $_GET['id']);
+
+    // Execute the query
     if ($stmt->execute()) {
         echo "Child record updated successfully.";
     } else {
@@ -34,9 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $stmt->close();
     $conn->close();
+
+    // Redirect to view the updated child record
     header("Location: view_child?id=" . $_GET['id']);
     exit();
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $remark = $_POST['remark'];
 
     $stmt = $conn->prepare("UPDATE children SET name=?, age=?, gender=?, status=?, birthdate=?, educational_attainment=?, contact_number=?, remark=? WHERE id=?");
-    $stmt->bind_param("isssssssssss", $name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark, $_GET['id']);
+    $stmt->bind_param("ssssssss", $name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark, $_GET['id']);
     
     if ($stmt->execute()) {
         echo "Child record updated successfully.";

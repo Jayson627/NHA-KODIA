@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Redirect back to clear POST data
-    header('Location: incident.php');
+    header('Location: incident');
     exit;
 }
 ?>
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="container">
         <h1>Create an Incident</h1>
-        <form action="incident.php" method="POST">
+        <form action="incident" method="POST">
             <div class="form-group">
                 <label for="incident_type">Incident Type</label>
                 <input type="text" id="incident_type" name="incident_type" placeholder="Enter the incident type" required>

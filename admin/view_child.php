@@ -75,7 +75,7 @@ if (isset($_GET['id'])) {
                     <p><strong>Remark:</strong> <?= htmlspecialchars($child['remark']); ?></p>
                 </div>
             </div>
-            <a href="children_list" class="btn btn-primary">Back to List</a> <!-- Optional back button -->
+           
         </div>
     </div>
 </div>

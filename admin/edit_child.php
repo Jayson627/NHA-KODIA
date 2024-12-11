@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $stmt->close();
     $conn->close();
-    header("Location: view_child.php?id=" . $_GET['id']);
+    header("Location: view_child?id=" . $_GET['id']);
     exit();
 }
 ?>
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <textarea class="form-control mb-2 mr-sm-2" id="remark" name="remark" placeholder="Remarks (optional)" rows="3"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a href="view_child.php?id=<?= $_GET['id'] ?>" class="btn btn-secondary">Cancel</a>
+                <a href="view_child?id=<?= $_GET['id'] ?>" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

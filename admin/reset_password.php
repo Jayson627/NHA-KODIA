@@ -110,6 +110,13 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
                 font-size: 20px;
             }
         }
+        .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
     </style>
 
     <!-- Include SweetAlert2 CSS -->
@@ -123,9 +130,10 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             <div class="form-group has-feedback">
                 <input type="hidden" name="email" class="form-control" value="<?php echo htmlspecialchars($email); ?>" required readonly>
             </div>
-            <div class="form-group has-feedback">
+            <div class="form-group has-feedback" style="position: relative;">
                 <input type="password" id="new-password" class="form-control" placeholder="Set new password" name="password" required>
                 <small id="password-help" style="color: #888; font-size: 12px;">Password must be at least 8 characters long and contain at least one uppercase letter.</small>
+                <i class="fas fa-eye eye-icon" id="toggle-password" onclick="togglePasswordVisibility()"></i>
             </div>
             <div class="form-group has-feedback otp-box">
                 <input type="text" class="otp-input" maxlength="1" pattern="\d*" required>
@@ -182,7 +190,20 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             });
             otpHiddenInput.value = otpValue;
         }
-
+ // Toggle password visibility
+ function togglePasswordVisibility() {
+            const passwordField = document.getElementById('new-password');
+            const eyeIcon = document.getElementById('toggle-password');
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
         // Password validation function
         function validatePassword() {
             const password = document.getElementById('new-password').value;

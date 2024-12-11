@@ -1,6 +1,7 @@
 <?php
 include_once('connection.php'); 
 
+// Check if 'id' is passed in the URL
 if (isset($_GET['id'])) {
     $qry = $conn->query("SELECT * FROM `children` WHERE id = '{$_GET['id']}'");
     if ($qry->num_rows > 0) {
@@ -13,8 +14,14 @@ if (isset($_GET['id'])) {
     echo "No child ID provided.";
     exit();
 }
+
+// Handle form submission for updating child record
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['name'];
+    // Collect POST data from the form
+    $first_name = $_POST['first_name'];
+    $middle_name = $_POST['middle_name'];
+    $last_name = $_POST['last_name'];
+    $extension_name = $_POST['extension_name'];
     $age = $_POST['age'];
     $gender = $_POST['gender'];
     $status = $_POST['status'];
@@ -23,12 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $contact_number = $_POST['contact_number'];
     $remark = $_POST['remark'];
 
-    // Update statement with correct bind_param types
-    // 's' for strings, 'i' for integers, 's' for the remark (text field)
-    $stmt = $conn->prepare("UPDATE children SET name=?, age=?, gender=?, status=?, birthdate=?, educational_attainment=?, contact_number=?, remark=? WHERE id=?");
+    // Prepare the update SQL query
+    $stmt = $conn->prepare("UPDATE children SET first_name=?, middle_name=?, last_name=?, extension_name=?, age=?, gender=?, status=?, birthdate=?, educational_attainment=?, contact_number=?, remark=? WHERE id=?");
     
-    // 's' for string (name, gender, status, etc.), 'i' for integer (age), and 's' for remark (text)
-    $stmt->bind_param("sissssss", $name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark, $_GET['id']);
+    // Bind parameters to the prepared statement
+    $stmt->bind_param("sssssssssssi", $first_name, $middle_name, $last_name, $extension_name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark, $_GET['id']);
 
     // Execute the query
     if ($stmt->execute()) {
@@ -36,15 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         echo "Error updating record: " . $conn->error;
     }
+
+    // Close the statement and connection
     $stmt->close();
     $conn->close();
 
-    // Redirect to view the updated child record
+    // Redirect to the view page after update
     header("Location: view_child?id=" . $_GET['id']);
     exit();
 }
-
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,7 +149,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="form-group">
                     <label for="contact_number">Contact Number:</label>
                     <input type="text" class="form-control" name="contact_number" value="<?= htmlspecialchars($child['contact_number']); ?>" required>
-                    <textarea class="form-control mb-2 mr-sm-2" id="remark" name="remark" placeholder="Remarks (optional)" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="remark">Remarks:</label>
+                    <textarea class="form-control" name="remark" rows="3" required><?= htmlspecialchars($child['remark']); ?></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
                 <a href="view_child?id=<?= $_GET['id'] ?>" class="btn btn-secondary">Cancel</a>

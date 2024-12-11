@@ -49,7 +49,7 @@ if (isset($_GET['delete'])) {
     $stmt->execute();
     $stmt->close();
     // Redirect to avoid resubmission
-    header("Location: children.php");
+    header("Location: children");
     exit();
 }
 
@@ -156,7 +156,7 @@ $conn->close();
     <a href="./?page=students" class="btn btn-primary mb-3"><i class="fa fa-angle-left"></i> Back</a>
     
     <!-- Form to add a new child -->
-    <form method="POST" action="children.php" class="form-inline mb-3">
+    <form method="POST" action="children" class="form-inline mb-3">
         <input type="hidden" class="form-control mb-2 mr-sm-2" id="cid" name="cid" value="<?php echo htmlspecialchars($cid); ?>" required>
         
         <input type="text" class="form-control mb-2 mr-sm-2" id="first_name" name="first_name" placeholder="First Name" oninput="validateName(this)" required>

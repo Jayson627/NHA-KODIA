@@ -194,7 +194,10 @@ $conn->close();
             <option value="None">None</option>
         </select>
         <input type="text" class="form-control mb-2 mr-sm-2" id="contact_number" name="contact_number" placeholder="Contact Number" oninput="validateContactNumber(this)">
-        <textarea class="form-control mb-2 mr-sm-2" id="remark" name="remark" placeholder="Remarks "></textarea>
+        <div class="form-group">
+        <label for="remark">Remark</label>
+        <textarea class="form-control" id="remark" name="remark"></textarea>
+    </div>
         <button type="submit" name="add_child" class="btn btn-primary mb-2"><i class="fa fa-plus"></i> Add</button>
     </form>
 

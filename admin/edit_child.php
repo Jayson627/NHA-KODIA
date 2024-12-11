@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $stmt->close();
     $conn->close();
-    header("Location: view_child.php?id=" . $_GET['id']);
+    header("Location: view_child?id=" . $_GET['id']);
     exit();
 }
 ?>

@@ -28,10 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_child'])) {
     $birthdate = $_POST['birthdate'];
     $educational_attainment = $_POST['educational_attainment'];
     $contact_number = $_POST['contact_number'];
+    $remark = $_POST['remark'];
 
     // Insert new child record
-    $stmt = $conn->prepare("INSERT INTO children (child_id, first_name, middle_name, last_name, extension_name, age, gender, status, birthdate, educational_attainment, contact_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("issssssssss", $cid, $first_name, $middle_name, $last_name, $extension_name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number);
+    $stmt = $conn->prepare("INSERT INTO children (child_id, first_name, middle_name, last_name, extension_name, age, gender, status, birthdate, educational_attainment, contact_number, remark) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
+    $stmt->bind_param("issssssssss", $cid, $first_name, $middle_name, $last_name, $extension_name, $age, $gender, $status, $birthdate, $educational_attainment, $contact_number, $remark);
 
     if ($stmt->execute()) {
         $success = true; // Set success flag

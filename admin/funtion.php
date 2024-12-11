@@ -60,7 +60,7 @@ if (isset($_POST["btn-new-password"])) {
     if (isset($_SESSION['reset_code'], $_SESSION['reset_timestamp'], $_SESSION['reset_email']) &&
         $_SESSION['reset_email'] === $email &&
         $_SESSION['reset_code'] == $otp &&
-        (time() - $_SESSION['reset_timestamp']) <= 180) {
+        (time() - $_SESSION['reset_timestamp']) <= 120) {
         
         $hashed_password = password_hash($password, PASSWORD_ARGON2I);
         

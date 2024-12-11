@@ -331,12 +331,12 @@ function printTable() {
             <body>
                 <div class="header-container">
                     <img src="lo.png" alt="Logo" class="logo">
-                    <h3 style="text-align: center; flex-grow: 1;">Household Information  <br> Baranggay Kodia final list  Beneficiaries </h3>
+                    <h3 style="text-align: center; flex-grow: 1;">Household Information  <br> Baranggay Kodia final list of Beneficiaries </h3>
                 </div>
                 ${printContent}
                 <div class="footer">
                     <p style="text-align: right;">__________________________</p>
-                    <p style="text-align: right;">Captain: Jayson S. Alcantara</p>
+                    <p style="text-align: right;">Captain: Jesus  Villacarlos</p>
                 </div>
             </body>
         </html>

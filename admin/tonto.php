@@ -2,6 +2,10 @@
 session_start();
 include_once('connection.php');
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
@@ -11,10 +15,11 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-
+// Function to sanitize input
 function sanitize_input($data) {
-    return htmlspecialchars(stripslashes(trim($data)));
+    return htmlspecialchars(strip_tags(trim($data)));
 }
+
 // Handle form submission for account creation and login
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Check CSRF token
@@ -22,47 +27,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die("CSRF token validation failed.");
     }
 
-   
-if (isset($_POST['create_account'])) {
-    // Sanitize and validate input
-    $fullname = sanitize_input($_POST['fullname']);
-    $dob = sanitize_input($_POST['dob']);
-    $lot_no = sanitize_input($_POST['lot_no']);
-    $house_no = sanitize_input($_POST['house_no']);
-    $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
-    $username = sanitize_input($_POST['username']);
-    $password = sanitize_input($_POST['password']);
-    $role = sanitize_input($_POST['role']);
-    $id = uniqid();
+    if (isset($_POST['create_account'])) {
+        // Sanitize and validate input
+        $fullname = sanitize_input($_POST['fullname']);
+        $dob = sanitize_input($_POST['dob']);
+        $lot_no = sanitize_input($_POST['lot_no']);
+        $house_no = sanitize_input($_POST['house_no']);
+        $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
+        $username = sanitize_input($_POST['username']);
+        $password = sanitize_input($_POST['password']);
+        $role = sanitize_input($_POST['role']);
+        $id = uniqid();
 
-    if (!$email) {
-        $_SESSION['message'] = "Invalid email format.";
-        header("Location: " . $_SERVER['PHP_SELF']);
+        // Hash the password
+        $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+
+        // Insert new user with default 'pending' status and random ID
+        $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
+
+        // Execute and check for success
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
+        } else {
+            $_SESSION['message'] = "Error creating account. Please try again.";
+        }
+        $stmt->close();
+        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
-    }
-
-    // Hash the password
-    $hashed_password = password_hash($password, PASSWORD_ARGON2I);
-
-    // Prepare and bind
-    $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-    if ($stmt === false) {
-        $_SESSION['message'] = "Error preparing the statement: " . $conn->error;
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
-    }
-
-    $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
-
-    // Execute and check for success
-    if ($stmt->execute()) {
-        $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
-    } else {
-        $_SESSION['message'] = "Error creating account: " . $stmt->error;
-    }
-    $stmt->close();
-    header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
-    exit();
     }
 
     if (isset($_POST['login'])) {
@@ -152,7 +144,6 @@ if (isset($_POST['create_account'])) {
 
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

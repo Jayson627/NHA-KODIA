@@ -11,18 +11,22 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 // Function to sanitize input
 function sanitize_input($data) {
     return htmlspecialchars(strip_tags(trim($data)));
 }
-
-// Handle form submission for account creation and login
+// Check if request method is POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Check CSRF token
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         die("CSRF token validation failed.");
     }
 
+    // Check if the form is for account creation
     if (isset($_POST['create_account'])) {
         // Sanitize and validate input
         $fullname = sanitize_input($_POST['fullname']);
@@ -38,20 +42,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Hash the password
         $hashed_password = password_hash($password, PASSWORD_ARGON2I);
 
-        // Insert new user with default 'pending' status and random ID
-        $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
+        // Debug the sanitized input
+        var_dump($_POST); // Debugging: Check the POST data
 
-        // Execute and check for success
+        // Ensure the database connection is working
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        // Prepare SQL query for inserting a new user
+        $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+
+        // Check if the statement was prepared successfully
+        if ($stmt === false) {
+            die("Failed to prepare SQL statement: " . $conn->error);
+        }
+
+        // Bind parameters to the SQL statement
+        if (!$stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role)) {
+            die("Binding parameters failed: " . $stmt->error);
+        }
+
+        // Execute the SQL statement
         if ($stmt->execute()) {
             $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
         } else {
             $_SESSION['message'] = "Error creating account. Please try again.";
         }
+
+        // Close the statement
         $stmt->close();
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+
+        // Redirect to the same page
+        header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     }
+}
 
     if (isset($_POST['login'])) {
         // Check if the user is locked out

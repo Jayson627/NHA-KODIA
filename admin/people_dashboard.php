@@ -1,6 +1,6 @@
 <?php
 
-include_once('connection.php');
+include_once('../admin/connection.php');
 
 // Fetch announcements from the database
 $announcementQuery = "SELECT * FROM announcement ORDER BY created_at DESC";

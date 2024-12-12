@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('connection.php');
+include_once('../admin/connection.php');
 
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);

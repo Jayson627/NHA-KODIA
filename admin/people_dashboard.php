@@ -158,7 +158,7 @@ $conn->close();
 
 <div class="sidebar" id="sidebarMenu">
     <a href="incident"><i class="fas fa-exclamation-circle"></i> Report Incident</a>
-    <a href="residents"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="tonto"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
 
 <div class="welcome-text" id="welcomeText">Welcome</div>
@@ -208,7 +208,7 @@ document.getElementById('logoutBtn').addEventListener('click', function(e) {
     }).then((result) => {
         if (result.isConfirmed) {
             // Redirect to logout URL
-            window.location.href = 'residents'; // Replace with your logout URL
+            window.location.href = 'tonto'; // Replace with your logout URL
         }
     });
 });

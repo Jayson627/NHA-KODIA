@@ -1,6 +1,8 @@
 <?php
 session_start();
 include_once('connection.php');
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);

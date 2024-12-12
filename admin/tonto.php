@@ -47,7 +47,7 @@ $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
 // Insert new user with default 'pending' status, and let the database handle ID
 if ($stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')")) {
-    $stmt->bind_param("sssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
+    $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
 
     if ($stmt->execute()) {
         $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
@@ -61,6 +61,7 @@ if ($stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_
 
 header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
 exit();
+
     }
 
     if (isset($_POST['login'])) {

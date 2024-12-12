@@ -44,9 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Execute and check for success
         if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
+           
         } else {
-            $_SESSION['message'] = "Error creating account. Please try again.";
+           
         }
         $stmt->close();
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
@@ -149,7 +149,20 @@ $conn->close();
     <title>Create Account / Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-   
+    <script>
+        function validateRecaptcha() {
+            const response = grecaptcha.getResponse();
+            if (response.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please complete the reCAPTCHA',
+                });
+                return false;
+            }
+            return true;
+        }
+    </script>
     <style>
     body {
         font-family: Arial, sans-serif;

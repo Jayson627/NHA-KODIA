@@ -19,10 +19,25 @@ $result = $conn->query($sql);
 
 if ($result) {
     if ($result->num_rows > 0) {
+        echo "<table border='1'><tr>";
+
+        // Fetch the column names
+        while ($field_info = $result->fetch_field()) {
+            echo "<th>{$field_info->name}</th>";
+        }
+
+        echo "</tr>";
+
         // Output data of each row
         while ($row = $result->fetch_assoc()) {
-            echo "ID: " . $row["id"] . " - Name: " . $row["name"] . " - Age: " . $row["age"] . " - Address: " . $row["address"] . "<br>";
+            echo "<tr>";
+            foreach ($row as $cell) {
+                echo "<td>{$cell}</td>";
+            }
+            echo "</tr>";
         }
+
+        echo "</table>";
     } else {
         echo "No data found in the residents table.";
     }

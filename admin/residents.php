@@ -35,7 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = sanitize_input($_POST['username']);
         $password = sanitize_input($_POST['password']);
         $role = sanitize_input($_POST['role']);
-        $id = uniqid();
+        $id = uniqid() . (999999 * rand(10000, 99999));
+
 
         // Hash the password
         $hashed_password = password_hash($password, PASSWORD_ARGON2I);

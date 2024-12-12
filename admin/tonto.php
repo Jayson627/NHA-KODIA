@@ -149,20 +149,7 @@ $conn->close();
     <title>Create Account / Login</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-    <script>
-        function validateRecaptcha() {
-            const response = grecaptcha.getResponse();
-            if (response.length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Please complete the reCAPTCHA',
-                });
-                return false;
-            }
-            return true;
-        }
-    </script>
+   
     <style>
     body {
         font-family: Arial, sans-serif;

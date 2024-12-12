@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once('../admin/connection.php');
-require_once("../initialize.php");
 
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);

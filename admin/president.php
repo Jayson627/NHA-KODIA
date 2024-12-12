@@ -1,7 +1,6 @@
 <?php
 session_start();
-require_once('../admin/connection.php');
-require_once("../initialize.php");
+include_once('connection.php');
 
 // Fetch announcements from the database
 $announcementQuery = "SELECT * FROM announcement ORDER BY created_at DESC";

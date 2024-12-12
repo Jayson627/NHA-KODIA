@@ -465,28 +465,7 @@ $conn->close();
         }
     }
 
-    // Toggle password visibility for account creation
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('password');
-    togglePassword.addEventListener('click', function (e) {
-        // Toggle the password type between text and password
-        const type = passwordField.type === 'password' ? 'text' : 'password';
-        passwordField.type = type;
-        // Change the eye icon
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
-
-    // Toggle password visibility for login
-    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
-    const loginPasswordField = document.getElementById('login-password');
-    toggleLoginPassword.addEventListener('click', function (e) {
-        // Toggle the password type between text and password
-        const type = loginPasswordField.type === 'password' ? 'text' : 'password';
-        loginPasswordField.type = type;
-        // Change the eye icon
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
-
+    
     function validateForm() {
         const dob = document.querySelector('input[name="dob"]').value;
         const dobDate = new Date(dob);
@@ -508,6 +487,7 @@ $conn->close();
                 document.getElementById('email').value = storedData.email || '';
             }
         };
+
 // Get the modal
 var modal = document.getElementById("termsModal");
 

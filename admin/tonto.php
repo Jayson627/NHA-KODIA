@@ -42,7 +42,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
         $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
 
-       
+        // Execute and check for success
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
+        } else {
+            $_SESSION['message'] = "Error creating account. Please try again.";
+        }
+        $stmt->close();
+        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+        exit();
     }
 
     if (isset($_POST['login'])) {
@@ -75,12 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
 
-            // Check if the account status is 'approved'
-            if ($status !== 'approved') {
-                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
-            }
+           
 
             // Verify the password
             if (password_verify($password, $hashedPassword)) {
@@ -90,7 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
 
-               
+                // Regenerate session ID to prevent session fixation attacks
+                session_regenerate_id(true);
+
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
                     header("Location: president"); 

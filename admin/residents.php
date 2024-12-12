@@ -347,7 +347,7 @@ $conn->close();
                 <label for="termsCheckbox">I agree to the <span id="termsLink" class="toggle-button">Terms & Conditions</span></label>
             </div>
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-            <div class="h-captcha" data-sitekey="your-site-key"></div> <!-- Add your hCaptcha site key here -->
+            <div class="h-captcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div> <!-- Add your hCaptcha site key here -->
             <div class="button-container">
                 <button type="submit" name="create_account">Create Account</button>
             </div>

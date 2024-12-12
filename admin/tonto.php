@@ -62,6 +62,7 @@ if ($stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_
 header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
 exit();
 
+
     }
 
     if (isset($_POST['login'])) {

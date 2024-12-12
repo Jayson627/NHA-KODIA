@@ -13,21 +13,18 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Initialize error message variable
-$error_message = "";
-
-// Describe the residents table
-$sql = "DESCRIBE residents";
+// Show all tables in the database
+$sql = "SHOW TABLES";
 $result = $conn->query($sql);
 
 if ($result) {
     if ($result->num_rows > 0) {
-        // Output data of each row
-        while ($row = $result->fetch_assoc()) {
-            echo "Field: " . $row["Field"] . " - Type: " . $row["Type"] . " - Null: " . $row["Null"] . " - Key: " . $row["Key"] . " - Default: " . $row["Default"] . " - Extra: " . $row["Extra"] . "<br>";
+        echo "Tables in the database:<br>";
+        while ($row = $result->fetch_row()) {
+            echo $row[0] . "<br>";
         }
     } else {
-        echo "No columns found in the residents table.";
+        echo "No tables found in the database.";
     }
 } else {
     echo "Error: " . $conn->error;

@@ -2,6 +2,10 @@
 session_start();
 include_once('connection.php');
 
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
@@ -36,19 +40,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id = uniqid();
 
         // Hash the password
-        $hashed_password = password_hash($password, PASSWORD_ARGON2I);
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
         // Insert new user with default 'pending' status and random ID
-        $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
+        if ($stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')")) {
+            $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
 
-        // Execute and check for success
-        if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
+            if ($stmt->execute()) {
+                $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
+            } else {
+                $_SESSION['message'] = "Error creating account. Please try again.";
+            }
+            $stmt->close();
         } else {
-            $_SESSION['message'] = "Error creating account. Please try again.";
+            $_SESSION['message'] = "Database error: Could not prepare statement.";
         }
-        $stmt->close();
+
         header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
         exit();
     }

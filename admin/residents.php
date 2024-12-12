@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('connection.php');
+require_once('connection.php');
 
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);
@@ -605,5 +605,5 @@ window.onclick = function(event) {
 
 
 </body>
-</html>hhh
+</html>
 

@@ -4,7 +4,7 @@ include_once('connection.php');
 
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);
-define('LOCKOUT_TIME', 20); // 60 seconds
+define('LOCKOUT_TIME', 60); // 60 seconds
 
 // Generate CSRF token
 if (empty($_SESSION['csrf_token'])) {

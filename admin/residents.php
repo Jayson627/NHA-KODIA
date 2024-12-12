@@ -1,8 +1,6 @@
 <?php
 session_start();
 include_once('connection.php');
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);
@@ -35,8 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = sanitize_input($_POST['username']);
         $password = sanitize_input($_POST['password']);
         $role = sanitize_input($_POST['role']);
-        $id = uniqid() . (999999 * rand(10000, 99999));
-
+        $id = uniqid();
 
         // Hash the password
         $hashed_password = password_hash($password, PASSWORD_ARGON2I);

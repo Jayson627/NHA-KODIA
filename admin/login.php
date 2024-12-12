@@ -440,7 +440,7 @@ $('#login-frm').on('submit', function(e) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'An error occurred while processing yours request.'
+                    text: 'An error occurred while processing your request.'
                 });
             }
         });

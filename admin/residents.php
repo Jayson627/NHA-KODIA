@@ -35,6 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $role = sanitize_input($_POST['role']);
         $id = uniqid();
 
+        // Validate required fields
+        if (!$fullname || !$dob || !$lot_no || !$house_no || !$email || !$username || !$password || !$role) {
+            $_SESSION['message'] = "All fields are required.";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+
         // Hash the password
         $hashed_password = password_hash($password, PASSWORD_ARGON2I);
 
@@ -49,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['message'] = "Error creating account. Please try again.";
         }
         $stmt->close();
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+        header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     }
 
@@ -241,113 +248,41 @@ $conn->close();
         color: #5a67d8;
         text-decoration: underline;
         cursor: pointer;
-        margin-top: 15px;
+        margin-top: 10px;
     }
 
-    .form-container {
-        display: none;
+    .terms {
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
     }
 
-    .form-container.active {
-        display: block;
+    .terms input {
+        margin-right: 10px;
     }
 
-    .password-wrapper {
-        position: relative;
-        width: 100%;
-    }
-
-    .eye-icon {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 20px;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        body {
-            padding: 0 15px;
-            height: auto; /* Adjust height for scrollable content */
-        }
-
-        .container {
-            margin-top: 10px;
-        }
-
-        header {
-            flex-direction: column; /* Stack logo and title vertically */
-            align-items: center;
-            text-align: center;
-        }
-
-        .logo {
-            margin-right: 0; /* Center align logo */
-            margin-bottom: 10px; /* Add space below logo */
-        }
-
-        h1 {
-            font-size: 18px; /* Smaller font size for title */
-        }
-
-        .container {
-            padding: 15px;
-        }
-
-        button {
-            font-size: 14px; /* Slightly smaller font for buttons */
-        }
-    }
-
-    @media (max-width: 480px) {
-        header {
-            padding: 10px;
-        }
-
-        h1 {
-            font-size: 16px;
-        }
-
-        .container {
-            padding: 10px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="date"],
-        input[type="password"] {
-            font-size: 12px; /* Smaller input font size for small screens */
-        }
-
-        button {
-            padding: 10px;
-            font-size: 14px;
-        }
-    }
+    /* Modal styles */
     .modal {
-        display: none; /* Hidden by default */
+        display: none;
         position: fixed;
-        z-index: 1; /* Sit on top */
+        z-index: 1;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
-        overflow: auto; /* Enable scrolling if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
         padding-top: 60px;
     }
 
     .modal-content {
-        background-color: #fff;
+        background-color: #fefefe;
         margin: 5% auto;
         padding: 20px;
         border: 1px solid #888;
         width: 80%;
-        max-width: 600px;
-        border-radius: 8px;
+        max-width: 500px;
     }
 
     .close {
@@ -355,7 +290,6 @@ $conn->close();
         float: right;
         font-size: 28px;
         font-weight: bold;
-        cursor: pointer;
     }
 
     .close:hover,
@@ -365,245 +299,149 @@ $conn->close();
         cursor: pointer;
     }
 
-    .accept-button {
-        background-color: #5a67d8;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
     }
 
-    .accept-button:hover {
-        background-color: #4c51bf;
+    /* Responsive design for smaller screens */
+    @media screen and (max-width: 480px) {
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="password"] {
+            font-size: 12px;
+            padding: 10px;
+        }
+
+        button {
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
     }
-</style>
+    </style>
 </head>
 <body>
-<header>
-    <img src="lo.png" alt="Logo" class="logo">
-    <h1 style="margin: 0;">NHA Kodia-IS</h1>
-    <a href="login" style="margin-left: auto; color: white; text-decoration: none; padding: 10px 15px; background-color: transparent; border-radius: 4px;">Home</a>
-</header>
-
-<div class="container">
-    <h2 id="form-title">Login Portal</h2>
-    <div class="form-container" id="create-account">
-    <form method="POST" onsubmit="return validateForm()">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-        <input type="text" name="fullname" placeholder="Full Name" required pattern="^[A-Za-z\s]{3,50}$" title="Full name should only contain letters and be 3-50 characters long">
-        <input type="date" name="dob" placeholder="Date of Birth" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" title="You must be at least 18 years old">
-        <input type="text" name="lot_no" placeholder="Lot No" required pattern="^\d{1,10}$" title="Lot number should be numeric and up to 10 digits">
-        <input type="text" name="house_no" placeholder="House No" required pattern="^\d{1,4}$" title="House number should contain 1-4 digits">
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="text" name="username" placeholder="Username" required pattern="^[A-Za-z0-9_]{5,20}$" title="Username should be alphanumeric, 5-20 characters, and may include underscores">
-        
-        <!-- Password input with show/hide toggle -->
-        <div class="password-wrapper">
-            <input type="password" id="password" name="password" placeholder="Password" required minlength="8" title="Password must be at least 8 characters">
-            <span id="togglePassword" class="eye-icon">&#128065;</span>
-        </div>
-        
-        <select name="role" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
-            <option value="residents">Residents</option>
-            <option value="president">President</option>
-        </select>
- <!-- Terms and Conditions Checkbox -->
- <div style="margin: 10px 0;">
-    <input type="checkbox" id="terms" name="terms" required>
-    <label for="terms">I agree to the <a href="javascript:void(0);" onclick="document.getElementById('termsModal').style.display='block';">Terms and Conditions</a></label>
-</div>
-        <button type="submit" name="create_account">Create Account</button>
-    </form>
-    <p class="toggle-button" onclick="toggleForm()">Already have an account? Login here.</p>
-</div>
-    <div class="form-container active" id="login">
-       
-        <form method="POST" onsubmit="return validateRecaptcha()">
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-        <input type="email" name="email" placeholder="email" required>
-        <div class="password-wrapper">
-            <input type="password" id="login-password" name="password" placeholder="Password" required>
-            <span id="toggleLoginPassword" class="eye-icon">&#128065;</span>
-        </div>
-        
-        <button type="submit" name="login">Login</button>
-        <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
-    </form>
-        <p class="toggle-button" onclick="toggleForm()">Don't have an account? Create one here.</p>
-        <p class="forgot-password" style="text-align: center; margin-top: 10px;">
-            <a href="forget_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
-        </p>
+    <header>
+        <img src="residents.jpg" alt="Logo" class="logo">
+        <h1>Resident Portal</h1>
+    </header>
+    <div class="container">
+        <h2 id="form-title">Create Account</h2>
+        <form id="account-form" method="POST" onsubmit="return validateRecaptcha();">
+            <input type="text" id="fullname" name="fullname" placeholder="Full Name" required>
+            <input type="date" id="dob" name="dob" placeholder="Date of Birth" required>
+            <input type="text" id="lot_no" name="lot_no" placeholder="Lot Number" required>
+            <input type="text" id="house_no" name="house_no" placeholder="House Number" required>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="hidden" name="role" value="residents">
+            <div class="terms">
+                <input type="checkbox" id="termsCheckbox" required>
+                <label for="termsCheckbox">I agree to the <span id="termsLink" class="toggle-button">Terms & Conditions</span></label>
+            </div>
+            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+            <div class="h-captcha" data-sitekey="your-site-key"></div> <!-- Add your hCaptcha site key here -->
+            <div class="button-container">
+                <button type="submit" name="create_account">Create Account</button>
+            </div>
+        </form>
+        <div class="toggle-button" onclick="toggleForm()">Already have an account? Login here</div>
     </div>
-</div>
 
-       <!-- Modal for Terms and Conditions -->
-       <div id="termsModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Terms and Conditions</h2>
-        <p>Welcome to the Kodi NHA Information System. This system is intended for administrators managing the Kodi NHA community information, including household details, block, and lot data.</p>
-    <p>By accessing this system, you agree to handle all data with confidentiality and to use the information solely for administrative purposes. Unauthorized access, data sharing, or modification without permission may result in disciplinary action.</p>
-    <p>Ensure that all actions taken comply with the privacy policies and data protection regulations governing community information management. The system logs all activities for security and auditing purposes.</p>
-        <button id="acceptTerms" class="accept-button">I Agree</button>
+    <!-- Terms & Conditions Modal -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Terms & Conditions</h2>
+            <p>Terms and conditions content goes here...</p>
+            <button id="acceptTermsBtn">I Agree</button>
+        </div>
     </div>
-</div>
-<script>
-    function toggleForm() {
-        const createAccountForm = document.getElementById('create-account');
-        const loginForm = document.getElementById('login');
-        const formTitle = document.getElementById('form-title');
 
-        if (createAccountForm.classList.contains('active')) {
-            createAccountForm.classList.remove('active');
-            loginForm.classList.add('active');
-            formTitle.textContent = 'Login';
-        } else {
-            loginForm.classList.remove('active');
-            createAccountForm.classList.add('active');
-            formTitle.textContent = 'Create Account';
+    <script>
+        function toggleForm() {
+            const formTitle = document.getElementById('form-title');
+            const accountForm = document.getElementById('account-form');
+            if (formTitle.textContent === 'Create Account') {
+                formTitle.textContent = 'Login';
+                accountForm.innerHTML = `
+                    <input type="email" id="email" name="email" placeholder="Email" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                    <div class="h-captcha" data-sitekey="your-site-key"></div> <!-- Add your hCaptcha site key here -->
+                    <div class="button-container">
+                        <button type="submit" name="login">Login</button>
+                    </div>
+                `;
+                document.querySelector('.toggle-button').textContent = "Don't have an account? Create one here";
+            } else {
+                formTitle.textContent = 'Create Account';
+                accountForm.innerHTML = `
+                    <input type="text" id="fullname" name="fullname" placeholder="Full Name" required>
+                    <input type="date" id="dob" name="dob" placeholder="Date of Birth" required>
+                    <input type="text" id="lot_no" name="lot_no" placeholder="Lot Number" required>
+                    <input type="text" id="house_no" name="house_no" placeholder="House Number" required>
+                    <input type="email" id="email" name="email" placeholder="Email" required>
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <input type="hidden" name="role" value="residents">
+                    <div class="terms">
+                        <input type="checkbox" id="termsCheckbox" required>
+                        <label for="termsCheckbox">I agree to the <span id="termsLink" class="toggle-button">Terms & Conditions</span></label>
+                    </div>
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                    <div class="h-captcha" data-sitekey="your-site-key"></div> <!-- Add your hCaptcha site key here -->
+                    <div class="button-container">
+                        <button type="submit" name="create_account">Create Account</button>
+                    </div>
+                `;
+                document.querySelector('.toggle-button').textContent = "Already have an account? Login here";
+            }
         }
-    }
 
-    // Toggle password visibility for account creation
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('password');
-    togglePassword.addEventListener('click', function (e) {
-        // Toggle the password type between text and password
-        const type = passwordField.type === 'password' ? 'text' : 'password';
-        passwordField.type = type;
-        // Change the eye icon
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
+        // Modal functionality
+        const modal = document.getElementById('termsModal');
+        const termsLink = document.getElementById('termsLink');
+        const closeBtn = document.querySelector('.close');
+        const acceptBtn = document.getElementById('acceptTermsBtn');
+        const termsCheckbox = document.getElementById('termsCheckbox');
 
-    // Toggle password visibility for login
-    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
-    const loginPasswordField = document.getElementById('login-password');
-    toggleLoginPassword.addEventListener('click', function (e) {
-        // Toggle the password type between text and password
-        const type = loginPasswordField.type === 'password' ? 'text' : 'password';
-        loginPasswordField.type = type;
-        // Change the eye icon
-        this.textContent = type === 'password' ? '👁️' : '🙈';
-    });
+        termsLink.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
 
-    function validateForm() {
-        const dob = document.querySelector('input[name="dob"]').value;
-        const dobDate = new Date(dob);
-        const today = new Date();
-        const age = today.getFullYear() - dobDate.getFullYear();
-        
-        // Check if user is at least 18 years old
-        if (age < 18) {
-            alert("You must be at least 18 years old to register.");
-            return false;
-        }
-    }
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+            termsCheckbox.checked = false;
+        };
 
-        // Retrieve data from localStorage when loading the page
-        window.onload = function() {
-            const storedData = JSON.parse(localStorage.getItem('formData'));
-            if (storedData) {
-                document.getElementById('username').value = storedData.username || '';
-                document.getElementById('email').value = storedData.email || '';
+        acceptBtn.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+                termsCheckbox.checked = false;
             }
         };
-// Get the modal
-var modal = document.getElementById("termsModal");
 
-// Get the checkbox
-var termsCheckbox = document.getElementById("terms");
-
-// Get the <span> element that closes the modal
-var closeBtn = document.getElementsByClassName("close")[0];
-
-// Get the "I Agree" button
-var acceptBtn = document.getElementById("acceptTerms");
-
-// When the user clicks the checkbox, open the modal
-termsCheckbox.addEventListener('change', function() {
-    if (termsCheckbox.checked) {
-        modal.style.display = "block";
-    }
-});
-
-// When the user clicks on <span> (x), close the modal
-closeBtn.onclick = function() {
-    modal.style.display = "none";
-    termsCheckbox.checked = false; // Uncheck the checkbox when modal is closed
-}
-
-// When the user clicks the "I Agree" button, close the modal
-acceptBtn.onclick = function() {
-    modal.style.display = "none";
-    termsCheckbox.checked = true; // Ensure the checkbox is checked
-}
-
-// Close the modal if the user clicks anywhere outside the modal content
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-        termsCheckbox.checked = false;
-    }
-}
-        
-
-    document.addEventListener('DOMContentLoaded', function() {
+        // Show the message if exists
         <?php if (isset($_SESSION['message'])): ?>
-            const message = '<?php echo $_SESSION['message']; ?>';
-            const isError = message.includes("Invalid") || message.includes("Error") || message.includes("not approved");
-
-            // If the user is locked out
-            if (message.includes('Too many login attempts')) {
-                const remainingTime = <?php echo isset($_SESSION['last_attempt_time']) ? LOCKOUT_TIME - (time() - $_SESSION['last_attempt_time']) : 0; ?>;
-
-                // Display SweetAlert with a countdown
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Too many login attempts!',
-                    html: `Please try again in <b id="countdown">${remainingTime}</b> seconds.`,
-                    showConfirmButton: false,
-                    timer: remainingTime * 1000, // Set the timer duration in milliseconds
-                    willOpen: () => {
-                        const countdownElement = document.getElementById('countdown');
-                        let countdown = remainingTime;
-                        const countdownInterval = setInterval(() => {
-                            countdown--;
-                            countdownElement.innerText = countdown;
-                            if (countdown <= 0) {
-                                clearInterval(countdownInterval);
-                            }
-                        }, 1000);
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: isError ? 'error' : 'success',
-                    title: isError ? 'Error' : 'Success',
-                    text: message,
-                    confirmButtonText: 'OK'
-                });
-            }
+            Swal.fire({
+                icon: 'info',
+                title: 'Message',
+                text: '<?= $_SESSION['message'] ?>'
+            });
             <?php unset($_SESSION['message']); ?>
         <?php endif; ?>
-    });
-
-    // Disable right-click context menu
-    document.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-    });
-
-    // Disable certain keyboard shortcuts for inspecting the page
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'U')) {
-            e.preventDefault();
-        }
-    });
-</script>
-
-
-
-
+    </script>
 </body>
 </html>
-

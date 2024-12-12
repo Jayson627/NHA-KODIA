@@ -42,16 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
         $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
 
-        // Execute and check for success
-        if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
-        } else {
-            $_SESSION['message'] = "Error creating account. Please try again.";
-        }
-        $stmt->close();
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
-        exit();
-    }
+        
 
     if (isset($_POST['login'])) {
         // Check if the user is locked out
@@ -67,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_attempts'] = 0;
             }
         }
-
+    }
         // Collect and sanitize input
         $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
         $password = sanitize_input($_POST['password']);
@@ -83,7 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bind_result($hashedPassword, $role, $status);
             $stmt->fetch();
 
-           
+            // Check if the account status is 'approved'
+            if ($status !== 'approved') {
+                $_SESSION['message'] = "Your account is not approved yet. Please wait for approval.";
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
 
             // Verify the password
             if (password_verify($password, $hashedPassword)) {

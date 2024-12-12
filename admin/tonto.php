@@ -2,10 +2,6 @@
 session_start();
 include_once('connection.php');
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // Define max login attempts and lockout time
 define('MAX_LOGIN_ATTEMPTS', 3);
 define('LOCKOUT_TIME', 60); // 60 seconds
@@ -37,23 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = sanitize_input($_POST['username']);
         $password = sanitize_input($_POST['password']);
         $role = sanitize_input($_POST['role']);
+        $id = uniqid();
 
         // Hash the password
         $hashed_password = password_hash($password, PASSWORD_ARGON2I);
 
-        // Insert new user with default 'pending' status
-        $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-        $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
+        // Insert new user with default 'pending' status and random ID
+        $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
 
-        // Execute and check for success
-        if ($stmt->execute()) {
-            $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
-        } else {
-            $_SESSION['message'] = "Error creating account. Please try again.";
-        }
-        $stmt->close();
-        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
-        exit();
+       
     }
 
     if (isset($_POST['login'])) {
@@ -101,9 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Convert role to lowercase to avoid case sensitivity issues
                 $role = strtolower($role);
 
-                // Regenerate session ID to prevent session fixation attacks
-                session_regenerate_id(true);
-
+               
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
                     header("Location: president"); 

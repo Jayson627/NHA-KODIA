@@ -166,7 +166,7 @@ $conn->close();
     <style>
     body {
         font-family: Arial, sans-serif;
-        background-image: url('houses.jpg'); /* Update the path as necessary */
+        background-image: url('houses.jpg'); 
         background-size: cover;
         background-position: center;
         color: #333;
@@ -200,7 +200,7 @@ $conn->close();
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         padding: 20px;
-        width: 90%; /* Use percentage for better responsiveness */
+        width: 90%; /* Use percentage fo
         max-width: 400px; /* Set a maximum width */
         transition: transform 0.3s ease;
         margin-top: 20px;
@@ -270,7 +270,7 @@ $conn->close();
     @media (max-width: 768px) {
         body {
             padding: 0 15px;
-            height: auto; /* Adjust height for scrollable content */
+            height: auto; /* 
         }
 
         .container {

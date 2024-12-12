@@ -25,37 +25,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die("CSRF token validation failed.");
     }
 
-   // Function to check if the ID exists
-function check_if_id_exists($conn, $id) {
-    $stmt = $conn->prepare("SELECT id FROM residents WHERE id = ?");
-    $stmt->bind_param("s", $id);
-    $stmt->execute();
-    $stmt->store_result();
-    return $stmt->num_rows > 0;
-}
+    if (isset($_POST['create_account'])) {
+        // Sanitize and validate input
+        $fullname = sanitize_input($_POST['fullname']);
+        $dob = sanitize_input($_POST['dob']);
+        $lot_no = sanitize_input($_POST['lot_no']);
+        $house_no = sanitize_input($_POST['house_no']);
+        $email = filter_var(sanitize_input($_POST['email']), FILTER_VALIDATE_EMAIL);
+        $username = sanitize_input($_POST['username']);
+        $password = sanitize_input($_POST['password']);
+        $role = sanitize_input($_POST['role']);
+        $id = uniqid();
 
-// Generate unique ID
-do {
-    $id = uniqid() . mt_rand(1000, 9999);  // Add randomness to the ID
-} while (check_if_id_exists($conn, $id));  // Ensure ID is unique
+        // Hash the password
+        $hashed_password = password_hash($password, PASSWORD_ARGON2I);
 
-// Hash the password
-$hashed_password = password_hash($password, PASSWORD_ARGON2I);
+        // Insert new user with default 'pending' status and random ID
+        $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
 
-// Insert new user with default 'pending' status and random ID
-$stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-$stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
-
-// Execute and check for success
-if ($stmt->execute()) {
-    $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
-} else {
-    $_SESSION['message'] = "Error creating account. Please try again.";
-}
-$stmt->close();
-header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
-exit();
-
+        // Execute and check for success
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Account created successfully! Wait for the approval and check your email.";
+        } else {
+            $_SESSION['message'] = "Error creating account. Please try again.";
+        }
+        $stmt->close();
+        header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+        exit();
+    }
 
     if (isset($_POST['login'])) {
         // Check if the user is locked out

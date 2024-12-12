@@ -475,14 +475,14 @@ $('#login-frm').on('submit', function(e) {
     <div class="navbar-nav">
       <a href="about" class="nav-link">About</a>
       <a href="#" id="login-as-admin" class="nav-link">Login as Admin</a>
-      <a href="residents" class="nav-link">Login as Resident</a>
+      <a href="tonto" class="nav-link">Login as Resident</a>
     </div>
 
     <div id="push-menu">
       <a href="javascript:void(0)" class="close-btn">&times;</a>
       <a href="about">About</a>
       <a href="#" id="login-as-admin"> Admin</a>
-      <a href="residents"> Resident</a>
+      <a href="tonto"> Resident</a>
     </div>
   </nav>
 

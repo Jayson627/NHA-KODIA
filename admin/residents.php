@@ -103,10 +103,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Check role and redirect accordingly
                 if ($role === 'president') {  
-                    header("Location: president.php"); 
+                    header("Location: president"); 
                     exit();
                 } else if ($role === 'residents') { 
-                    header("Location: people_dashboard.php");
+                    header("Location: people_dashboard");
                     exit();
                 }
             } else {

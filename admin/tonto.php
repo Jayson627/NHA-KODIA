@@ -37,14 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = sanitize_input($_POST['username']);
         $password = sanitize_input($_POST['password']);
         $role = sanitize_input($_POST['role']);
-        $id = uniqid();
 
         // Hash the password
         $hashed_password = password_hash($password, PASSWORD_ARGON2I);
 
-        // Insert new user with default 'pending' status and random ID
-        $stmt = $conn->prepare("INSERT INTO residents (id, fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
-        $stmt->bind_param("sssssssss", $id, $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
+        // Insert new user with default 'pending' status
+        $stmt = $conn->prepare("INSERT INTO residents (fullname, dob, lot_no, house_no, email, username, password, role, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("ssssssss", $fullname, $dob, $lot_no, $house_no, $email, $username, $hashed_password, $role);
 
         // Execute and check for success
         if ($stmt->execute()) {
@@ -144,6 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

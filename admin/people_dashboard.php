@@ -84,7 +84,7 @@ $conn->close();
         }
         table.announcement-table th, table.announcement-table td {
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 2px solid #ddd;
             text-align: left;
         }
         table.announcement-table th {

@@ -13,18 +13,18 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Show all tables in the database
-$sql = "SHOW TABLES";
+// Select all data from the residents table
+$sql = "SELECT * FROM residents";
 $result = $conn->query($sql);
 
 if ($result) {
     if ($result->num_rows > 0) {
-        echo "Tables in the database:<br>";
-        while ($row = $result->fetch_row()) {
-            echo $row[0] . "<br>";
+        // Output data of each row
+        while ($row = $result->fetch_assoc()) {
+            echo "ID: " . $row["id"] . " - Name: " . $row["name"] . " - Age: " . $row["age"] . " - Address: " . $row["address"] . "<br>";
         }
     } else {
-        echo "No tables found in the database.";
+        echo "No data found in the residents table.";
     }
 } else {
     echo "Error: " . $conn->error;

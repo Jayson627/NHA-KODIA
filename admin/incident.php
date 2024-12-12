@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -160,13 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <footer>&copy; <?php echo date("Y"); ?> Incident Management System</footer>
 
     <script>
-        // Set the date input to current date and make other dates unselectable
-        const dateInput = document.getElementById('incident_date');
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.setAttribute('min', today);
-        dateInput.setAttribute('max', today);
-        dateInput.value = today;
-
         // Display success or error message using SweetAlert2
         <?php if (isset($_SESSION['success'])): ?>
             Swal.fire({

@@ -117,7 +117,6 @@
 
       
         <div class="form-container" id="login-form">
-        <h2>Login</h2>
             <form action="/submit_login" method="post">
                 <label for="login_email">Email:</label>
                 <input type="email" id="login_email" name="login_email" required>

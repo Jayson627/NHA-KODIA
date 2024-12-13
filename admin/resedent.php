@@ -125,6 +125,7 @@
                 <input type="password" id="login_password" name="login_password" required>
 
                 <input type="submit" value="Login">
+                <a href="forget_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
             </form>
             <div class="toggle-link" onclick="toggleForms()">Don't have an account? Register here</div>
         </div>

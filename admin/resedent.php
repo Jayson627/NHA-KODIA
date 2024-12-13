@@ -115,7 +115,7 @@
             <div class="toggle-link" onclick="toggleForms()">Already have an account? Login here</div>
         </div>
 
-        <h2>Login Form</h2>
+      
         <div class="form-container" id="login-form">
             <form action="/submit_login" method="post">
                 <label for="login_email">Email:</label>

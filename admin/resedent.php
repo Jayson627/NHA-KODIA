@@ -83,8 +83,8 @@
 </head>
 <body>
     <div class="container">
+        <h2>Registration Form</h2>
         <div class="form-container active" id="registration-form">
-            <h2>Registration Form</h2>
             <form action="/submit_registration" method="post">
                 <label for="fullname">Full Name:</label>
                 <input type="text" id="fullname" name="fullname" required>
@@ -106,8 +106,8 @@
 
                 <label for="role">Role:</label>
                 <select id="role" name="role" required>
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
+                    <option value="resident">Residents</option>
+                    <option value="president">President</option>
                 </select>
 
                 <input type="submit" value="Register">
@@ -115,8 +115,9 @@
             <div class="toggle-link" onclick="toggleForms()">Already have an account? Login here</div>
         </div>
 
+      
         <div class="form-container" id="login-form">
-            <h2>Login</h2>
+        <h2>Login</h2>
             <form action="/submit_login" method="post">
                 <label for="login_email">Email:</label>
                 <input type="email" id="login_email" name="login_email" required>

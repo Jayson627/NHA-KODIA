@@ -106,8 +106,8 @@
 
                 <label for="role">Role:</label>
                 <select id="role" name="role" required>
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
+                    <option value="resident">Residents</option>
+                    <option value="president">President</option>
                 </select>
 
                 <input type="submit" value="Register">

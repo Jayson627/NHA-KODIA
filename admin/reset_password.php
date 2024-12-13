@@ -112,7 +112,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
         }
     </style>
 
-    <!-- Include SweetAlert2 CSS -->
+  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
 </head>

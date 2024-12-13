@@ -127,6 +127,7 @@
                 <input type="submit" value="Login">
                 <a href="forget_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
             </form>
+            <a href="forget_password" style="color: #5a67d8; text-decoration: underline;">Forgot Password?</a>
             <div class="toggle-link" onclick="toggleForms()">Don't have an account? Register here</div>
         </div>
     </div>

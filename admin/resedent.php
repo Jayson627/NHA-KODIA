@@ -2,6 +2,21 @@
 <html>
 <head>
     <title>Registration and Login Form</title>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <script>
+        function validateRecaptcha() {
+            const response = grecaptcha.getResponse();
+            if (response.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please complete the reCAPTCHA',
+                });
+                return false;
+            }
+            return true;
+        }
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -123,7 +138,7 @@
 
                 <label for="login_password">Password:</label>
                 <input type="password" id="login_password" name="login_password" required>
-
+                <div class="g-recaptcha" data-sitekey="f3c4c8ea-07aa-4b9e-9c6e-510ab3703f88"></div>
                 <input type="submit" value="Login">
             </form>
            

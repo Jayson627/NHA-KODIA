@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forgot Password</title>
-  <!-- Include Bootstrap 5 CDN -->
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Include SweetAlert2 -->
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body {
@@ -84,7 +84,7 @@
   </div>
   
   <?php
-    session_start(); // Ensure session is started
+    session_start(); 
     if (isset($_SESSION['notify'])) {
         $message = addslashes($_SESSION['notify']);
         echo "<script>

@@ -12,7 +12,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
 
-    <!-- Styling for the page -->
+ 
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -94,7 +94,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             margin-right: 0;
         }
 
-        /* Responsive design */
+       
         @media (max-width: 600px) {
             .reset-password-box {
                 padding: 20px;
@@ -112,7 +112,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
         }
     </style>
 
-  
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
 </head>
@@ -140,10 +140,10 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
         </form>
     </div>
 
-    <!-- Include SweetAlert2 JS -->
+  
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Check for success parameter in the URL and show the sweet alert
+       
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('success')) {
             Swal.fire({
@@ -154,7 +154,7 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             });
         }
 
-        // Handle OTP input focus and combine values
+       
         const otpInputs = document.querySelectorAll('.otp-input');
         const otpHiddenInput = document.getElementById('otp');
 
@@ -183,10 +183,10 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
             otpHiddenInput.value = otpValue;
         }
 
-        // Password validation function
+       
         function validatePassword() {
             const password = document.getElementById('new-password').value;
-            const passwordPattern = /^(?=.*[A-Z]).{8,}$/; // At least 8 characters with at least one uppercase letter
+            const passwordPattern = /^(?=.*[A-Z]).{8,}$/; 
             if (!passwordPattern.test(password)) {
                 Swal.fire({
                     title: 'Error',
@@ -194,16 +194,16 @@ if (isset($_GET["reset"]) && isset($_GET["email"])) {
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
-                return false; // Prevent form submission if the validation fails
+                return false; 
             }
-            return true; // Allow form submission if validation passes
+            return true; 
         }
     </script>
 </body>
 </html>
 <?php
 } else {
-    // Handle case when reset is not set
+   
     echo "<script>
         Swal.fire({
             title: 'Error',

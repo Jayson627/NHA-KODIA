@@ -137,6 +137,21 @@
             registrationForm.classList.toggle('active');
             loginForm.classList.toggle('active');
         }
+        function toggleForm() {
+        const registratinForm = document.getElementById('registration-account');
+        const loginForm = document.getElementById('login');
+        const formTitle = document.getElementById('form-title');
+
+        if (registrationForm.classList.contains('active')) {
+            registrationForm.classList.remove('active');
+            loginForm.classList.add('active');
+            formTitle.textContent = 'Login';
+        } else {
+            loginForm.classList.remove('active');
+            registrationtForm.classList.add('active');
+            formTitle.textContent = 'Create Account';
+        }
+    }
     </script>
 </body>
 </html>

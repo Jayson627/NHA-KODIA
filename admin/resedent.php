@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registration Form</title>
+    <title>Registration and Login Form</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,38 +61,82 @@
         input[type="submit"]:hover {
             background-color: #218838;
         }
+
+        .toggle-link {
+            text-align: center;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Registration Form</h2>
-        <form action="/submit_registration" method="post">
-            <label for="fullname">Full Name:</label>
-            <input type="text" id="fullname" name="fullname" required>
+        <div class="form-container active" id="registration-form">
+            <form action="/submit_registration" method="post">
+                <label for="fullname">Full Name:</label>
+                <input type="text" id="fullname" name="fullname" required>
 
-            <label for="dob">Date of Birth:</label>
-            <input type="date" id="dob" name="dob" required>
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" required>
 
-            <label for="lot_no">Lot No:</label>
-            <input type="text" id="lot_no" name="lot_no" required>
+                <label for="lot_no">Lot No:</label>
+                <input type="text" id="lot_no" name="lot_no" required>
 
-            <label for="house_no">House No:</label>
-            <input type="text" id="house_no" name="house_no" required>
+                <label for="house_no">House No:</label>
+                <input type="text" id="house_no" name="house_no" required>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
 
-            <label for="role">Role:</label>
-            <select id="role" name="role" required>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select>
+                <label for="role">Role:</label>
+                <select id="role" name="role" required>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
 
-            <input type="submit" value="Register">
-        </form>
+                <input type="submit" value="Register">
+            </form>
+            <div class="toggle-link" onclick="toggleForms()">Already have an account? Login here</div>
+        </div>
+
+        <h2>Login Form</h2>
+        <div class="form-container" id="login-form">
+            <form action="/submit_login" method="post">
+                <label for="login_email">Email:</label>
+                <input type="email" id="login_email" name="login_email" required>
+
+                <label for="login_password">Password:</label>
+                <input type="password" id="login_password" name="login_password" required>
+
+                <input type="submit" value="Login">
+            </form>
+            <div class="toggle-link" onclick="toggleForms()">Don't have an account? Register here</div>
+        </div>
     </div>
+
+    <script>
+        function toggleForms() {
+            const registrationForm = document.getElementById('registration-form');
+            const loginForm = document.getElementById('login-form');
+            registrationForm.classList.toggle('active');
+            loginForm.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

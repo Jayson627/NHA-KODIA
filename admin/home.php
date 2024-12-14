@@ -164,8 +164,7 @@
                     'rgba(255, 99, 132, 0.6)'   // Total Females
                 ],
                 borderColor: [
-                    'rgba(255, 105, 180, 1)',
-                    'rgba(54, 162, 235, 1)',
+                    
                     'rgba(255, 255, 0, 1)',
                     'rgba(75, 192, 75, 1)',
                     'rgba(0, 123, 255, 1)',  // Male border color

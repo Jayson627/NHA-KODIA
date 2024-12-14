@@ -148,8 +148,7 @@
             datasets: [{
                 label: 'Total Counts',
                 data: [
-                    <?php echo $total_lot; ?>,
-                    <?php echo $total_block; ?>,
+                   
                     <?php echo $total_students; ?>,
                     <?php echo $total_children; ?>,
                     <?php echo $total_male; ?>,     // Add male count

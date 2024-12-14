@@ -45,11 +45,15 @@
         unset($_SESSION['success_message']);
     }
 
-    // Queries for data (lots, blocks, students, children)
-    $total_lot = $conn->query("SELECT * FROM `lot_numbers`")->num_rows;
-    $total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;
-    $total_students = $conn->query("SELECT * FROM `student_list`")->num_rows;
-    $total_children = $conn->query("SELECT * FROM `children`")->num_rows;
+   // Queries for data (lots, blocks, students, children, males, and females)
+   $total_lot = $conn->query("SELECT * FROM `lot_numbers`")->num_rows;
+   $total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;
+   $total_students = $conn->query("SELECT * FROM `student_list`")->num_rows;
+   $total_children = $conn->query("SELECT * FROM `children`")->num_rows;
+
+   // Male and female counts (assuming the gender column is named 'gender' and has values 'male' and 'female')
+   $total_male = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
+   $total_female = $conn->query("SELECT * FROM `student_list` WHERE gender = 'female'")->num_rows;
 ?>
     <header>
         <h3>Welcome to <?php echo $_settings->info('id'); ?> - Admin Panel</h3>
@@ -98,6 +102,28 @@
                 </div>
             </div>
         </div>
+        <!-- Total Males Display -->
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
+        <div class="info-box bg-gradient-danger shadow">
+            <span class="info-box-icon bg-gradient-danger elevation-1"><i class="fas fa-male"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Total Males</span>
+                <span class="info-box-number text-right"><?php echo $total_male; ?></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Females Display -->
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
+        <div class="info-box bg-gradient-info shadow">
+            <span class="info-box-icon bg-gradient-info elevation-1"><i class="fas fa-female"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Total Females</span>
+                <span class="info-box-number text-right"><?php echo $total_female; ?></span>
+            </div>
+        </div>
+    </div>
+</div>
     
         <!-- Chart.js Charts wrapped in responsive containers -->
         <div class="row mt-4">

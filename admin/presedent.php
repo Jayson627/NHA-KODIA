@@ -1,6 +1,14 @@
 <?php
 session_start();
-include_once('connection.php');
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'president') {
+    header("Location: resedent"); // Redirect to the login page if not logged in or not a president
+    exit();
+}
+include_once('connection.php'); 
+// Fetch president information
+$sql = "SELECT * FROM residents WHERE role='president'";
+$result = $conn->query($sql);
+
 
 // Fetch announcements from the database
 $announcementQuery = "SELECT * FROM announcement ORDER BY created_at DESC";

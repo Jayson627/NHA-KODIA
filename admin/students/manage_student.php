@@ -119,6 +119,25 @@ if (isset($_POST['roll'])) {
                                 <div id="contact-error" class="text-danger" style="display: none;">Invalid Contact No. Must be 11 digits and only numbers are allowed.</div>
                             </div>
                         </div>
+                        <div class="form-group col-md-4">
+                                <label for="occupation" class="control-label">Occupation</label>
+                                <select name="occupation" id="occupation" class="form-control form-control-sm rounded-0">
+                                    <option value="">Select Occupation</option>
+                                    <option value="Farmer">Farmer</option>
+                                    <option value="Teacher">Teacher</option>
+                                    <option value="Fisherman">Fisherman</option>
+                                    <option value="Carpenter">Carpenter</option>
+                                    <option value="Vendor">Vendor</option>
+                                    <option value="Driver">Driver</option>
+                                    <option value="Government Employee">Government Employee</option>
+                                    <option value="Healthcare Worker">Healthcare Worker</option>
+                                    <option value="Unemployed">Unemployed</option>
+                                    <option value="Student">Student</option>
+                                    <!-- Add more options as needed -->
+                                </select>
+                                <div id="occupation-error" class="text-danger" style="display: none;">Please select a valid occupation.</div>
+                            </div>
+                        </div>
                     </fieldset>
 
                     <fieldset class="border-bottom">

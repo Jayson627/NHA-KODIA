@@ -161,8 +161,6 @@
                 labels: [
                     'Total Lots', 
                     'Total Blocks', 
-                    'Total male', 
-                    'Total female',
                     'Household Heads', 
                     'Children'
                 ],
@@ -173,8 +171,6 @@
                         <?php echo $total_block; ?>,
                         <?php echo $total_students; ?>,
                         <?php echo $total_children; ?>
-                        <?php echo $total_male; ?>,
-                        <?php echo $total_female; ?>
                     ],
                     backgroundColor: [
                         'rgba(255, 105, 180, 0.6)', // Total Lots

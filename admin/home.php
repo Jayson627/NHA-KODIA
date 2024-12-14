@@ -138,8 +138,7 @@
 
         var data = {
             labels: [
-                'Total Lots', 
-                'Total Blocks', 
+                
                 'Household Heads', 
                 'Children',
                 'Total Males',  // Add label for male count

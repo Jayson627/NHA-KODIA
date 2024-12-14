@@ -102,28 +102,7 @@
                 </div>
             </div>
         </div>
-        <!-- Total Males Display -->
-    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
-        <div class="info-box bg-gradient-danger shadow">
-            <span class="info-box-icon bg-gradient-danger elevation-1"><i class="fas fa-male"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Total Males</span>
-                <span class="info-box-number text-right"><?php echo $total_male; ?></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Total Females Display -->
-    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
-        <div class="info-box bg-gradient-info shadow">
-            <span class="info-box-icon bg-gradient-info elevation-1"><i class="fas fa-female"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Total Females</span>
-                <span class="info-box-number text-right"><?php echo $total_female; ?></span>
-            </div>
-        </div>
-    </div>
-</div>
+       
     
         <!-- Chart.js Charts wrapped in responsive containers -->
         <div class="row mt-4">

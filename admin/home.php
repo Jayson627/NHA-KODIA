@@ -161,6 +161,8 @@
                 labels: [
                     'Total Lots', 
                     'Total Blocks', 
+                    'Total male', 
+                    'Total female',
                     'Household Heads', 
                     'Children'
                 ],

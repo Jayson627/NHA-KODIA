@@ -175,7 +175,7 @@
                 'Carpenter',
                 'Vendor',
                 'Driver',
-                'Government Employee',
+                'Gov-Employee',
                 'Unemployed'
             ],
             datasets: [{

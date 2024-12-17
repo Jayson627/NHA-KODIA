@@ -156,8 +156,7 @@
                 ],
                 borderColor: [
                     
-                    'rgba(0, 123, 255, 1)',  // Male border color
-                    'rgba(255, 99, 132, 1)'   // Female border color
+                    
                 ],
                 borderWidth: 1
             }]

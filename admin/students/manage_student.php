@@ -129,10 +129,9 @@ if (isset($_POST['roll'])) {
                                     <option value="Carpenter">Carpenter</option>
                                     <option value="Vendor">Vendor</option>
                                     <option value="Driver">Driver</option>
-                                    <option value="Government Employee">Government Employee</option>
-                                    <option value="Healthcare Worker">Healthcare Worker</option>
+                                    <option value="Government Employee">Government Employee</option>                                 
                                     <option value="Unemployed">Unemployed</option>
-                                    <option value="Student">Student</option>
+                                  
                                     <!-- Add more options as needed -->
                                 </select>
                                 <div id="occupation-error" class="text-danger" style="display: none;">Please select a valid occupation.</div>
@@ -165,8 +164,6 @@ if (isset($_POST['roll'])) {
                                 <label for="present_address" class="control-label">Barangay</label>
                                 <select name="present_address" id="present_address" class="form-control form-control-sm rounded-0" required>
                                     <option value="" disabled selected>Select a Barangay</option>
-                                    <option value="kangwayan">Barangay kangwayan</option>
-                                    <option value=" Tugas ">Barangay Tugas</option>
                                     <option value="Kaongkod ">Barangay Kaongkod</option>
                                     <option value=" Mancilang ">Barangay Mancilang</option>
                                     <option value="Kodia ">Barangay Kodia</option>
@@ -241,15 +238,12 @@ if (isset($_POST['roll'])) {
                                 <select name="spouse_occupation" id="spouse_occupation" class="form-control form-control-sm rounded-0">
                                     <option value="">Select Occupation</option>
                                     <option value="Farmer">Farmer</option>
-                                    <option value="Teacher">Teacher</option>
-                                    <option value="Fisherman">Fisherman</option>
-                                    <option value="Carpenter">Carpenter</option>
+                                    <option value="Teacher">Teacher</option>                              
                                     <option value="Vendor">Vendor</option>
-                                    <option value="Driver">Driver</option>
                                     <option value="Government Employee">Government Employee</option>
                                     <option value="Healthcare Worker">Healthcare Worker</option>
                                     <option value="Unemployed">Unemployed</option>
-                                    <option value="Student">Student</option>
+                                    <option value="Housewife">Housewife</option>
                                     <!-- Add more options as needed -->
                                 </select>
                                 <div id="spouse_occupation-error" class="text-danger" style="display: none;">Please select a valid occupation.</div>

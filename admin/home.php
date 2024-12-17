@@ -176,6 +176,10 @@
                     
                     'rgba(0, 123, 255, 1)',  // Male border color
                     'rgba(255, 99, 132, 1)'   // Female border color
+                    'rgba(0, 12, 255, 0.6)',   // Total Males
+                    'rgba(25, 9, 132, 0.6)'   // Total Females
+                    'rgba(0, 123, 255, 0.6)',   // Total Males
+                    'rgba(255, 9, 132, 0.6)'   // Total Females
                 ],
                 borderWidth: 1
             }]

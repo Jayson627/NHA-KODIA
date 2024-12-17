@@ -150,13 +150,11 @@
                     <?php echo $total_female; ?>   // Add female count
                 ],
                 backgroundColor: [
-                  
+                    
+                    'rgba(0, 123, 255, 0.6)',   // Total Males
+                    'rgba(255, 99, 132, 0.6)'   // Total Females
                 ],
-                borderColor: [
-                  
-                ],
-                borderWidth: 1
-            }]
+               
         };
 
         function createChart(ctx, type, data) {

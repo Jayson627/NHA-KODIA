@@ -54,6 +54,15 @@
    // Male and female counts (assuming the gender column is named 'gender' and has values 'male' and 'female')
    $total_male = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
    $total_female = $conn->query("SELECT * FROM `student_list` WHERE gender = 'female'")->num_rows;
+
+   // Occupation counts
+   $total_farmer = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'farmer'")->num_rows;
+   $total_fisherman = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'fisherman'")->num_rows;
+   $total_carpenter = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'carpenter'")->num_rows;
+   $total_vendor = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'vendor'")->num_rows;
+   $total_driver = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'driver'")->num_rows;
+   $total_governmentemployee = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'governmentemployee'")->num_rows;
+   $total_unemployed= $conn->query("SELECT * FROM `student_list` WHERE occupation = 'unemployed'")->num_rows;
 ?>
     <header>
         <h3>Welcome to <?php echo $_settings->info('id'); ?> - Admin Panel</h3>
@@ -109,7 +118,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card card-outline card-navy shadow rounded-0">
                     <div class="card-header">
-                        <h5 class="card-title">Pie Chart: Totals Overview</h5>
+                        <h5 class="card-title">Pie Chart: Gender Overview</h5>
                     </div>
                     <div class="card-body chart-container">
                         <canvas id="pieChart" class="chartjs-render-monitor"></canvas>
@@ -119,7 +128,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card card-outline card-navy shadow rounded-0">
                     <div class="card-header">
-                        <h5 class="card-title">Bar Chart: Totals Overview</h5>
+                        <h5 class="card-title">Bar Chart: Occupation Overview</h5>
                     </div>
                     <div class="card-body chart-container">
                         <canvas id="barChart" class="chartjs-render-monitor"></canvas>
@@ -136,29 +145,52 @@
         var pieCtx = document.getElementById('pieChart').getContext('2d');
         var barCtx = document.getElementById('barChart').getContext('2d');
 
-        var data = {
+        var genderData = {
             labels: [
-                
-                'Total Males',  // Add label for male count
-                'Total Females'  // Add label for female count
+                'Total Males',
+                'Total Females'
             ],
             datasets: [{
                 label: 'Total Counts',
                 data: [
-                   
-                    <?php echo $total_male; ?>,     // Add male count
-                    <?php echo $total_female; ?>   // Add female count
+                    <?php echo $total_male; ?>,
+                    <?php echo $total_female; ?>
                 ],
                 backgroundColor: [
-                    
-                    'rgba(0, 123, 255, 0.6)',   // Total Males
-                    'rgba(255, 99, 132, 0.6)'   // Total Females
+                    'rgba(0, 123, 255, 0.6)',
+                    'rgba(255, 99, 132, 0.6)'
                 ],
                 borderColor: [
-                    
-                    'rgba(0, 123, 255, 1)',  // Male border color
-                    'rgba(255, 99, 132, 1)'   // Female border color
+                    'rgba(0, 123, 255, 1)',
+                    'rgba(255, 99, 132, 1)'
                 ],
+                borderWidth: 1
+            }]
+        };
+
+        var occupationData = {
+            labels: [
+                'Farmer',
+                'Fisherman',
+                'Carpenter',
+                'Vendor',
+                'Driver',
+                'Government Employee',
+                'Unemployed'
+            ],
+            datasets: [{
+                label: 'Total Counts',
+                data: [
+                    <?php echo $total_farmer; ?>,
+                    <?php echo $total_fisherman; ?>,
+                    <?php echo $total_carpenter; ?>,
+                    <?php echo $total_vendor; ?>,
+                    <?php echo $total_driver; ?>,
+                    <?php echo $total_governmentemployee; ?>,
+                    <?php echo $total_unemployed; ?>
+                ],
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1
             }]
         };
@@ -180,8 +212,8 @@
         }
 
         // Create the charts
-        var pieChart = createChart(pieCtx, 'pie', data);
-        var barChart = createChart(barCtx, 'bar', data);
+        var pieChart = createChart(pieCtx, 'pie', genderData);
+        var barChart = createChart(barCtx, 'bar', occupationData);
 
         // Adjust charts on window resize
         window.addEventListener('resize', function() {
@@ -192,7 +224,6 @@
         });
     });
 </script>
-
 
 </body>
 </html>

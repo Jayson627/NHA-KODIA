@@ -124,7 +124,6 @@ if (isset($_POST['roll'])) {
                                 <select name="occupation" id="occupation" class="form-control form-control-sm rounded-0">
                                     <option value="">Select Occupation</option>
                                     <option value="Farmer">Farmer</option>
-                                    <option value="Teacher">Teacher</option>
                                     <option value="Fisherman">Fisherman</option>
                                     <option value="Carpenter">Carpenter</option>
                                     <option value="Vendor">Vendor</option>

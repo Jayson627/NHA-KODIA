@@ -1,3 +1,41 @@
+<?php
+// Check if the success message is set
+if (isset($_SESSION['success_message'])) {
+    echo "<script>alert('" . $_SESSION['success_message'] . "');</script>";
+    unset($_SESSION['success_message']);
+}
+
+// Queries for data (lots, blocks, students, children, males, and females)
+$total_lot = $conn->query("SELECT * FROM `lot_numbers`")->num_rows;
+$total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;
+$total_students = $conn->query("SELECT * FROM `student_list`")->num_rows;
+$total_children = $conn->query("SELECT * FROM `children`")->num_rows;
+
+// Combined total of students and children
+$total_students_children = $total_students + $total_children;
+
+// Male and female counts in `student_list`
+$total_male_students = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
+$total_female_students = $conn->query("SELECT * FROM `student_list` WHERE gender = 'female'")->num_rows;
+
+// Male and female counts in `children`
+$total_male_children = $conn->query("SELECT * FROM `children` WHERE gender = 'male'")->num_rows;
+$total_female_children = $conn->query("SELECT * FROM `children` WHERE gender = 'female'")->num_rows;
+
+// Combined male and female counts
+$total_male_combined = $total_male_students + $total_male_children;
+$total_female_combined = $total_female_students + $total_female_children;
+
+// Occupation counts
+$total_farmer = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'farmer'")->num_rows;
+$total_fisherman = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'fisherman'")->num_rows;
+$total_carpenter = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'carpenter'")->num_rows;
+$total_vendor = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'vendor'")->num_rows;
+$total_driver = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'driver'")->num_rows;
+$total_government = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'government'")->num_rows;
+$total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'unemployed'")->num_rows;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -50,6 +50,7 @@
    $total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;
    $total_students = $conn->query("SELECT * FROM `student_list`")->num_rows;
    $total_children = $conn->query("SELECT * FROM `children`")->num_rows;
+   $total_spouses = $conn->query("SELECT * FROM `spouses`")->num_rows;
 
    // Male and female counts (assuming the gender column is named 'gender' and has values 'male' and 'female')
    $total_male = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
@@ -63,6 +64,9 @@
    $total_driver = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'driver'")->num_rows;
    $total_government = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'government'")->num_rows;
    $total_unemployed= $conn->query("SELECT * FROM `student_list` WHERE occupation = 'unemployed'")->num_rows;
+   
+   // Total of students, spouses, and children
+   $total_people = $total_students + $total_spouses + $total_children;
 ?>
     <header>
         <h3>Welcome to <?php echo $_settings->info('id'); ?> - Admin Panel</h3>
@@ -107,6 +111,16 @@
                     <div class="info-box-content">
                         <span class="info-box-text">Total Children</span>
                         <span class="info-box-number text-right"><?php echo $total_children; ?></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
+                <div class="info-box bg-gradient-purple shadow">
+                    <span class="info-box-icon bg-gradient-purple elevation-1"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total People (Students, Spouses, Children)</span>
+                        <span class="info-box-number text-right"><?php echo $total_people; ?></span>
                     </div>
                 </div>
             </div>
@@ -190,56 +204,75 @@
                     <?php echo $total_unemployed; ?>
                 ],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',   // Farmer
-                    'rgba(54, 162, 235, 0.6)',   // Fisherman
-                    'rgba(255, 206, 86, 0.6)',   // Carpenter
-                    'rgba(75, 192, 192, 0.6)',   // Vendor
-                    'rgba(153, 102, 255, 0.6)',  // Driver
-                    'rgba(255, 159, 64, 0.6)',   // Government Employee
-                    'rgba(201, 203, 207, 0.6)'   // Unemployed
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(255, 159, 64, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(104, 255, 104, 0.6)',
+                    'rgba(255, 99, 132, 0.6)'
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
                     'rgba(255, 159, 64, 1)',
-                    'rgba(201, 203, 207, 1)'
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(104, 255, 104, 1)',
+                    'rgba(255, 99, 132, 1)'
                 ],
                 borderWidth: 1
             }]
         };
 
-        function createChart(ctx, type, data) {
-            return new Chart(ctx, {
-                type: type,
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: window.innerWidth <= 768 ? false : true,
-                    scales: type === 'bar' ? {
-                        y: {
-                            beginAtZero: true
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: genderData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.label + ': ' + context.raw;
+                            }
                         }
-                    } : {}
+                    }
                 }
-            });
-        }
+            }
+        });
 
-        // Create the charts
-        var pieChart = createChart(pieCtx, 'pie', genderData);
-        var barChart = createChart(barCtx, 'bar', occupationData);
-
-        // Adjust charts on window resize
-        window.addEventListener('resize', function() {
-            pieChart.options.maintainAspectRatio = window.innerWidth <= 768 ? false : true;
-            barChart.options.maintainAspectRatio = window.innerWidth <= 768 ? false : true;
-            pieChart.update();
-            barChart.update();
+        new Chart(barCtx, {
+            type: 'bar',
+            data: occupationData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0 // Ensures no decimal places are displayed
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.label + ': ' + context.raw;
+                            }
+                        }
+                    }
+                }
+            }
         });
     });
-</script>
-
+    </script>
 </body>
 </html>

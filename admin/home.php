@@ -38,127 +38,77 @@
     </style>
 </head>
 <body>
-<?php
-    // Check if the success message is set
-    if (isset($_SESSION['success_message'])) {
-        echo "<script>alert('" . $_SESSION['success_message'] . "');</script>";
-        unset($_SESSION['success_message']);
-    }
-
-   // Queries for data (lots, blocks, students, children, males, and females)
-   $total_lot = $conn->query("SELECT * FROM `lot_numbers`")->num_rows;
-   $total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;
-   $total_students = $conn->query("SELECT * FROM `student_list`")->num_rows;
-   $total_children = $conn->query("SELECT * FROM `children`")->num_rows;
-
-   // Male and female counts (assuming the gender column is named 'gender' and has values 'male' and 'female')
-   $total_male = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
-   $total_female = $conn->query("SELECT * FROM `student_list` WHERE gender = 'female'")->num_rows;
-
-   // Occupation counts
-   $total_farmer = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'farmer'")->num_rows;
-   $total_fisherman = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'fisherman'")->num_rows;
-   $total_carpenter = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'carpenter'")->num_rows;
-   $total_vendor = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'vendor'")->num_rows;
-   $total_driver = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'driver'")->num_rows;
-   $total_government = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'government'")->num_rows;
-   $total_unemployed= $conn->query("SELECT * FROM `student_list` WHERE occupation = 'unemployed'")->num_rows;
-?>
-    <header>
-        <h3>Welcome to <?php echo $_settings->info('id'); ?> - Admin Panel</h3>
-        <hr class="border-pink">
-    </header>
-    <main class="container-fluid">
-        <div class="row">
-            <!-- Total Lots Display -->
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
-                <div class="info-box bg-gradient-pink shadow">
-                    <span class="info-box-icon bg-gradient-pink elevation-1"><i class="fas fa-cube"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">Total Lots</span>
-                        <span class="info-box-number text-right"><?php echo $total_lot; ?></span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
-                <div class="info-box bg-gradient-blue shadow">
-                    <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-box"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">Total Blocks</span>
-                        <span class="info-box-number text-right"><?php echo $total_block; ?></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
-                <div class="info-box bg-gradient-yellow shadow">
-                    <span class="info-box-icon bg-gradient-warning elevation-1"><i class="fas fa-user-friends"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">Total Household Heads</span>
-                        <span class="info-box-number text-right"><?php echo $total_students; ?></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
-                <div class="info-box bg-gradient-green shadow">
-                    <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fas fa-users"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">Total Children</span>
-                        <span class="info-box-number text-right"><?php echo $total_children; ?></span>
-                    </div>
-                </div>
+<h1>Welcome to <?php echo $_settings->info('name'); ?></h1>
+<hr>
+<div class="row">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="info-box">
+            <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Total Lot Numbers</span>
+                <span class="info-box-number">
+                    <?php echo number_format($total_lot); ?>
+                </span>
             </div>
         </div>
-        
-    
-        <!-- Chart.js Charts wrapped in responsive containers -->
-        <div class="row mt-4">
-            <div class="col-md-6 mb-4">
-                <div class="card card-outline card-navy shadow rounded-0">
-                    <div class="card-header">
-                        <h5 class="card-title">Pie Chart: Gender Overview</h5>
-                    </div>
-                    <div class="card-body chart-container">
-                        <canvas id="pieChart" class="chartjs-render-monitor"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card card-outline card-navy shadow rounded-0">
-                    <div class="card-header">
-                        <h5 class="card-title">Bar Chart: Occupation Overview</h5>
-                    </div>
-                    <div class="card-body chart-container">
-                        <canvas id="barChart" class="chartjs-render-monitor"></canvas>
-                    </div>
-                </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="info-box">
+            <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Total Block</span>
+                <span class="info-box-number">
+                    <?php echo number_format($total_block); ?>
+                </span>
             </div>
         </div>
-    </main>
-    
-    <!-- Initialize Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="info-box">
+            <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Total Students & Children</span>
+                <span class="info-box-number">
+                    <?php echo number_format($total_students_children); ?>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add the charts here -->
+<div class="chart-container">
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="barChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         var pieCtx = document.getElementById('pieChart').getContext('2d');
         var barCtx = document.getElementById('barChart').getContext('2d');
 
         var genderData = {
             labels: [
-                'Total Males',
-                'Total Females'
+                'Total Male',
+                'Total Female'
             ],
             datasets: [{
                 label: 'Total Counts',
                 data: [
-                    <?php echo $total_male; ?>,
-                    <?php echo $total_female; ?>
+                    <?php echo $total_male_combined; ?>,
+                    <?php echo $total_female_combined; ?>
                 ],
                 backgroundColor: [
-                    'rgba(0, 123, 255, 0.6)',
-                    'rgba(255, 99, 132, 0.6)'
+                    'rgba(0, 123, 255, 0.6)',  // Total Male
+                    'rgba(255, 99, 132, 0.6)'  // Total Female
                 ],
                 borderColor: [
                     'rgba(0, 123, 255, 1)',
@@ -217,29 +167,18 @@
                 data: data,
                 options: {
                     responsive: true,
-                    maintainAspectRatio: window.innerWidth <= 768 ? false : true,
-                    scales: type === 'bar' ? {
+                    scales: {
                         y: {
                             beginAtZero: true
                         }
-                    } : {}
+                    }
                 }
             });
         }
 
-        // Create the charts
         var pieChart = createChart(pieCtx, 'pie', genderData);
         var barChart = createChart(barCtx, 'bar', occupationData);
-
-        // Adjust charts on window resize
-        window.addEventListener('resize', function() {
-            pieChart.options.maintainAspectRatio = window.innerWidth <= 768 ? false : true;
-            barChart.options.maintainAspectRatio = window.innerWidth <= 768 ? false : true;
-            pieChart.update();
-            barChart.update();
-        });
     });
 </script>
-
 </body>
 </html>

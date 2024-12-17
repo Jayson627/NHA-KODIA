@@ -1,40 +1,3 @@
-<?php
-// Check if the success message is set
-if (isset($_SESSION['success_message'])) {
-    echo "<script>alert('" . $_SESSION['success_message'] . "');</script>";
-    unset($_SESSION['success_message']);
-}
-
-// Queries for data (lots, blocks, students, children, males, and females)
-$total_lot = $conn->query("SELECT * FROM `lot_numbers`")->num_rows;
-$total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;
-$total_students = $conn->query("SELECT * FROM `student_list`")->num_rows;
-$total_children = $conn->query("SELECT * FROM `children`")->num_rows;
-
-// Combined total of students and children
-$total_students_children = $total_students + $total_children;
-
-// Male and female counts in `student_list`
-$total_male_students = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
-$total_female_students = $conn->query("SELECT * FROM `student_list` WHERE gender = 'female'")->num_rows;
-
-// Male and female counts in `children`
-$total_male_children = $conn->query("SELECT * FROM `children` WHERE gender = 'male'")->num_rows;
-$total_female_children = $conn->query("SELECT * FROM `children` WHERE gender = 'female'")->num_rows;
-
-// Combined male and female counts
-$total_male_combined = $total_male_students + $total_male_children;
-$total_female_combined = $total_female_students + $total_female_children;
-
-// Occupation counts
-$total_farmer = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'farmer'")->num_rows;
-$total_fisherman = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'fisherman'")->num_rows;
-$total_carpenter = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'carpenter'")->num_rows;
-$total_vendor = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'vendor'")->num_rows;
-$total_driver = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'driver'")->num_rows;
-$total_government = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'government'")->num_rows;
-$total_unemployed= $conn->query("SELECT * FROM `student_list` WHERE occupation = 'unemployed'")->num_rows;
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,18 +75,6 @@ $total_unemployed= $conn->query("SELECT * FROM `student_list` WHERE occupation =
         </div>
     </div>
 </div>
-<div class="col-12 col-sm-6 col-lg-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Total Children</span>
-                <span class="info-box-number">
-                    <?php echo number_format($total_children); ?>
-                </span>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Add the charts here -->
 <div class="chart-container">
@@ -147,24 +98,25 @@ $total_unemployed= $conn->query("SELECT * FROM `student_list` WHERE occupation =
         var genderData = {
             labels: [
                 'Total Male',
-                'Total Female'
+                'Total Female',
+                'Total Students & Children'
             ],
             datasets: [{
                 label: 'Total Counts',
                 data: [
                     <?php echo $total_male_combined; ?>,
-                    <?php echo $total_female_combined; ?>
+                    <?php echo $total_female_combined; ?>,
                     <?php echo $total_students_children; ?>
                 ],
                 backgroundColor: [
                     'rgba(0, 123, 255, 0.6)',  // Total Male
-                    'rgba(255, 99, 132, 0.6)'  // Total Female
-                    'rgba(255, 99, 132, 0.6)'  // Total Female
+                    'rgba(255, 99, 132, 0.6)',  // Total Female
+                    'rgba(54, 162, 235, 0.6)'   // Total Students & Children
                 ],
                 borderColor: [
                     'rgba(0, 123, 255, 1)',
-                    'rgba(255, 99, 132, 1)'
-                    'rgba(255, 99, 132, 0.6)'  // Total Female
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)'
                 ],
                 borderWidth: 1
             }]
@@ -213,23 +165,59 @@ $total_unemployed= $conn->query("SELECT * FROM `student_list` WHERE occupation =
             }]
         };
 
-        function createChart(ctx, type, data) {
-            return new Chart(ctx, {
-                type: type,
-                data: data,
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: genderData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += new Intl.NumberFormat().format(context.parsed);
+                                }
+                                return label;
+                            }
                         }
                     }
                 }
-            });
-        }
+            }
+        });
 
-        var pieChart = createChart(pieCtx, 'pie', genderData);
-        var barChart = createChart(barCtx, 'bar', occupationData);
+        new Chart(barCtx, {
+            type: 'bar',
+            data: occupationData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat().format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
     });
 </script>
 </body>

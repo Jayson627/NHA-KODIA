@@ -154,14 +154,17 @@ $total_unemployed= $conn->query("SELECT * FROM `student_list` WHERE occupation =
                 data: [
                     <?php echo $total_male_combined; ?>,
                     <?php echo $total_female_combined; ?>
+                    <?php echo $total_students_children; ?>
                 ],
                 backgroundColor: [
                     'rgba(0, 123, 255, 0.6)',  // Total Male
+                    'rgba(255, 99, 132, 0.6)'  // Total Female
                     'rgba(255, 99, 132, 0.6)'  // Total Female
                 ],
                 borderColor: [
                     'rgba(0, 123, 255, 1)',
                     'rgba(255, 99, 132, 1)'
+                    'rgba(255, 99, 132, 0.6)'  // Total Female
                 ],
                 borderWidth: 1
             }]

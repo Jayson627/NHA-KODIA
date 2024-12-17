@@ -61,7 +61,7 @@
    $total_carpenter = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'carpenter'")->num_rows;
    $total_vendor = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'vendor'")->num_rows;
    $total_driver = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'driver'")->num_rows;
-   $total_governmentemployee = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'governmentemployee'")->num_rows;
+   $total_government = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'government'")->num_rows;
    $total_unemployed= $conn->query("SELECT * FROM `student_list` WHERE occupation = 'unemployed'")->num_rows;
 ?>
     <header>
@@ -186,7 +186,7 @@
                     <?php echo $total_carpenter; ?>,
                     <?php echo $total_vendor; ?>,
                     <?php echo $total_driver; ?>,
-                    <?php echo $total_governmentemployee; ?>,
+                    <?php echo $total_government; ?>,
                     <?php echo $total_unemployed; ?>
                 ],
                 backgroundColor: [

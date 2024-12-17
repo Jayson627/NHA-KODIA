@@ -50,6 +50,12 @@
    $total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;
    $total_students = $conn->query("SELECT * FROM `student_list`")->num_rows;
    $total_children = $conn->query("SELECT * FROM `children`")->num_rows;
+   $total_Farmer = $conn->query("SELECT * FROM `student_list`")->num_rows;
+   $total_Teacher = $conn->query("SELECT * FROM `student_list`")->num_rows;
+   $total_Fisherman = $conn->query("SELECT * FROM `student_list`")->num_rows;
+   $total_Carpenter = $conn->query("SELECT * FROM `student_list`")->num_rows;
+   
+   
 
    // Male and female counts (assuming the gender column is named 'gender' and has values 'male' and 'female')
    $total_male = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
@@ -141,6 +147,10 @@
                 
                 'Total Males',  // Add label for male count
                 'Total Females'  // Add label for female count
+                'Total Farmer',  // Add label for male count
+                'Total fisherman'  // Add label for female count
+                'Total Teacher',  // Add label for male count
+                'Total Carpenter'  // Add label for female count
             ],
             datasets: [{
                 label: 'Total Counts',
@@ -148,11 +158,19 @@
                    
                     <?php echo $total_male; ?>,     // Add male count
                     <?php echo $total_female; ?>   // Add female count
+                    <?php echo $total_Farmer; ?>,     // Add male count
+                    <?php echo $total_Fisherman; ?>   // Add female count
+                    <?php echo $total_Teacher; ?>,     // Add male count
+                    <?php echo $total_Carpenter; ?>   // Add female count
                 ],
                 backgroundColor: [
                     
                     'rgba(0, 123, 255, 0.6)',   // Total Males
                     'rgba(255, 99, 132, 0.6)'   // Total Females
+                    'rgba(0, 12, 255, 0.6)',   // Total Males
+                    'rgba(25, 9, 132, 0.6)'   // Total Females
+                    'rgba(0, 123, 255, 0.6)',   // Total Males
+                    'rgba(255, 9, 132, 0.6)'   // Total Females
                 ],
                 borderColor: [
                     

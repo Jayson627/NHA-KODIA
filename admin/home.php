@@ -5,14 +5,15 @@ if (isset($_SESSION['success_message'])) {
     unset($_SESSION['success_message']);
 }
 
-// Queries for data (lots, blocks, students, children, males, and females)
+// Queries for data (lots, blocks, students, children, spouses, males, and females)
 $total_lot = $conn->query("SELECT * FROM `lot_numbers`")->num_rows;
 $total_block = $conn->query("SELECT * FROM `blocks`")->num_rows;
 $total_students = $conn->query("SELECT * FROM `student_list`")->num_rows;
 $total_children = $conn->query("SELECT * FROM `children`")->num_rows;
+$total_spouse = $conn->query("SELECT * FROM `student_list`")->num_rows;
 
-// Combined total of students and children
-$total_students_children = $total_students + $total_children;
+// Combined total of students, children, and spouses
+$total_students_children_spouse = $total_students + $total_children + $total_spouse;
 
 // Male and female counts in `student_list`
 $total_male_students = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
@@ -22,20 +23,23 @@ $total_female_students = $conn->query("SELECT * FROM `student_list` WHERE gender
 $total_male_children = $conn->query("SELECT * FROM `children` WHERE gender = 'male'")->num_rows;
 $total_female_children = $conn->query("SELECT * FROM `children` WHERE gender = 'female'")->num_rows;
 
+// Male and female counts in `spouses`
+$total_male_spouse = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
+$total_female_spouse = $conn->query("SELECT * FROM `student_list` WHERE gender = 'female'")->num_rows;
+
 // Combined male and female counts
-$total_male_combined = $total_male_students + $total_male_children;
-$total_female_combined = $total_female_students + $total_female_children;
+$total_male_combined = $total_male_students + $total_male_children + $total_male_spouse;
+$total_female_combined = $total_female_students + $total_female_children + $total_female_spouse;
 
 // Occupation counts
 $total_farmer = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'farmer'")->num_rows;
 $total_fisherman = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'fisherman'")->num_rows;
-$total_carpenter = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'carpenter'")->num_rows;
+$total_carpenter = $conn->query("SELECT * FROM `student_list`")->num_rows;
 $total_vendor = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'vendor'")->num_rows;
 $total_driver = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'driver'")->num_rows;
 $total_government = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'government'")->num_rows;
 $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'unemployed'")->num_rows;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -105,9 +109,9 @@ $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation 
         <div class="info-box">
             <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Total Students & Children</span>
+                <span class="info-box-text">Total Students, Children & Spouses</span>
                 <span class="info-box-number">
-                    <?php echo number_format($total_students_children); ?>
+                    <?php echo number_format($total_students_children_spouse); ?>
                 </span>
             </div>
         </div>
@@ -137,19 +141,19 @@ $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation 
             labels: [
                 'Total Male',
                 'Total Female',
-                'Total Students & Children'
+                'Total Students, Children & Spouses'
             ],
             datasets: [{
                 label: 'Total Counts',
                 data: [
                     <?php echo $total_male_combined; ?>,
                     <?php echo $total_female_combined; ?>,
-                    <?php echo $total_students_children; ?>
+                    <?php echo $total_students_children_spouse; ?>
                 ],
                 backgroundColor: [
                     'rgba(0, 123, 255, 0.6)',  // Total Male
                     'rgba(255, 99, 132, 0.6)',  // Total Female
-                    'rgba(54, 162, 235, 0.6)'   // Total Students & Children
+                    'rgba(54, 162, 235, 0.6)'   // Total Students, Children & Spouses
                 ],
                 borderColor: [
                     'rgba(0, 123, 255, 1)',
@@ -187,7 +191,7 @@ $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation 
                     'rgba(255, 206, 86, 0.6)',   // Carpenter
                     'rgba(75, 192, 192, 0.6)',   // Vendor
                     'rgba(153, 102, 255, 0.6)',  // Driver
-                    'rgba(255, 159, 64, 0.6)',   // Government Employee
+                    'rgba(255, 159, 64, 0.6)',   // Gov-Employee
                     'rgba(201, 203, 207, 0.6)'   // Unemployed
                 ],
                 borderColor: [

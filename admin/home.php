@@ -155,6 +155,7 @@
                     'rgba(255, 99, 132, 0.6)'   // Total Females
                 ],
                
+            }]
         };
 
         function createChart(ctx, type, data) {

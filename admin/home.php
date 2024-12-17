@@ -55,6 +55,10 @@
    // Male and female counts (assuming the gender column is named 'gender' and has values 'male' and 'female')
    $total_male = $conn->query("SELECT * FROM `student_list` WHERE gender = 'male'")->num_rows;
    $total_female = $conn->query("SELECT * FROM `student_list` WHERE gender = 'female'")->num_rows;
+   $total_teacher = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'teacher'")->num_rows;
+   $total_carpenter = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'carpenter'")->num_rows;
+   $total_farmer= $conn->query("SELECT * FROM `student_list` WHERE occupation = 'farmer'")->num_rows;
+  
 ?>
     <header>
         <h3>Welcome to <?php echo $_settings->info('id'); ?> - Admin Panel</h3>
@@ -103,6 +107,39 @@
                 </div>
             </div>
         </div>
+        
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
+                <div class="info-box bg-gradient-green shadow">
+                    <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Teacher</span>
+                        <span class="info-box-number text-right"><?php echo $total_teacher; ?></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
+                <div class="info-box bg-gradient-green shadow">
+                    <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Carpenter</span>
+                        <span class="info-box-number text-right"><?php echo $total_carpenter; ?></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
+                <div class="info-box bg-gradient-green shadow">
+                    <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Farmer</span>
+                        <span class="info-box-number text-right"><?php echo $total_farmer; ?></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         
     
         <!-- Chart.js Charts wrapped in responsive containers -->

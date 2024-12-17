@@ -128,7 +128,7 @@ if (isset($_POST['roll'])) {
                                     <option value="Carpenter">Carpenter</option>
                                     <option value="Vendor">Vendor</option>
                                     <option value="Driver">Driver</option>
-                                    <option value="Government Employee">Government Employee</option>                                 
+                                    <option value="GovernmentEmployee">Government Employee</option>                                 
                                     <option value="Unemployed">Unemployed</option>
                                   
                                     <!-- Add more options as needed -->

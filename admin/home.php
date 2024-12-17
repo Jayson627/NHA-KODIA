@@ -119,16 +119,7 @@
             </div>
         </div>
         
-        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
-                <div class="info-box bg-gradient-green shadow">
-                    <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fas fa-users"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">Total Carpenter</span>
-                        <span class="info-box-number text-right"><?php echo $total_carpenter; ?></span>
-                    </div>
-                </div>
-            </div>
-        </div>
+      
         <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-3">
                 <div class="info-box bg-gradient-green shadow">
                     <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fas fa-users"></i></span>

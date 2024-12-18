@@ -6,7 +6,8 @@ require("PHPMailer/src/Exception.php");
 
 include_once('connection.php'); // Include your database connection
 $message = ""; 
-// Approve or update status of residents
+
+// Approve or update status of residents or presidents
 if (isset($_POST['action']) && isset($_POST['id'])) {
     $id = $_POST['id'];
     $action = $_POST['action'];
@@ -18,7 +19,7 @@ if (isset($_POST['action']) && isset($_POST['id'])) {
     if ($stmt->execute()) {
         $message = "Account status updated successfully!"; 
 
-        // Fetch the resident's email and name
+        // Fetch the resident's or president's email and name
         $stmt = $conn->prepare("SELECT email, fullname FROM residents WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -37,10 +38,10 @@ if (isset($_POST['action']) && isset($_POST['id'])) {
     $stmt->close();
 }
 
-// Retrieve all pending residents
-$sql = "SELECT id, fullname, dob, lot_no, house_no, email,  created_at, status, role 
+// Retrieve all pending residents or presidents (filter by role)
+$sql = "SELECT id, fullname, dob, lot_no, house_no, email, username, created_at, status, role 
         FROM residents 
-        WHERE status = 'pending'";
+        WHERE status = 'pending' AND (role = 'resident' OR role = 'president')";
 $result = $conn->query($sql);
 
 // Function to send email notification
@@ -128,7 +129,7 @@ function sendApprovalEmail($toEmail, $fullname) {
         .action-button:hover {
             background-color: #4c51bf;
         }
-        
+
         /* Responsive Design for Small Screens */
         @media (max-width: 768px) {
             table, th, td {
@@ -223,7 +224,7 @@ function sendApprovalEmail($toEmail, $fullname) {
             <th>Email</th>
             <th>Created At</th>
             <th>Status</th>
-            <th>Role</th> <!-- Added Role Column -->
+            <th>Role</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -240,7 +241,7 @@ function sendApprovalEmail($toEmail, $fullname) {
                         <td data-label='Email'>{$row['email']}</td>
                         <td data-label='Created At'>{$row['created_at']}</td>
                         <td data-label='Status'>{$row['status']}</td>
-                        <td data-label='Role'>{$row['role']}</td> <!-- Displaying the Role -->
+                        <td data-label='Role'>{$row['role']}</td>
                         <td>
                             <form method='POST' style='display:inline;'>
                                 <input type='hidden' name='id' value='{$row['id']}'>
@@ -250,7 +251,7 @@ function sendApprovalEmail($toEmail, $fullname) {
                       </tr>";
             }
         } else {
-            echo "<tr><td colspan='10'>No pending accounts found.</td>"; // Updated colspan
+            echo "<tr><td colspan='9'>No pending accounts found.</td></tr>"; // Updated colspan
         }
         ?>
     </tbody>

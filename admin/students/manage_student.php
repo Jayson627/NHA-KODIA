@@ -173,7 +173,7 @@ if (isset($_POST['roll'])) {
                                     <option value="San Agustin ">Barangay San Agustin</option>
                                     <option value="Malbago ">Barangay Malbago</option>
                                     <option value="Tabagak ">Barangay Tabagak</option>
-                                    <option value= Bunakan">Barangay Bunakan</option>
+                                    <option value= "Bunakan">Barangay Bunakan</option>
                                     <option value="Poblacion ">Barangay Poblacion</option>
                                 </select>
                                 <div id="present_address-error" class="text-danger" style="display: none;">Invalid Barangay. Please select a valid option.</div>

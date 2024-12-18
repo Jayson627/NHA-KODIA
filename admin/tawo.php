@@ -36,7 +36,7 @@ if (isset($_POST['approve_user_id'])) {
 }
 
 // Fetch users with 'pending' status
-$sql = "SELECT * FROM residents WHERE status = 'pending'";
+$sql = "SELECT * FROM users WHERE status = 'pending'";
 $result = $conn->query($sql);
 
 if ($result === false) {

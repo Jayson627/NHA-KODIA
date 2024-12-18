@@ -275,4 +275,4 @@ $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation 
     });
 </script>
 </body>
-</html>
+</html>j

@@ -73,10 +73,7 @@ mysqli_close($conn);
 </head>
 <body>
 
-<header>
-    <h1>Approved Users</h1>
-    <a href="logout.php" class="logout-btn">Logout</a>
-</header>
+
 
 <div class="container">
     <h2>List of Approved Users</h2>

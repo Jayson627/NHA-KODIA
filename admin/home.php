@@ -1,4 +1,43 @@
-<?php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - <?php echo $_settings->info('name'); ?></title>
+    <!-- Bootstrap CSS for responsiveness -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="path/to/your/css">
+    <style>
+        #website-cover {
+            width: 100%;
+            height: 30em;
+            object-fit: cover;
+            object-position: center center;
+            color: pink;
+        }
+        .info-box {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: pink;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        .info-box-icon {
+            font-size: 2rem;
+        }
+        /* Responsive styles for charts */
+        @media (max-width: 768px) {
+            .chart-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
+    <?php
 // Check if the success message is set
 if (isset($_SESSION['success_message'])) {
     echo "<script>alert('" . $_SESSION['success_message'] . "');</script>";
@@ -40,95 +79,53 @@ $total_driver = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'd
 $total_government = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'government'")->num_rows;
 $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation = 'unemployed'")->num_rows;
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - <?php echo $_settings->info('name'); ?></title>
-    <!-- Bootstrap CSS for responsiveness -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="path/to/your/css">
-    <style>
-        #website-cover {
-            width: 100%;
-            height: 30em;
-            object-fit: cover;
-            object-position: center center;
-            color: pink;
-        }
-        .info-box {
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background-color: pink;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        }
-        .info-box-icon {
-            font-size: 2rem;
-        }
-        /* Responsive styles for charts */
-        @media (max-width: 768px) {
-            .chart-container {
-                overflow-x: auto;
-            }
-        }
-    </style>
-</head>
-<body>
-<h1>Welcome to <?php echo $_settings->info('name'); ?></h1>
-<hr>
-<div class="row">
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Total Lot Numbers</span>
-                <span class="info-box-number">
-                    <?php echo number_format($total_lot); ?>
-                </span>
+<header>
+        <h3>Welcome to <?php echo $_settings->info('id'); ?> - Admin Panel</h3>
+        <hr class="border-pink">
+    </header>
+    <main class="container-fluid">
+        <div class="row">
+            <!-- Total Lots Display -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="info-box bg-gradient-pink shadow">
+                    <span class="info-box-icon bg-gradient-pink elevation-1"><i class="fas fa-cube"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Lots</span>
+                        <span class="info-box-number text-right"><?php echo $total_lot; ?></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="info-box bg-gradient-blue shadow">
+                    <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-box"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Blocks</span>
+                        <span class="info-box-number text-right"><?php echo $total_block; ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="info-box bg-gradient-yellow shadow">
+                    <span class="info-box-icon bg-gradient-warning elevation-1"><i class="fas fa-user-friends"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Household Heads</span>
+                        <span class="info-box-number text-right"><?php echo $total_students; ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <div class="info-box bg-gradient-green shadow">
+                    <span class="info-box-icon bg-gradient-teal elevation-1"><i class="fas fa-users"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Children</span>
+                        <span class="info-box-number text-right"><?php echo $total_children; ?></span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Total Block</span>
-                <span class="info-box-number">
-                    <?php echo number_format($total_block); ?>
-                </span>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Total Householdheads</span>
-                <span class="info-box-number">
-                    <?php echo number_format($total_students); ?>
-                </span>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="col-12 col-sm-6 col-lg-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Total Children </span>
-                <span class="info-box-number">
-                    <?php echo number_format($total_children); ?>
-                </span>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Add the charts here -->
 <div class="chart-container">

@@ -141,7 +141,7 @@ $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation 
             labels: [
                 'Total Male',
                 'Total Female',
-                'Total Students, Children & Spouses'
+                'Total Residents'
             ],
             datasets: [{
                 label: 'Total Counts',

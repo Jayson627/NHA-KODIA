@@ -203,7 +203,7 @@ function sendApprovalEmail($toEmail, $fullname) {
     </tbody>
 </table>
 
-</body>
+</body>hgfhg
 </html>
 
 <?php

@@ -109,9 +109,21 @@ $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation 
         <div class="info-box">
             <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Total Students, Children & Spouses</span>
+                <span class="info-box-text">Total Householdheads</span>
                 <span class="info-box-number">
-                    <?php echo number_format($total_students_children_spouse); ?>
+                    <?php echo number_format($total_students); ?>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-12 col-sm-6 col-lg-3">
+        <div class="info-box">
+            <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-th-list"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Total Children </span>
+                <span class="info-box-number">
+                    <?php echo number_format($total_children); ?>
                 </span>
             </div>
         </div>

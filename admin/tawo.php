@@ -1,36 +1,55 @@
 <?php
-// Connect to the database
-$host = 'localhost';
-$db = 'your_database_name'; // Replace with your actual database name
-$user = 'your_database_user'; // Replace with your database user
-$pass = 'your_database_password'; // Replace with your database password
+// Database credentials
+$servername = "127.0.0.1:3306";
+$username = "u510162695_sis_db";
+$password = "1Sis_dbpassword";
+$dbname = "u510162695_sis_db";
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
+// Initialize error message variable
+$error_message = "";
 
 // Handle account approval
 if (isset($_POST['approve_user_id'])) {
     $userId = $_POST['approve_user_id'];
-    // Update user status to 'approved'
-    $stmt = $pdo->prepare("UPDATE users SET status = 'approved' WHERE id = ?");
-    $stmt->execute([$userId]);
-    echo '<script>alert("Account approved successfully!");</script>';
+
+    // Prepare the statement to prevent SQL injection
+    if ($stmt = $conn->prepare("UPDATE residents SET status = 'approved' WHERE id = ?")) {
+        // Bind parameters and execute the statement
+        $stmt->bind_param("i", $userId);
+        if ($stmt->execute()) {
+            $success_message = "Account approved successfully!";
+        } else {
+            $error_message = "Error approving account.";
+        }
+        $stmt->close();
+    } else {
+        $error_message = "Failed to prepare the statement.";
+    }
 }
 
 // Fetch users with 'pending' status
-$stmt = $pdo->prepare("SELECT * FROM users WHERE status = 'pending'");
-$stmt->execute();
-$users = $stmt->fetchAll();
+$sql = "SELECT * FROM users WHERE status = 'pending'";
+$result = $conn->query($sql);
+
+if ($result === false) {
+    $error_message = "Error fetching data: " . $conn->error;
+}
 
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Approval</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -70,6 +89,24 @@ $users = $stmt->fetchAll();
     <h1>Account Approval</h1>
     <p>Below are the accounts awaiting approval. Click "Approve" to approve the account.</p>
 
+    <?php if (!empty($error_message)): ?>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '<?php echo $error_message; ?>'
+            });
+        </script>
+    <?php elseif (isset($success_message)): ?>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '<?php echo $success_message; ?>'
+            });
+        </script>
+    <?php endif; ?>
+
     <table>
         <thead>
             <tr>
@@ -82,34 +119,34 @@ $users = $stmt->fetchAll();
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($users as $user): ?>
+            <?php if ($result && $result->num_rows > 0): ?>
+                <?php while ($user = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($user['id']) ?></td>
+                        <td><?= htmlspecialchars($user['fullname']) ?></td>
+                        <td><?= htmlspecialchars($user['dob']) ?></td>
+                        <td><?= htmlspecialchars($user['email']) ?></td>
+                        <td><?= htmlspecialchars($user['role']) ?></td>
+                        <td>
+                            <form method="POST">
+                                <input type="hidden" name="approve_user_id" value="<?= $user['id'] ?>">
+                                <button type="submit">Approve</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
                 <tr>
-                    <td><?= htmlspecialchars($user['id']) ?></td>
-                    <td><?= htmlspecialchars($user['fullname']) ?></td>
-                    <td><?= htmlspecialchars($user['dob']) ?></td>
-                    <td><?= htmlspecialchars($user['email']) ?></td>
-                    <td><?= htmlspecialchars($user['role']) ?></td>
-                    <td>
-                        <form method="POST">
-                            <input type="hidden" name="approve_user_id" value="<?= $user['id'] ?>">
-                            <button type="submit">Approve</button>
-                        </form>
-                    </td>
+                    <td colspan="6">No accounts awaiting approval.</td>
                 </tr>
-            <?php endforeach; ?>
+            <?php endif; ?>
         </tbody>
     </table>
 
-    <script>
-        // Show success message when account is approved
-        <?php if (isset($_POST['approve_user_id'])): ?>
-            Swal.fire({
-                icon: 'success',
-                title: 'Account Approved',
-                text: 'The account has been successfully approved.',
-            });
-        <?php endif; ?>
-    </script>
-
 </body>
-</html>hhh
+</html>
+
+<?php
+// Close the connection
+$conn->close();
+?>

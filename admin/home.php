@@ -211,8 +211,8 @@ borderWidth: 1
                     <?php echo $total_unemployed; ?>
                 ],
                 backgroundColor: [
-    'rgba(250, 128, 114, 0.6)',  // Salmon for Farmer
-    'rgba(173, 216, 230, 0.6)',  // Light Blue for Fisherman
+    'rgba(255, 165, 0, 0.6)',  // Orange for Farmer
+    'rgba(60, 179, 113, 0.6)',  // Medium Sea Green for Fisherman
     'rgba(255, 239, 213, 0.6)',  // Papaya Whip for Carpenter
     'rgba(144, 238, 144, 0.6)',  // Light Green for Vendor
     'rgba(216, 191, 216, 0.6)',  // Thistle for Driver
@@ -220,8 +220,8 @@ borderWidth: 1
     'rgba(220, 220, 220, 0.6)'   // Gainsboro for Unemployed
 ],
 borderColor: [
-    'rgba(250, 128, 114, 1)',
-    'rgba(173, 216, 230, 1)',
+    'rgba(255, 165, 0, 1)',
+    'rgba(60, 179, 113, 1)',
     'rgba(255, 239, 213, 1)',
     'rgba(144, 238, 144, 1)',
     'rgba(216, 191, 216, 1)',
@@ -229,6 +229,7 @@ borderColor: [
     'rgba(220, 220, 220, 1)'
 ],
 borderWidth: 1
+
 
 
             }]

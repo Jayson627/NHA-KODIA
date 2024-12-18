@@ -176,16 +176,16 @@ $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation 
                     <?php echo $total_students_children_spouse; ?>
                 ],
                 backgroundColor: [
-                    'rgba(0, 123, 255, 0.6)',  // Total Male
-                    'rgba(255, 99, 132, 0.6)',  // Total Female
-                    'rgba(54, 162, 235, 0.6)'   // Total Students, Children & Spouses
-                ],
-                borderColor: [
-                    'rgba(0, 123, 255, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)'
-                ],
-                borderWidth: 1
+    'rgba(255, 179, 186, 0.6)',  // Pastel Pink (Total Male)
+    'rgba(186, 255, 201, 0.6)',  // Pastel Green (Total Female)
+    'rgba(186, 225, 255, 0.6)'   // Pastel Blue (Total Students, Children & Spouses)
+],
+borderColor: [
+    'rgba(255, 179, 186, 1)',
+    'rgba(186, 255, 201, 1)',
+    'rgba(186, 225, 255, 1)'
+],
+borderWidth: 1
             }]
         };
 

@@ -1,16 +1,5 @@
 <?php
-// Connect to the database
-$host = 'localhost';
-$db = 'your_database_name'; // Replace with your actual database name
-$user = 'your_database_user'; // Replace with your database user
-$pass = 'your_database_password'; // Replace with your database password
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+include_once('connection.php'); 
 
 // Handle account approval
 if (isset($_POST['approve_user_id'])) {

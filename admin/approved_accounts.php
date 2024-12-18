@@ -11,7 +11,7 @@ if (isset($_POST['approve_user_id'])) {
 }
 
 // Fetch users with 'pending' status
-$stmt = $pdo->prepare("SELECT * FROM users WHERE status = 'pending'");
+$stmt = $pdo->prepare("SELECT * FROM residents WHERE status = 'pending'");
 $stmt->execute();
 $users = $stmt->fetchAll();
 

@@ -17,13 +17,13 @@ if ($conn->connect_error) {
 $error_message = "";
 
 // Handle account approval
-if (isset($_POST['approve_user_id'])) {
-    $userId = $_POST['approve_user_id'];
+if (isset($_POST['approve_resident_id'])) {
+    $residentId = $_POST['approve_resident_id'];
 
     // Prepare the statement to prevent SQL injection
     if ($stmt = $conn->prepare("UPDATE residents SET status = 'approved' WHERE id = ?")) {
         // Bind parameters and execute the statement
-        $stmt->bind_param("i", $userId);
+        $stmt->bind_param("i", $residentId);
         if ($stmt->execute()) {
             $success_message = "Account approved successfully!";
         } else {
@@ -35,7 +35,7 @@ if (isset($_POST['approve_user_id'])) {
     }
 }
 
-// Fetch users with 'pending' status
+// Fetch residents with 'pending' status
 $sql = "SELECT * FROM residents WHERE status = 'pending'";
 $result = $conn->query($sql);
 
@@ -120,16 +120,16 @@ if ($result === false) {
         </thead>
         <tbody>
             <?php if ($result && $result->num_rows > 0): ?>
-                <?php while ($user = $result->fetch_assoc()): ?>
+                <?php while ($resident = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?= htmlspecialchars($user['id']) ?></td>
-                        <td><?= htmlspecialchars($user['fullname']) ?></td>
-                        <td><?= htmlspecialchars($user['dob']) ?></td>
-                        <td><?= htmlspecialchars($user['email']) ?></td>
-                        <td><?= htmlspecialchars($user['role']) ?></td>
+                        <td><?= htmlspecialchars($resident['id']) ?></td>
+                        <td><?= htmlspecialchars($resident['fullname']) ?></td>
+                        <td><?= htmlspecialchars($resident['dob']) ?></td>
+                        <td><?= htmlspecialchars($resident['email']) ?></td>
+                        <td><?= htmlspecialchars($resident['role']) ?></td>
                         <td>
                             <form method="POST">
-                                <input type="hidden" name="approve_user_id" value="<?= $user['id'] ?>">
+                                <input type="hidden" name="approve_resident_id" value="<?= $resident['id'] ?>">
                                 <button type="submit">Approve</button>
                             </form>
                         </td>

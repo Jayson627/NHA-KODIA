@@ -126,18 +126,34 @@ $total_unemployed = $conn->query("SELECT * FROM `student_list` WHERE occupation 
                 </div>
             </div>
         </div>
-
-<!-- Add the charts here -->
-<div class="chart-container">
-    <div class="row">
-        <div class="col-md-6">
-            <canvas id="pieChart"></canvas>
+ <!-- Chart.js Charts wrapped in responsive containers -->
+ <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card card-outline card-navy shadow rounded-0">
+                    <div class="card-header">
+                        <h5 class="card-title">Pie Chart: Totals Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div style="overflow-x:auto;">
+                            <canvas id="pieChart" class="chartjs-render-monitor"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-outline card-navy shadow rounded-0">
+                    <div class="card-header">
+                        <h5 class="card-title">Bar Chart: Totals Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div style="overflow-x:auto;">
+                            <canvas id="barChart" class="chartjs-render-monitor"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <canvas id="barChart"></canvas>
-        </div>
-    </div>
-</div>
+    </main>
 
 <!-- Include Chart.js library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

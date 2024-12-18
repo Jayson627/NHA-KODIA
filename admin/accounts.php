@@ -204,7 +204,7 @@ function sendApprovalEmail($toEmail, $fullname) {
 </table>
 
 </body>hgfhg
-</html>
+</html>fdf
 
 <?php
 // Close database connection
